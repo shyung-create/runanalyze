@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import argparse
 import os
-import shlex
+import shutil
 import subprocess
 import sys
 from datetime import date, datetime
@@ -45,15 +45,31 @@ def load_dotenv():
 
 # ------------------------------------------------------------------ steps
 
+def resolve_garmindb_cli() -> list[str]:
+    """Resolve GARMINDB_CLI to a runnable argv prefix.
+
+    garmindb_cli.py is typically installed as a plain .py file (no .exe
+    wrapper on Windows), so it can't be exec'd directly via subprocess —
+    Windows raises WinError 193 ("not a valid Win32 application"). Detect a
+    .py target and always launch it through the current Python interpreter,
+    which works cross-platform.
+    """
+    cli = os.environ.get("GARMINDB_CLI", "garmindb_cli.py").strip()
+    resolved = shutil.which(cli) or cli
+    if resolved.lower().endswith(".py"):
+        return [sys.executable, resolved]
+    return [resolved]
+
+
 def sync_garmin():
-    cli = os.environ.get("GARMINDB_CLI", "garmindb_cli.py")
-    cmd = shlex.split(cli) + ["--activities", "--download", "--import",
-                              "--analyze", "--latest"]
+    cmd = resolve_garmindb_cli() + ["--activities", "--download", "--import",
+                                    "--analyze", "--latest"]
     log.info("Syncing GarminDB: %s", " ".join(cmd))
     try:
         subprocess.run(cmd, check=True)
     except FileNotFoundError:
-        log.error("garmindb_cli.py not found — set GARMINDB_CLI in .env or install "
+        log.error("garmindb_cli.py not found — set GARMINDB_CLI in .env to its "
+                  "full path (e.g. C:\\...\\Scripts\\garmindb_cli.py) or install "
                   "GarminDB (pip install garmindb). Continuing with existing data.")
     except subprocess.CalledProcessError as e:
         log.error("GarminDB sync failed (%s). Continuing with existing data.", e)
