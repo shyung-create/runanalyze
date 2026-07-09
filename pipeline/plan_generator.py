@@ -1,14 +1,20 @@
-"""Deterministic training-plan generator based on Hal Higdon's structural
-principles (not copied tables): weekly long-run progression, step-back weeks
-every 3rd week, tier-appropriate midweek quality, and a 2–3 week taper.
+"""Training-plan generator backed by real published program tables.
+
+Plans come from pipeline/plans_catalog.json — converted (see convert_plans.py)
+from https://github.com/hoovercj/time-to-run (MIT), which encodes programs by
+Hal Higdon, Pete Pfitzinger et al., and the Hansons Marathon Method. The
+generator selects the right program from recent Garmin data, anchors it so
+the program's final day lands on race day, compresses by dropping early weeks
+when time is short, and attaches pace targets derived from current fitness.
 
 A valid plan is always produced even if the LLM refinement step fails.
-Distances are in the athlete's preferred unit (miles by default).
 """
 
 from __future__ import annotations
 
+import json
 from datetime import date, datetime, timedelta
+from pathlib import Path
 
 from common import fmt_hms, fmt_pace, log, parse_time_hms
 
@@ -18,42 +24,76 @@ HALF_DIST_MI = 13.109
 FULL_DIST_MI = 26.219
 KM_PER_MILE = 1.609344
 
-# Tier parameters. Distances in miles; scaled to km if needed.
-TIERS = {
-    "half": {
-        "novice1":       {"weeks": 12, "peak_long": 10, "run_days": 4, "quality": [],                  "min_weekly": 0,  "min_long": 0},
-        "novice2":       {"weeks": 12, "peak_long": 12, "run_days": 4, "quality": ["race_pace"],       "min_weekly": 12, "min_long": 5},
-        "intermediate1": {"weeks": 12, "peak_long": 12, "run_days": 5, "quality": ["tempo"],           "min_weekly": 18, "min_long": 7},
-        "intermediate2": {"weeks": 12, "peak_long": 14, "run_days": 5, "quality": ["tempo", "intervals"], "min_weekly": 24, "min_long": 9},
-        "advanced":      {"weeks": 12, "peak_long": 15, "run_days": 6, "quality": ["tempo", "intervals"], "min_weekly": 32, "min_long": 11},
-    },
-    "full": {
-        "novice1":       {"weeks": 18, "peak_long": 20, "run_days": 4, "quality": [],                  "min_weekly": 0,  "min_long": 0},
-        "novice2":       {"weeks": 18, "peak_long": 20, "run_days": 4, "quality": ["race_pace"],       "min_weekly": 15, "min_long": 8},
-        "intermediate1": {"weeks": 18, "peak_long": 20, "run_days": 5, "quality": ["race_pace"],       "min_weekly": 22, "min_long": 10},
-        "intermediate2": {"weeks": 18, "peak_long": 20, "run_days": 5, "quality": ["tempo", "race_pace"], "min_weekly": 30, "min_long": 12},
-        "advanced":      {"weeks": 18, "peak_long": 20, "run_days": 6, "quality": ["tempo", "intervals"], "min_weekly": 38, "min_long": 14},
-    },
-}
+CATALOG_PATH = Path(__file__).resolve().parent / "plans_catalog.json"
 
-TAPER_WEEKS = {"half": 2, "full": 3}
+# workout type -> which training pace applies
+TYPE_PACE = {"easy": "easy", "recovery": "easy", "long": "long", "tempo": "tempo",
+             "intervals": "intervals", "race_pace": "race_pace", "race": "goal_pace"}
 
 
-def select_tier(distance_type: str, avg_weekly: float, recent_long: float,
-                units: str) -> tuple[str, str]:
-    """Pick the highest tier whose entry requirements the athlete meets."""
-    scale = KM_PER_MILE if units == "km" else 1.0
-    chosen = "novice1"
-    for name, t in TIERS[distance_type].items():
-        if avg_weekly >= t["min_weekly"] * scale and recent_long >= t["min_long"] * scale:
-            chosen = name
-    reason = (
-        f"Recent average weekly volume {avg_weekly:.0f} {units} and longest recent "
-        f"run {recent_long:.1f} {units} meet the entry requirements for "
-        f"{chosen.replace('1', ' 1').replace('2', ' 2').title()}"
-    )
+def load_catalog() -> dict:
+    with open(CATALOG_PATH) as f:
+        return json.load(f)
+
+
+# ---------------------------------------------------------------- selection
+
+def select_plan(catalog: dict, distance_type: str, avg_weekly_mi: float,
+                recent_long_mi: float, weeks_available: int,
+                plan_id: str | None = None) -> tuple[dict, str]:
+    """Pick the most advanced program the athlete can absorb.
+
+    Because a program is anchored to race day, less time than its full length
+    means joining mid-program — so the entry test is against the *joining
+    week* (volume within ~25% above current weekly volume, longest run no
+    more than ~30% beyond the recent longest run), not week 1.
+    Explicit override via preferences.plan_id in race_config.yaml.
+    """
+    plans = [p for p in catalog["plans"] if p["distance_type"] == distance_type]
+    if plan_id:
+        forced = next((p for p in plans if p["id"] == plan_id), None)
+        if forced:
+            return forced, f"Plan '{plan_id}' forced via preferences.plan_id"
+        log.warning("preferences.plan_id %r not found for %s — selecting "
+                    "automatically. Valid ids: %s", plan_id, distance_type,
+                    ", ".join(p["id"] for p in plans))
+
+    def join_week(p):  # 0-based index of the week you'd join at
+        return max(p["weeks"] - weeks_available, 0)
+
+    def join_vol(p):
+        return p["weekly_volume"][join_week(p)]
+
+    def join_long(p):
+        wk = join_week(p) + 1
+        return max((d["distance"] or 0 for d in p["days"] if d["week"] == wk), default=0)
+
+    def entry_ok(p):
+        return (join_vol(p) <= max(avg_weekly_mi * 1.25, avg_weekly_mi + 3)
+                and join_long(p) <= max(recent_long_mi * 1.3, recent_long_mi + 1.5))
+
+    eligible = [p for p in plans if entry_ok(p)]
+    if eligible:
+        # the most demanding entry point the athlete still clears
+        chosen = max(eligible, key=lambda p: (join_vol(p), p["peak_volume"]))
+        wk = join_week(chosen) + 1
+        reason = (
+            f"Recent volume ~{avg_weekly_mi:.0f} mi/wk with a {recent_long_mi:.1f} mi "
+            f"longest run clears the demands where you'd join this program "
+            f"(week {wk}: {join_vol(chosen):.0f} mi, longest run "
+            f"{join_long(chosen):.0f} mi) — the most advanced fit among "
+            f"{len(eligible)} eligible programs")
+    else:
+        chosen = min(plans, key=join_vol)
+        reason = (
+            f"Recent volume ~{avg_weekly_mi:.0f} mi/wk is below every program's "
+            f"entry demands for the time remaining — using the gentlest "
+            f"available ({join_vol(chosen):.0f} mi at the joining week); "
+            f"build carefully and let refreshes adjust")
     return chosen, reason
 
+
+# ------------------------------------------------------------------- paces
 
 def training_paces(fitness: dict, goal_time_s: int | None, distance_type: str,
                    units: str) -> dict:
@@ -82,10 +122,12 @@ def training_paces(fitness: dict, goal_time_s: int | None, distance_type: str,
     }
 
 
+# --------------------------------------------------------------- assessment
+
 def assess_goal(fitness: dict, goal_time_s: int | None, distance_type: str,
-                avg_weekly: float, peak_weekly_needed: float, weeks_available: int,
+                avg_weekly: float, joining_week_volume: float,
                 units: str) -> dict:
-    """Honest feasibility check — never silently generate an unsafe ramp."""
+    """Honest feasibility check — never silently prescribe an unsafe ramp."""
     notes, verdict = [], "realistic"
     proj = fitness.get("projected_full_s" if distance_type == "full"
                        else "projected_half_s")
@@ -112,32 +154,31 @@ def assess_goal(fitness: dict, goal_time_s: int | None, distance_type: str,
         notes.append("No recent quality efforts to project fitness from — goal "
                      "feasibility unknown. The plan uses goal pace conservatively.")
 
-    # 10% rule: can we reach the needed peak volume without unsafe ramping?
-    if avg_weekly > 0 and peak_weekly_needed > avg_weekly:
-        safe_weeks = 0
-        v = avg_weekly
-        build_weeks = max(weeks_available - TAPER_WEEKS[distance_type], 1)
-        while v < peak_weekly_needed and safe_weeks < 60:
-            v *= 1.10
-            safe_weeks += 1
-        if safe_weeks > build_weeks:
-            if verdict == "realistic":
-                verdict = "stretch"
-            notes.append(
-                f"Reaching the plan's peak volume (~{peak_weekly_needed:.0f} {units}/wk) "
-                f"from the current ~{avg_weekly:.0f} {units}/wk within the 10% weekly "
-                f"increase guideline needs ~{safe_weeks} build weeks but only "
-                f"{build_weeks} are available. The plan caps weekly growth at 10%, so "
-                f"peak volume has been reduced accordingly.")
+    # 10% guideline: is the week you're joining at a big jump from current volume?
+    if avg_weekly > 0 and joining_week_volume > avg_weekly * 1.25:
+        if verdict == "realistic":
+            verdict = "stretch"
+        jump = (joining_week_volume / avg_weekly - 1) * 100
+        notes.append(
+            f"The program week you are joining calls for ~{joining_week_volume:.0f} "
+            f"{units}/wk vs your current ~{avg_weekly:.0f} {units}/wk (+{jump:.0f}%). "
+            f"That exceeds the 10% weekly increase guideline — treat the first weeks "
+            f"as targets to build toward, and let the next refresh re-plan around "
+            f"what you actually run.")
     return {"verdict": verdict, "notes": notes}
 
+
+# ---------------------------------------------------------------- generate
 
 def generate_plan(race_cfg: dict, fitness: dict, weekly: list[dict],
                   long_runs: list[dict], today: date | None = None) -> dict:
     today = today or date.today()
+    catalog = load_catalog()
     race = race_cfg.get("race", {})
     prefs = race_cfg.get("preferences", {})
     units = prefs.get("units", "miles")
+    to_units = KM_PER_MILE if units == "km" else 1.0   # catalog is miles
+    to_miles = 1.0 / to_units
     distance_type = (race.get("distance_type") or "half").lower()
     if distance_type not in ("half", "full"):
         distance_type = "half"
@@ -154,117 +195,82 @@ def generate_plan(race_cfg: dict, fitness: dict, weekly: list[dict],
 
     goal_time_s = parse_time_hms(race.get("target_time") or "")
 
-    recent = [w["distance"] for w in weekly[-4:] if w["distance"] > 0] or [0]
+    # exclude the current in-progress week from the volume average
+    recent = [w["distance"] for w in weekly[:-1][-4:] if w["distance"] > 0] or [0]
     avg_weekly = sum(recent) / len(recent)
     recent_long = max((l["distance"] for l in long_runs[-6:]), default=0)
 
-    tier, tier_reason = select_tier(distance_type, avg_weekly, recent_long, units)
-    t = TIERS[distance_type][tier]
-    scale = KM_PER_MILE if units == "km" else 1.0
+    days_until = (race_date - today).days
+    weeks_available = max(-(-days_until // 7), 1)  # ceil
+
+    plan_def, reason = select_plan(
+        catalog, distance_type, avg_weekly * to_miles, recent_long * to_miles,
+        weeks_available, prefs.get("plan_id"))
     paces = training_paces(fitness, goal_time_s, distance_type, units)
 
-    days_until = (race_date - today).days
-    weeks_available = max(days_until // 7, 1)
-    std_weeks = t["weeks"]
-    taper = TAPER_WEEKS[distance_type]
-    compressed = weeks_available < std_weeks
+    plan_days = plan_def["days"]
+    n = len(plan_days)
+    plan_start = race_date - timedelta(days=n - 1)  # final plan day = race day
     compromises: list[str] = []
-
-    # Long-run schedule: progress from current ability to peak, step-back
-    # every 3rd week, then taper. Compression prioritizes long-run
-    # progression + taper and drops early base weeks.
-    peak_long = t["peak_long"] * scale
-    start_long = max(min(recent_long if recent_long > 0 else 4 * scale, peak_long), 3 * scale)
-    build_weeks = max(weeks_available - taper, 1)
+    compressed = plan_start < today
     if compressed:
+        join_week = (today - plan_start).days // 7 + 1
         compromises.append(
-            f"Only {weeks_available} weeks until race day vs the standard "
-            f"{std_weeks}-week {tier} program — early base weeks were dropped; "
-            f"long-run progression and the {taper}-week taper are preserved.")
-
-    long_sched: list[float] = []
-    lr = start_long
-    growth = (peak_long - start_long) / max(build_weeks - 1, 1)
-    growth = min(growth, 2.0 * scale)  # never jump the long run > 2 mi/wk
-    if growth * (build_weeks - 1) + start_long < peak_long - 0.5:
-        achieved = start_long + growth * (build_weeks - 1)
+            f"{weeks_available} weeks remain but {plan_def['name']} is "
+            f"{plan_def['weeks']} weeks — you join at week {join_week}; the "
+            f"earlier base weeks are dropped while the peak weeks and taper "
+            f"are preserved as published.")
+    base_filler = plan_start > today
+    if base_filler:
         compromises.append(
-            f"Peak long run reduced to {achieved:.0f} {units} (standard: "
-            f"{peak_long:.0f}) to respect safe weekly progression in the time available.")
-        peak_long = achieved
-    for w in range(build_weeks):
-        stepback = (w % 3 == 2) and w < build_weeks - 1
-        this = min(lr, peak_long)
-        long_sched.append(round(this * (0.75 if stepback else 1.0), 1))
-        if not stepback:
-            lr += growth
+            f"More time available ({weeks_available} weeks) than the "
+            f"{plan_def['weeks']}-week program — days before "
+            f"{plan_start.isoformat()} repeat the program's week 1 as a base "
+            f"phase.")
 
-    # Taper long runs
-    if distance_type == "full":
-        taper_longs = [12 * scale, 8 * scale, 0][:taper]
-    else:
-        taper_longs = [8 * scale, 0][:taper]
-    long_sched += [round(x, 1) for x in taper_longs[: weeks_available - build_weeks] or []]
-    while len(long_sched) < weeks_available:
-        long_sched.append(0)
-
-    # Weekly volume target: long run is ~40-50% of weekly volume, capped by 10% growth
-    prev_vol = max(avg_weekly, 6 * scale)
     days = []
-    long_day_idx = DOW.index(prefs.get("long_run_day", "sunday"))
-    quality = t["quality"]
-    run_days = min(t["run_days"], int(prefs.get("max_run_days_per_week", 5)))
+    d = today
+    while d <= race_date:
+        offset = (d - plan_start).days
+        if offset < 0:
+            src = plan_days[offset % 7]        # week-1 pattern, weekday-aligned
+            week_no = 0
+            phase = "base"
+        else:
+            src = plan_days[offset]
+            week_no = src["week"]
+            phase = "plan"
+        wtype = src["type"]
+        dist = src["distance"]
+        if dist is not None:
+            dist = round(dist * to_units, 1)
+        pace_key = TYPE_PACE.get(wtype)
+        pace_s = paces.get(pace_key) if pace_key else None
+        desc = src["description"]
+        if phase == "base" and wtype == "race":   # never duplicate race day
+            wtype, dist, pace_s, desc = "rest", None, None, "Rest"
+        if wtype == "race":
+            desc = (f"RACE DAY — {race.get('name') or plan_def['name']}"
+                    + (f", goal {fmt_hms(goal_time_s)}" if goal_time_s else ""))
+        days.append({
+            "date": d.isoformat(), "week": week_no, "dow": DOW[d.weekday()],
+            "type": wtype, "distance": dist,
+            "pace_s": int(pace_s) if pace_s else None,
+            "pace": fmt_pace(pace_s) if pace_s else "",
+            "description": desc, "phase": phase, "status": "planned",
+        })
+        d += timedelta(days=1)
 
-    week_templates = _week_template(run_days, long_day_idx, quality)
-
-    cur = today
-    week_num = 0
-    while cur < race_date:
-        week_start_d = cur - timedelta(days=cur.weekday())
-        week_idx = ((week_start_d - (today - timedelta(days=today.weekday()))).days) // 7
-        week_idx = min(week_idx, weeks_available - 1)
-        long_dist = long_sched[week_idx]
-        in_taper = week_idx >= build_weeks
-        vol_target = min(prev_vol * 1.10, max(long_dist / 0.45, long_dist + 4 * scale))
-        if in_taper:
-            vol_target = prev_vol * (0.7 if week_idx == build_weeks else 0.5)
-        other_total = max(vol_target - long_dist, 0)
-
-        spec = week_templates[cur.weekday()]
-        day = _make_day(cur, spec, long_dist, other_total, run_days, paces, units,
-                        in_taper, week_idx + 1)
-        # Race week: final days are short shakeouts
-        if (race_date - cur).days <= 3 and day["type"] not in ("rest", "race"):
-            day.update(type="easy", distance=round(2 * scale, 1),
-                       description="Shakeout — very easy, stay loose")
-        days.append(day)
-        if cur.weekday() == 6:  # completed a calendar week
-            week_dists = [d["distance"] or 0 for d in days if d["week"] == week_idx + 1]
-            prev_vol = max(sum(week_dists), prev_vol * 0.9)
-            week_num = week_idx + 1
-        cur += timedelta(days=1)
-
-    race_dist = (FULL_DIST_MI if distance_type == "full" else HALF_DIST_MI) * scale
-    days.append({
-        "date": race_date.isoformat(), "week": weeks_available, "dow": DOW[race_date.weekday()],
-        "type": "race", "distance": round(race_dist, 1),
-        "pace_s": paces.get("goal_pace") or paces["race_pace"],
-        "pace": fmt_pace(paces.get("goal_pace") or paces["race_pace"]),
-        "description": f"RACE DAY — {race.get('name') or distance_type + ' marathon'}"
-                       + (f", goal {fmt_hms(goal_time_s)}" if goal_time_s else ""),
-        "status": "planned",
-    })
-
-    peak_weekly_needed = max((long_sched[i] / 0.45 if long_sched[i] else 0)
-                             for i in range(len(long_sched)))
+    joining_offset = max((today - plan_start).days, 0)
+    joining_week_vol = plan_def["weekly_volume"][min(joining_offset // 7,
+                                                     plan_def["weeks"] - 1)] * to_units
     goal = assess_goal(fitness, goal_time_s, distance_type, avg_weekly,
-                       peak_weekly_needed, weeks_available, units)
-    if compressed:
-        goal["notes"] += compromises
+                       joining_week_vol, units)
+    goal["notes"] += compromises
 
     return {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
-        "source": "deterministic",
+        "source": "catalog",
         "race": {
             "name": race.get("name") or "",
             "distance_type": distance_type,
@@ -273,8 +279,10 @@ def generate_plan(race_cfg: dict, fitness: dict, weekly: list[dict],
             "target_time_s": goal_time_s,
         },
         "units": units,
-        "tier": tier,
-        "tier_reason": tier_reason,
+        "plan_id": plan_def["id"],
+        "tier": plan_def["name"],
+        "tier_reason": reason,
+        "plan_attribution": catalog["license"],
         "weeks": weeks_available,
         "compressed": compressed,
         "compromises": compromises,
@@ -283,70 +291,3 @@ def generate_plan(race_cfg: dict, fitness: dict, weekly: list[dict],
         "goal_assessment": goal,
         "days": days,
     }
-
-
-def _week_template(run_days: int, long_day: int, quality: list[str]) -> dict[int, str]:
-    """Map weekday index -> workout slot, Higdon-style around the long-run day."""
-    tmpl = {i: "rest" for i in range(7)}
-    tmpl[long_day] = "long"
-    before, after = (long_day - 1) % 7, (long_day + 1) % 7
-    tmpl[after] = "rest" if run_days < 6 else "recovery"
-    slots = [d for d in range(7) if tmpl[d] == "rest" and d != after]
-    # order: mid-week first for quality, spread easy runs
-    order = sorted(slots, key=lambda d: abs(d - 2))
-    remaining = run_days - 1
-    q = list(quality)
-    for d in order:
-        if remaining <= 0:
-            break
-        if q and abs((d - long_day) % 7) not in (1, 6):
-            tmpl[d] = q.pop(0)
-        else:
-            tmpl[d] = "easy"
-        remaining -= 1
-    if run_days <= 4:
-        tmpl[before] = "cross" if tmpl[before] == "rest" else tmpl[before]
-    return tmpl
-
-
-def _make_day(d: date, slot: str, long_dist: float, other_total: float,
-              run_days: int, paces: dict, units: str, in_taper: bool,
-              week: int) -> dict:
-    per = max(other_total / max(run_days - 1, 1), 2.0)
-    base = {"date": d.isoformat(), "week": week, "dow": DOW[d.weekday()],
-            "status": "planned"}
-    u = units
-    if slot == "long":
-        return {**base, "type": "long", "distance": long_dist or None,
-                "pace_s": paces["long"], "pace": fmt_pace(paces["long"]),
-                "description": f"Long run — conversational effort"
-                if long_dist else "Rest (no long run scheduled)"} \
-            if long_dist else {**base, "type": "rest", "distance": None, "pace_s": None,
-                               "pace": "", "description": "Rest"}
-    if slot == "rest":
-        return {**base, "type": "rest", "distance": None, "pace_s": None, "pace": "",
-                "description": "Rest — recovery is training"}
-    if slot == "cross":
-        return {**base, "type": "cross", "distance": None, "pace_s": None, "pace": "",
-                "description": "Cross-train 30–60 min (bike, swim, strength) or rest"}
-    if slot == "recovery":
-        return {**base, "type": "easy", "distance": round(min(per * 0.7, 4), 1),
-                "pace_s": paces["easy"], "pace": fmt_pace(paces["easy"]),
-                "description": "Recovery jog — truly easy"}
-    if slot == "tempo" and not in_taper:
-        return {**base, "type": "tempo", "distance": round(per, 1),
-                "pace_s": paces["tempo"], "pace": fmt_pace(paces["tempo"]),
-                "description": f"Tempo — 10-15 min easy, then sustained comfortably-hard "
-                               f"@ {fmt_pace(paces['tempo'])}/{u[:2]}, cool down"}
-    if slot == "intervals" and not in_taper:
-        return {**base, "type": "intervals", "distance": round(per, 1),
-                "pace_s": paces["intervals"], "pace": fmt_pace(paces["intervals"]),
-                "description": f"Intervals — e.g. 6×800m @ {fmt_pace(paces['intervals'])}"
-                               f"/{u[:2]} with equal jog recovery"}
-    if slot == "race_pace" and not in_taper:
-        return {**base, "type": "race_pace", "distance": round(per, 1),
-                "pace_s": paces["race_pace"], "pace": fmt_pace(paces["race_pace"]),
-                "description": f"Goal-pace run @ {fmt_pace(paces['race_pace'])}/{u[:2]}"}
-    return {**base, "type": "easy", "distance": round(per, 1),
-            "pace_s": paces["easy"], "pace": fmt_pace(paces["easy"]),
-            "description": "Easy run — conversational"}

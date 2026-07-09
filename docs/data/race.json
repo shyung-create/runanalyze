@@ -44,12 +44,13 @@
   "projected_time": "1:51:48",
   "projected_time_s": 6708,
   "goal_assessment": {
-    "verdict": "realistic",
+    "verdict": "stretch",
     "notes": [
       "Current fitness already projects 1:51:48 \u2014 faster than the 1:55:00 goal. Goal is realistic.",
-      "Only 10 weeks until race day vs the standard 12-week novice2 program \u2014 early base weeks were dropped; long-run progression and the 2-week taper are preserved."
+      "The program week you are joining calls for ~46 miles/wk vs your current ~22 miles/wk (+111%). That exceeds the 10% weekly increase guideline \u2014 treat the first weeks as targets to build toward, and let the next refresh re-plan around what you actually run.",
+      "10 weeks remain but Hansons Advanced Half Marathon is 18 weeks \u2014 you join at week 8; the earlier base weeks are dropped while the peak weeks and taper are preserved as published."
     ]
   },
-  "tier": "novice2",
-  "tier_reason": "Recent average weekly volume 18 miles and longest recent run 11.7 miles meet the entry requirements for Novice 2"
+  "tier": "Hansons Advanced Half Marathon",
+  "tier_reason": "Recent volume ~22 mi/wk is below every program's entry demands for the time remaining \u2014 using the gentlest available (41 mi at the joining week); build carefully and let refreshes adjust"
 }
