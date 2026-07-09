@@ -1,0 +1,12 @@
+# Target race configuration — edit me, then run `python pipeline/refresh.py`
+race:
+  name: ""              # target race name
+  distance_type: ""     # "half" or "full"
+  race_date: ""         # YYYY-MM-DD
+  target_time: ""       # HH:MM:SS goal finish time
+
+# Athlete / pipeline preferences
+preferences:
+  units: "miles"        # "miles" or "km" — must match your GarminDB measurement setting
+  long_run_day: "sunday"   # day of week for the weekly long run
+  max_run_days_per_week: 5

@@ -1,0 +1,1619 @@
+{
+  "units": "miles",
+  "runs": [
+    {
+      "date": "2026-05-10",
+      "name": "Long run",
+      "distance": 9.21,
+      "duration_s": 5339,
+      "avg_pace_s": 579,
+      "avg_hr": 146,
+      "max_hr": 161,
+      "cadence_spm": 173,
+      "ascent": 403,
+      "training_effect": 2.9,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 577,
+          "avg_hr": 143
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 582,
+          "avg_hr": 144
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 583,
+          "avg_hr": 147
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 573,
+          "avg_hr": 148
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 577,
+          "avg_hr": 145
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 579,
+          "avg_hr": 148
+        },
+        {
+          "lap": 7,
+          "distance": 1.0,
+          "time_s": 584,
+          "avg_hr": 149
+        },
+        {
+          "lap": 8,
+          "distance": 1.0,
+          "time_s": 581,
+          "avg_hr": 147
+        },
+        {
+          "lap": 9,
+          "distance": 1.0,
+          "time_s": 578,
+          "avg_hr": 149
+        }
+      ]
+    },
+    {
+      "date": "2026-05-12",
+      "name": "Easy run",
+      "distance": 4.91,
+      "duration_s": 2784,
+      "avg_pace_s": 566,
+      "avg_hr": 142,
+      "max_hr": 157,
+      "cadence_spm": 171,
+      "ascent": 181,
+      "training_effect": 2.9,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 562,
+          "avg_hr": 144
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 560,
+          "avg_hr": 141
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 566,
+          "avg_hr": 142
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 559,
+          "avg_hr": 140
+        }
+      ]
+    },
+    {
+      "date": "2026-05-14",
+      "name": "Tempo run",
+      "distance": 5.66,
+      "duration_s": 2837,
+      "avg_pace_s": 501,
+      "avg_hr": 166,
+      "max_hr": 181,
+      "cadence_spm": 171,
+      "ascent": 234,
+      "training_effect": 2.9,
+      "anaerobic_training_effect": 1.2,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 504,
+          "avg_hr": 163
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 508,
+          "avg_hr": 167
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 501,
+          "avg_hr": 167
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 503,
+          "avg_hr": 168
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 495,
+          "avg_hr": 167
+        }
+      ]
+    },
+    {
+      "date": "2026-05-16",
+      "name": "Easy run",
+      "distance": 4.96,
+      "duration_s": 2808,
+      "avg_pace_s": 566,
+      "avg_hr": 142,
+      "max_hr": 157,
+      "cadence_spm": 172,
+      "ascent": 137,
+      "training_effect": 2.9,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 570,
+          "avg_hr": 143
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 562,
+          "avg_hr": 140
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 561,
+          "avg_hr": 142
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 570,
+          "avg_hr": 141
+        }
+      ]
+    },
+    {
+      "date": "2026-05-17",
+      "name": "Long run",
+      "distance": 10.19,
+      "duration_s": 5878,
+      "avg_pace_s": 576,
+      "avg_hr": 151,
+      "max_hr": 166,
+      "cadence_spm": 172,
+      "ascent": 239,
+      "training_effect": 2.9,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 570,
+          "avg_hr": 150
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 571,
+          "avg_hr": 152
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 573,
+          "avg_hr": 152
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 579,
+          "avg_hr": 154
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 576,
+          "avg_hr": 152
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 576,
+          "avg_hr": 149
+        },
+        {
+          "lap": 7,
+          "distance": 1.0,
+          "time_s": 569,
+          "avg_hr": 151
+        },
+        {
+          "lap": 8,
+          "distance": 1.0,
+          "time_s": 581,
+          "avg_hr": 149
+        },
+        {
+          "lap": 9,
+          "distance": 1.0,
+          "time_s": 578,
+          "avg_hr": 149
+        },
+        {
+          "lap": 10,
+          "distance": 1.0,
+          "time_s": 577,
+          "avg_hr": 154
+        }
+      ]
+    },
+    {
+      "date": "2026-05-19",
+      "name": "Easy run",
+      "distance": 5.11,
+      "duration_s": 2871,
+      "avg_pace_s": 562,
+      "avg_hr": 145,
+      "max_hr": 160,
+      "cadence_spm": 170,
+      "ascent": 156,
+      "training_effect": 3.0,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 561,
+          "avg_hr": 148
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 570,
+          "avg_hr": 146
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 564,
+          "avg_hr": 148
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 557,
+          "avg_hr": 146
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 556,
+          "avg_hr": 143
+        }
+      ]
+    },
+    {
+      "date": "2026-05-23",
+      "name": "Easy run",
+      "distance": 5.09,
+      "duration_s": 2864,
+      "avg_pace_s": 562,
+      "avg_hr": 140,
+      "max_hr": 155,
+      "cadence_spm": 170,
+      "ascent": 184,
+      "training_effect": 3.0,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 565,
+          "avg_hr": 142
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 569,
+          "avg_hr": 141
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 564,
+          "avg_hr": 140
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 563,
+          "avg_hr": 143
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 567,
+          "avg_hr": 138
+        }
+      ]
+    },
+    {
+      "date": "2026-05-24",
+      "name": "Long run",
+      "distance": 10.5,
+      "duration_s": 6009,
+      "avg_pace_s": 572,
+      "avg_hr": 148,
+      "max_hr": 163,
+      "cadence_spm": 170,
+      "ascent": 196,
+      "training_effect": 3.0,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 575,
+          "avg_hr": 151
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 572,
+          "avg_hr": 146
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 565,
+          "avg_hr": 147
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 568,
+          "avg_hr": 151
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 577,
+          "avg_hr": 151
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 580,
+          "avg_hr": 147
+        },
+        {
+          "lap": 7,
+          "distance": 1.0,
+          "time_s": 565,
+          "avg_hr": 148
+        },
+        {
+          "lap": 8,
+          "distance": 1.0,
+          "time_s": 574,
+          "avg_hr": 146
+        },
+        {
+          "lap": 9,
+          "distance": 1.0,
+          "time_s": 573,
+          "avg_hr": 148
+        },
+        {
+          "lap": 10,
+          "distance": 1.0,
+          "time_s": 565,
+          "avg_hr": 147
+        }
+      ]
+    },
+    {
+      "date": "2026-05-26",
+      "name": "Easy run",
+      "distance": 4.95,
+      "duration_s": 2834,
+      "avg_pace_s": 572,
+      "avg_hr": 144,
+      "max_hr": 159,
+      "cadence_spm": 170,
+      "ascent": 214,
+      "training_effect": 3.1,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 577,
+          "avg_hr": 144
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 569,
+          "avg_hr": 147
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 570,
+          "avg_hr": 147
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 574,
+          "avg_hr": 144
+        }
+      ]
+    },
+    {
+      "date": "2026-05-28",
+      "name": "Tempo run",
+      "distance": 5.84,
+      "duration_s": 2963,
+      "avg_pace_s": 507,
+      "avg_hr": 162,
+      "max_hr": 177,
+      "cadence_spm": 173,
+      "ascent": 197,
+      "training_effect": 3.1,
+      "anaerobic_training_effect": 1.2,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 511,
+          "avg_hr": 163
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 513,
+          "avg_hr": 164
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 501,
+          "avg_hr": 163
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 502,
+          "avg_hr": 163
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 507,
+          "avg_hr": 165
+        }
+      ]
+    },
+    {
+      "date": "2026-05-30",
+      "name": "Easy run",
+      "distance": 5.09,
+      "duration_s": 2910,
+      "avg_pace_s": 572,
+      "avg_hr": 139,
+      "max_hr": 154,
+      "cadence_spm": 173,
+      "ascent": 152,
+      "training_effect": 3.1,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 575,
+          "avg_hr": 137
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 577,
+          "avg_hr": 137
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 572,
+          "avg_hr": 141
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 572,
+          "avg_hr": 141
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 568,
+          "avg_hr": 138
+        }
+      ]
+    },
+    {
+      "date": "2026-05-31",
+      "name": "Long run",
+      "distance": 10.54,
+      "duration_s": 6135,
+      "avg_pace_s": 582,
+      "avg_hr": 150,
+      "max_hr": 165,
+      "cadence_spm": 170,
+      "ascent": 252,
+      "training_effect": 3.1,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 583,
+          "avg_hr": 150
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 576,
+          "avg_hr": 149
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 582,
+          "avg_hr": 150
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 579,
+          "avg_hr": 151
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 583,
+          "avg_hr": 152
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 574,
+          "avg_hr": 151
+        },
+        {
+          "lap": 7,
+          "distance": 1.0,
+          "time_s": 587,
+          "avg_hr": 151
+        },
+        {
+          "lap": 8,
+          "distance": 1.0,
+          "time_s": 587,
+          "avg_hr": 150
+        },
+        {
+          "lap": 9,
+          "distance": 1.0,
+          "time_s": 574,
+          "avg_hr": 151
+        },
+        {
+          "lap": 10,
+          "distance": 1.0,
+          "time_s": 588,
+          "avg_hr": 150
+        }
+      ]
+    },
+    {
+      "date": "2026-06-02",
+      "name": "Easy run",
+      "distance": 5.47,
+      "duration_s": 3108,
+      "avg_pace_s": 568,
+      "avg_hr": 142,
+      "max_hr": 157,
+      "cadence_spm": 172,
+      "ascent": 107,
+      "training_effect": 3.1,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 567,
+          "avg_hr": 141
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 571,
+          "avg_hr": 144
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 573,
+          "avg_hr": 141
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 565,
+          "avg_hr": 143
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 573,
+          "avg_hr": 139
+        }
+      ]
+    },
+    {
+      "date": "2026-06-04",
+      "name": "Tempo run",
+      "distance": 5.94,
+      "duration_s": 2986,
+      "avg_pace_s": 503,
+      "avg_hr": 167,
+      "max_hr": 182,
+      "cadence_spm": 174,
+      "ascent": 222,
+      "training_effect": 3.1,
+      "anaerobic_training_effect": 1.2,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 501,
+          "avg_hr": 168
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 508,
+          "avg_hr": 168
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 509,
+          "avg_hr": 169
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 499,
+          "avg_hr": 165
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 503,
+          "avg_hr": 169
+        }
+      ]
+    },
+    {
+      "date": "2026-06-06",
+      "name": "Easy run",
+      "distance": 4.83,
+      "duration_s": 2742,
+      "avg_pace_s": 568,
+      "avg_hr": 146,
+      "max_hr": 161,
+      "cadence_spm": 172,
+      "ascent": 107,
+      "training_effect": 3.1,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 574,
+          "avg_hr": 146
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 564,
+          "avg_hr": 143
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 572,
+          "avg_hr": 147
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 562,
+          "avg_hr": 145
+        }
+      ]
+    },
+    {
+      "date": "2026-06-07",
+      "name": "Long run",
+      "distance": 10.95,
+      "duration_s": 6330,
+      "avg_pace_s": 578,
+      "avg_hr": 147,
+      "max_hr": 162,
+      "cadence_spm": 170,
+      "ascent": 441,
+      "training_effect": 3.1,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 573,
+          "avg_hr": 147
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 573,
+          "avg_hr": 147
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 585,
+          "avg_hr": 150
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 580,
+          "avg_hr": 147
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 580,
+          "avg_hr": 144
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 579,
+          "avg_hr": 149
+        },
+        {
+          "lap": 7,
+          "distance": 1.0,
+          "time_s": 574,
+          "avg_hr": 148
+        },
+        {
+          "lap": 8,
+          "distance": 1.0,
+          "time_s": 575,
+          "avg_hr": 148
+        },
+        {
+          "lap": 9,
+          "distance": 1.0,
+          "time_s": 580,
+          "avg_hr": 148
+        },
+        {
+          "lap": 10,
+          "distance": 1.0,
+          "time_s": 583,
+          "avg_hr": 149
+        }
+      ]
+    },
+    {
+      "date": "2026-06-09",
+      "name": "Easy run",
+      "distance": 5.32,
+      "duration_s": 3025,
+      "avg_pace_s": 569,
+      "avg_hr": 143,
+      "max_hr": 158,
+      "cadence_spm": 173,
+      "ascent": 94,
+      "training_effect": 3.2,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 565,
+          "avg_hr": 141
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 563,
+          "avg_hr": 146
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 569,
+          "avg_hr": 145
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 565,
+          "avg_hr": 143
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 574,
+          "avg_hr": 142
+        }
+      ]
+    },
+    {
+      "date": "2026-06-11",
+      "name": "Tempo run",
+      "distance": 6.03,
+      "duration_s": 3040,
+      "avg_pace_s": 504,
+      "avg_hr": 167,
+      "max_hr": 182,
+      "cadence_spm": 169,
+      "ascent": 265,
+      "training_effect": 3.2,
+      "anaerobic_training_effect": 1.2,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 509,
+          "avg_hr": 170
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 511,
+          "avg_hr": 166
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 508,
+          "avg_hr": 167
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 503,
+          "avg_hr": 168
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 505,
+          "avg_hr": 170
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 497,
+          "avg_hr": 164
+        }
+      ]
+    },
+    {
+      "date": "2026-06-13",
+      "name": "Easy run",
+      "distance": 5.44,
+      "duration_s": 3094,
+      "avg_pace_s": 569,
+      "avg_hr": 147,
+      "max_hr": 162,
+      "cadence_spm": 170,
+      "ascent": 91,
+      "training_effect": 3.2,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 574,
+          "avg_hr": 145
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 567,
+          "avg_hr": 149
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 566,
+          "avg_hr": 144
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 575,
+          "avg_hr": 146
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 571,
+          "avg_hr": 149
+        }
+      ]
+    },
+    {
+      "date": "2026-06-14",
+      "name": "Long run",
+      "distance": 11.34,
+      "duration_s": 6565,
+      "avg_pace_s": 579,
+      "avg_hr": 145,
+      "max_hr": 160,
+      "cadence_spm": 171,
+      "ascent": 203,
+      "training_effect": 3.2,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 579,
+          "avg_hr": 147
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 571,
+          "avg_hr": 144
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 586,
+          "avg_hr": 142
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 582,
+          "avg_hr": 148
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 576,
+          "avg_hr": 143
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 573,
+          "avg_hr": 144
+        },
+        {
+          "lap": 7,
+          "distance": 1.0,
+          "time_s": 581,
+          "avg_hr": 145
+        },
+        {
+          "lap": 8,
+          "distance": 1.0,
+          "time_s": 571,
+          "avg_hr": 143
+        },
+        {
+          "lap": 9,
+          "distance": 1.0,
+          "time_s": 573,
+          "avg_hr": 142
+        },
+        {
+          "lap": 10,
+          "distance": 1.0,
+          "time_s": 583,
+          "avg_hr": 143
+        },
+        {
+          "lap": 11,
+          "distance": 1.0,
+          "time_s": 585,
+          "avg_hr": 143
+        }
+      ]
+    },
+    {
+      "date": "2026-06-18",
+      "name": "Tempo run",
+      "distance": 6.12,
+      "duration_s": 3111,
+      "avg_pace_s": 508,
+      "avg_hr": 161,
+      "max_hr": 176,
+      "cadence_spm": 169,
+      "ascent": 137,
+      "training_effect": 3.2,
+      "anaerobic_training_effect": 1.2,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 502,
+          "avg_hr": 158
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 500,
+          "avg_hr": 159
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 505,
+          "avg_hr": 158
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 511,
+          "avg_hr": 162
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 507,
+          "avg_hr": 161
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 501,
+          "avg_hr": 163
+        }
+      ]
+    },
+    {
+      "date": "2026-06-21",
+      "name": "Long run",
+      "distance": 11.74,
+      "duration_s": 6845,
+      "avg_pace_s": 583,
+      "avg_hr": 148,
+      "max_hr": 163,
+      "cadence_spm": 171,
+      "ascent": 515,
+      "training_effect": 3.2,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 575,
+          "avg_hr": 147
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 585,
+          "avg_hr": 150
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 576,
+          "avg_hr": 148
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 576,
+          "avg_hr": 148
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 583,
+          "avg_hr": 151
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 583,
+          "avg_hr": 148
+        },
+        {
+          "lap": 7,
+          "distance": 1.0,
+          "time_s": 576,
+          "avg_hr": 150
+        },
+        {
+          "lap": 8,
+          "distance": 1.0,
+          "time_s": 585,
+          "avg_hr": 149
+        },
+        {
+          "lap": 9,
+          "distance": 1.0,
+          "time_s": 578,
+          "avg_hr": 146
+        },
+        {
+          "lap": 10,
+          "distance": 1.0,
+          "time_s": 580,
+          "avg_hr": 147
+        },
+        {
+          "lap": 11,
+          "distance": 1.0,
+          "time_s": 576,
+          "avg_hr": 149
+        }
+      ]
+    },
+    {
+      "date": "2026-06-23",
+      "name": "Easy run",
+      "distance": 6.05,
+      "duration_s": 3394,
+      "avg_pace_s": 561,
+      "avg_hr": 138,
+      "max_hr": 153,
+      "cadence_spm": 173,
+      "ascent": 107,
+      "training_effect": 3.3,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 554,
+          "avg_hr": 140
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 562,
+          "avg_hr": 139
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 558,
+          "avg_hr": 137
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 563,
+          "avg_hr": 140
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 564,
+          "avg_hr": 139
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 558,
+          "avg_hr": 136
+        }
+      ]
+    },
+    {
+      "date": "2026-06-25",
+      "name": "Tempo run",
+      "distance": 6.22,
+      "duration_s": 3085,
+      "avg_pace_s": 496,
+      "avg_hr": 161,
+      "max_hr": 176,
+      "cadence_spm": 169,
+      "ascent": 250,
+      "training_effect": 3.3,
+      "anaerobic_training_effect": 1.2,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 494,
+          "avg_hr": 162
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 501,
+          "avg_hr": 164
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 501,
+          "avg_hr": 162
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 488,
+          "avg_hr": 163
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 492,
+          "avg_hr": 163
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 493,
+          "avg_hr": 158
+        }
+      ]
+    },
+    {
+      "date": "2026-06-27",
+      "name": "Easy run",
+      "distance": 5.69,
+      "duration_s": 3194,
+      "avg_pace_s": 561,
+      "avg_hr": 142,
+      "max_hr": 157,
+      "cadence_spm": 169,
+      "ascent": 193,
+      "training_effect": 3.3,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 553,
+          "avg_hr": 140
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 559,
+          "avg_hr": 141
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 564,
+          "avg_hr": 142
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 554,
+          "avg_hr": 139
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 563,
+          "avg_hr": 140
+        }
+      ]
+    },
+    {
+      "date": "2026-06-28",
+      "name": "Long run",
+      "distance": 11.64,
+      "duration_s": 6650,
+      "avg_pace_s": 571,
+      "avg_hr": 147,
+      "max_hr": 162,
+      "cadence_spm": 170,
+      "ascent": 438,
+      "training_effect": 3.3,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 565,
+          "avg_hr": 146
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 574,
+          "avg_hr": 148
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 563,
+          "avg_hr": 148
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 563,
+          "avg_hr": 145
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 565,
+          "avg_hr": 146
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 563,
+          "avg_hr": 145
+        },
+        {
+          "lap": 7,
+          "distance": 1.0,
+          "time_s": 569,
+          "avg_hr": 147
+        },
+        {
+          "lap": 8,
+          "distance": 1.0,
+          "time_s": 576,
+          "avg_hr": 144
+        },
+        {
+          "lap": 9,
+          "distance": 1.0,
+          "time_s": 577,
+          "avg_hr": 144
+        },
+        {
+          "lap": 10,
+          "distance": 1.0,
+          "time_s": 577,
+          "avg_hr": 147
+        },
+        {
+          "lap": 11,
+          "distance": 1.0,
+          "time_s": 572,
+          "avg_hr": 147
+        }
+      ]
+    },
+    {
+      "date": "2026-07-02",
+      "name": "Tempo run",
+      "distance": 6.31,
+      "duration_s": 3091,
+      "avg_pace_s": 489,
+      "avg_hr": 166,
+      "max_hr": 181,
+      "cadence_spm": 172,
+      "ascent": 252,
+      "training_effect": 3.4,
+      "anaerobic_training_effect": 1.2,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 496,
+          "avg_hr": 168
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 485,
+          "avg_hr": 166
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 488,
+          "avg_hr": 165
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 487,
+          "avg_hr": 166
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 483,
+          "avg_hr": 168
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 487,
+          "avg_hr": 168
+        }
+      ]
+    },
+    {
+      "date": "2026-07-04",
+      "name": "Easy run",
+      "distance": 5.49,
+      "duration_s": 3043,
+      "avg_pace_s": 554,
+      "avg_hr": 139,
+      "max_hr": 154,
+      "cadence_spm": 170,
+      "ascent": 181,
+      "training_effect": 3.4,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 558,
+          "avg_hr": 137
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 559,
+          "avg_hr": 140
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 558,
+          "avg_hr": 142
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 555,
+          "avg_hr": 140
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 560,
+          "avg_hr": 137
+        }
+      ]
+    },
+    {
+      "date": "2026-07-07",
+      "name": "Easy run",
+      "distance": 5.65,
+      "duration_s": 3164,
+      "avg_pace_s": 560,
+      "avg_hr": 138,
+      "max_hr": 153,
+      "cadence_spm": 172,
+      "ascent": 137,
+      "training_effect": 3.4,
+      "anaerobic_training_effect": 0.3,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 559,
+          "avg_hr": 140
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 553,
+          "avg_hr": 140
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 561,
+          "avg_hr": 138
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 560,
+          "avg_hr": 140
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 559,
+          "avg_hr": 139
+        }
+      ]
+    },
+    {
+      "date": "2026-07-09",
+      "name": "Tempo run",
+      "distance": 6.41,
+      "duration_s": 3171,
+      "avg_pace_s": 495,
+      "avg_hr": 163,
+      "max_hr": 178,
+      "cadence_spm": 169,
+      "ascent": 107,
+      "training_effect": 3.4,
+      "anaerobic_training_effect": 1.2,
+      "laps": [
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 488,
+          "avg_hr": 162
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 498,
+          "avg_hr": 161
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 491,
+          "avg_hr": 163
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 495,
+          "avg_hr": 163
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 491,
+          "avg_hr": 162
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 496,
+          "avg_hr": 164
+        }
+      ]
+    }
+  ]
+}
