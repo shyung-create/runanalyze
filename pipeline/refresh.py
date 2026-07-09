@@ -220,6 +220,13 @@ def main():
     result = garmin_extract.extract_runs()
     activities = result["activities"]
     log.info("Extracted %d running activities", len(activities))
+
+    db_units = garmin_extract.detect_garmindb_units()
+    if db_units != units:
+        log.info("GarminDB stores distances in %s but the dashboard displays "
+                 "%s — converting.", db_units, units)
+        garmin_extract.convert_units(activities, db_units, units)
+
     mx = metrics_mod.compute_all(activities, units, today)
     mx["missing_fields"] = result["missing_fields"]
 

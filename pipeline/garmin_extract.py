@@ -10,6 +10,7 @@ Run directly to print a summary of what was found:
 
 from __future__ import annotations
 
+import json
 import os
 import sqlite3
 from pathlib import Path
@@ -194,20 +195,57 @@ def _normalize(a: dict) -> None:
             pass
 
 
+def detect_garmindb_units() -> str:
+    """Best-effort detection of the units GarminDB itself stored distances
+    in, from its own config file (~/.GarminDb/GarminConnectConfig.json ->
+    settings.metric). This is independent of race_config.yaml's
+    preferences.units, which only controls dashboard *display* — without
+    this, a metric GarminDB install silently mislabels km as miles.
+    Override with GARMINDB_UNITS=km|miles in .env if detection is wrong
+    or the config lives elsewhere.
+    """
+    override = os.environ.get("GARMINDB_UNITS", "").strip().lower()
+    if override in ("km", "miles"):
+        return override
+    cfg_path = Path.home() / ".GarminDb" / "GarminConnectConfig.json"
+    try:
+        with open(cfg_path) as f:
+            cfg = json.load(f)
+        metric = cfg.get("settings", {}).get("metric")
+        if metric is not None:
+            return "km" if metric else "miles"
+    except (FileNotFoundError, json.JSONDecodeError, KeyError, OSError):
+        pass
+    log.warning("Could not detect GarminDB units from %s — assuming miles. "
+               "If your Garmin data is actually in km, set GARMINDB_UNITS=km "
+               "in .env (or fix settings.metric in that file).", cfg_path)
+    return "miles"
+
+
+FEET_PER_METER = 3.28084
+
+
 def convert_units(activities: list[dict], db_units: str, target_units: str) -> None:
-    """Convert distance/pace fields between km and miles, in place."""
+    """Convert distance/pace/elevation fields between km+m and miles+ft, in place."""
     if db_units == target_units:
         return
     f = 1 / KM_PER_MILE if target_units == "miles" else KM_PER_MILE
+    # elevation: db_units km implies meters stored, miles implies feet stored
+    ef = FEET_PER_METER if target_units == "miles" else (1 / FEET_PER_METER)
     for a in activities:
-        for key in ("distance",):
-            if a.get(key) is not None:
-                a[key] = float(a[key]) * f
+        if a.get("distance") is not None:
+            a["distance"] = float(a["distance"]) * f
         if a.get("avg_pace_s"):
             a["avg_pace_s"] = a["avg_pace_s"] / f
+        for key in ("ascent", "descent"):
+            if a.get(key) is not None:
+                a[key] = float(a[key]) * ef
         for lap in a.get("laps", []):
             if lap.get("distance") is not None:
                 lap["distance"] = float(lap["distance"]) * f
+            for key in ("ascent", "descent"):
+                if lap.get(key) is not None:
+                    lap[key] = float(lap[key]) * ef
 
 
 def main():
