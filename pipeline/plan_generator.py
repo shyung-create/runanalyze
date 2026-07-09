@@ -13,6 +13,7 @@ A valid plan is always produced even if the LLM refinement step fails.
 from __future__ import annotations
 
 import json
+import re
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -38,9 +39,27 @@ def load_catalog() -> dict:
 
 # ---------------------------------------------------------------- selection
 
+def localize_program_name(name: str, units: str) -> str:
+    """Published program titles (Pfitzinger) embed literal 'NN miles per
+    week' / 'NN to MM miles per week' figures — the catalog is miles-based
+    (its source publishes in miles), so convert those embedded numbers to km
+    for display when the dashboard is in km. Titles with no mileage figure
+    (Higdon, Hansons) pass through unchanged."""
+    if units != "km":
+        return name
+
+    def convert(m):
+        nums = [round(float(g) * KM_PER_MILE) for g in m.groups() if g]
+        return (f"{nums[0]} to {nums[1]} km per week" if len(nums) == 2
+                else f"{nums[0]} km per week")
+
+    return re.sub(r"(\d+(?:\.\d+)?)(?:\s*to\s*(\d+(?:\.\d+)?))?\s*miles per week",
+                  convert, name)
+
+
 def select_plan(catalog: dict, distance_type: str, avg_weekly_mi: float,
                 recent_long_mi: float, weeks_available: int,
-                plan_id: str | None = None) -> tuple[dict, str]:
+                plan_id: str | None = None, units: str = "miles") -> tuple[dict, str]:
     """Pick the most advanced program the athlete can absorb.
 
     Because a program is anchored to race day, less time than its full length
@@ -48,6 +67,10 @@ def select_plan(catalog: dict, distance_type: str, avg_weekly_mi: float,
     week* (volume within ~25% above current weekly volume, longest run no
     more than ~30% beyond the recent longest run), not week 1.
     Explicit override via preferences.plan_id in race_config.yaml.
+
+    avg_weekly_mi/recent_long_mi are always in miles (matching the catalog,
+    which is miles-based) — units only controls how the reason text is
+    formatted for display.
     """
     plans = [p for p in catalog["plans"] if p["distance_type"] == distance_type]
     if plan_id:
@@ -72,24 +95,28 @@ def select_plan(catalog: dict, distance_type: str, avg_weekly_mi: float,
         return (join_vol(p) <= max(avg_weekly_mi * 1.25, avg_weekly_mi + 3)
                 and join_long(p) <= max(recent_long_mi * 1.3, recent_long_mi + 1.5))
 
+    disp = (lambda mi: mi * KM_PER_MILE) if units == "km" else (lambda mi: mi)
+    vol_unit = "km/wk" if units == "km" else "mi/wk"
+    dist_unit = "km" if units == "km" else "mi"
+
     eligible = [p for p in plans if entry_ok(p)]
     if eligible:
         # the most demanding entry point the athlete still clears
         chosen = max(eligible, key=lambda p: (join_vol(p), p["peak_volume"]))
         wk = join_week(chosen) + 1
         reason = (
-            f"Recent volume ~{avg_weekly_mi:.0f} mi/wk with a {recent_long_mi:.1f} mi "
-            f"longest run clears the demands where you'd join this program "
-            f"(week {wk}: {join_vol(chosen):.0f} mi, longest run "
-            f"{join_long(chosen):.0f} mi) — the most advanced fit among "
-            f"{len(eligible)} eligible programs")
+            f"Recent volume ~{disp(avg_weekly_mi):.0f} {vol_unit} with a "
+            f"{disp(recent_long_mi):.1f} {dist_unit} longest run clears the demands "
+            f"where you'd join this program (week {wk}: {disp(join_vol(chosen)):.0f} "
+            f"{dist_unit}, longest run {disp(join_long(chosen)):.0f} {dist_unit}) — "
+            f"the most advanced fit among {len(eligible)} eligible programs")
     else:
         chosen = min(plans, key=join_vol)
         reason = (
-            f"Recent volume ~{avg_weekly_mi:.0f} mi/wk is below every program's "
-            f"entry demands for the time remaining — using the gentlest "
-            f"available ({join_vol(chosen):.0f} mi at the joining week); "
-            f"build carefully and let refreshes adjust")
+            f"Recent volume ~{disp(avg_weekly_mi):.0f} {vol_unit} is below every "
+            f"program's entry demands for the time remaining — using the gentlest "
+            f"available ({disp(join_vol(chosen)):.0f} {dist_unit} at the joining "
+            f"week); build carefully and let refreshes adjust")
     return chosen, reason
 
 
@@ -205,7 +232,8 @@ def generate_plan(race_cfg: dict, fitness: dict, weekly: list[dict],
 
     plan_def, reason = select_plan(
         catalog, distance_type, avg_weekly * to_miles, recent_long * to_miles,
-        weeks_available, prefs.get("plan_id"))
+        weeks_available, prefs.get("plan_id"), units)
+    plan_name = localize_program_name(plan_def["name"], units)
     paces = training_paces(fitness, goal_time_s, distance_type, units)
 
     plan_days = plan_def["days"]
@@ -216,7 +244,7 @@ def generate_plan(race_cfg: dict, fitness: dict, weekly: list[dict],
     if compressed:
         join_week = (today - plan_start).days // 7 + 1
         compromises.append(
-            f"{weeks_available} weeks remain but {plan_def['name']} is "
+            f"{weeks_available} weeks remain but {plan_name} is "
             f"{plan_def['weeks']} weeks — you join at week {join_week}; the "
             f"earlier base weeks are dropped while the peak weeks and taper "
             f"are preserved as published.")
@@ -250,7 +278,7 @@ def generate_plan(race_cfg: dict, fitness: dict, weekly: list[dict],
         if phase == "base" and wtype == "race":   # never duplicate race day
             wtype, dist, pace_s, desc = "rest", None, None, "Rest"
         if wtype == "race":
-            desc = (f"RACE DAY — {race.get('name') or plan_def['name']}"
+            desc = (f"RACE DAY — {race.get('name') or plan_name}"
                     + (f", goal {fmt_hms(goal_time_s)}" if goal_time_s else ""))
         days.append({
             "date": d.isoformat(), "week": week_no, "dow": DOW[d.weekday()],
@@ -280,7 +308,7 @@ def generate_plan(race_cfg: dict, fitness: dict, weekly: list[dict],
         },
         "units": units,
         "plan_id": plan_def["id"],
-        "tier": plan_def["name"],
+        "tier": plan_name,
         "tier_reason": reason,
         "plan_attribution": catalog["license"],
         "weeks": weeks_available,
