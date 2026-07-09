@@ -7,7 +7,7 @@ race:
 
 # Athlete / pipeline preferences
 preferences:
-  units: "miles"        # "miles" or "km" — must match your GarminDB measurement setting
+  units: "km"           # "miles" or "km" — must match your GarminDB measurement setting
   long_run_day: "sunday"   # day of week for the weekly long run
   max_run_days_per_week: 5
   # plan_id: ""         # optional — force a specific program instead of
