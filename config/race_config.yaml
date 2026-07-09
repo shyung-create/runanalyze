@@ -10,3 +10,12 @@ preferences:
   units: "miles"        # "miles" or "km" — must match your GarminDB measurement setting
   long_run_day: "sunday"   # day of week for the weekly long run
   max_run_days_per_week: 5
+  # plan_id: ""         # optional — force a specific program instead of
+  #                     # auto-selection. Valid ids (see pipeline/plans_catalog.json):
+  #                     # full: marathon_higdon_novice_1, marathon_higdon_novice_2,
+  #                     #   marathon_higdon_intermediate_1, marathon_higdon_intermediate_2,
+  #                     #   marathon_higdon_advanced_1, marathon_higdon_advanced_2,
+  #                     #   marathon_hansons_beginner, marathon_hansons_advanced,
+  #                     #   marathon_pfitzinger_12_55/12_70/12_85/18_55/18_70/18_85
+  #                     # half: half_hansons_beginner, half_hansons_advanced,
+  #                     #   half_pfitzinger_12_63, half_pfitzinger_12_84

@@ -112,15 +112,23 @@ Preview locally with `make serve` → http://localhost:8000.
 
 ## How the plan works
 
-- **Tier selection** — your recent weekly volume and longest run pick the
-  Higdon-style tier (Novice 1/2, Intermediate 1/2, Advanced) automatically;
-  the Overview panel states which and why.
-- **Structure** — weekly long-run progression toward the tier's peak,
-  step-back week every 3rd week, tier-appropriate midweek quality (tempo /
-  intervals / race-pace), and a 2-week (half) or 3-week (full) taper.
-- **Compression** — if race day is closer than the standard program length,
-  early base weeks are dropped first; the compromises are stated on the
-  dashboard.
+- **Real published programs** — the plan tables come from
+  [hoovercj/time-to-run](https://github.com/hoovercj/time-to-run) (MIT),
+  which encodes 18 programs: Hal Higdon marathon Novice 1/2, Intermediate
+  1/2, Advanced 1/2; Hansons beginner/advanced (marathon and half); and
+  Pfitzinger 12/18-week marathon (55/70/85 mi) and half (63/84 mi) schedules.
+  The tables are companions to the authors' books — support them.
+  Converted to `pipeline/plans_catalog.json` by `pipeline/convert_plans.py`.
+- **Program selection** — the program is anchored so its final day is race
+  day; with less time than its full length you join mid-program, so
+  selection tests your recent weekly volume and longest run against the
+  demands of the *joining week*, picking the most advanced program you
+  clear. Override with `preferences.plan_id` in `config/race_config.yaml`.
+- **Compression / extension** — joining mid-program drops the early base
+  weeks (peak weeks and taper stay as published); extra time repeats the
+  program's week 1 as a base phase. Either way the compromise is stated on
+  the dashboard, and pace targets from your current fitness are attached to
+  every workout.
 - **Goal assessment** — your target is sanity-checked against a Riegel
   projection from your best recent effort and the 10% weekly mileage
   guideline. An unrealistic goal is flagged, not silently ramped to.
