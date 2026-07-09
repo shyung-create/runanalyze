@@ -1,0 +1,842 @@
+{
+  "generated_at": "2026-07-09T20:22:52",
+  "source": "deterministic",
+  "race": {
+    "name": "Sample City Half Marathon",
+    "distance_type": "half",
+    "race_date": "2026-09-17",
+    "target_time": "1:55:00",
+    "target_time_s": 6900
+  },
+  "units": "miles",
+  "tier": "novice2",
+  "tier_reason": "Recent average weekly volume 18 miles and longest recent run 11.7 miles meet the entry requirements for Novice 2",
+  "weeks": 10,
+  "compressed": true,
+  "compromises": [
+    "Only 10 weeks until race day vs the standard 12-week novice2 program \u2014 early base weeks were dropped; long-run progression and the 2-week taper are preserved."
+  ],
+  "paces": {
+    "easy": {
+      "seconds": 569,
+      "display": "9:29"
+    },
+    "long": {
+      "seconds": 584,
+      "display": "9:44"
+    },
+    "tempo": {
+      "seconds": 494,
+      "display": "8:14"
+    },
+    "intervals": {
+      "seconds": 469,
+      "display": "7:49"
+    },
+    "race_pace": {
+      "seconds": 526,
+      "display": "8:46"
+    },
+    "goal_pace": {
+      "seconds": 526,
+      "display": "8:46"
+    }
+  },
+  "goal_assessment": {
+    "verdict": "realistic",
+    "notes": [
+      "Current fitness already projects 1:51:48 \u2014 faster than the 1:55:00 goal. Goal is realistic.",
+      "Only 10 weeks until race day vs the standard 12-week novice2 program \u2014 early base weeks were dropped; long-run progression and the 2-week taper are preserved."
+    ]
+  },
+  "days": [
+    {
+      "date": "2026-07-09",
+      "week": 1,
+      "dow": "thursday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 2.6,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-07-10",
+      "week": 1,
+      "dow": "friday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-07-11",
+      "week": 1,
+      "dow": "saturday",
+      "status": "planned",
+      "type": "cross",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Cross-train 30\u201360 min (bike, swim, strength) or rest"
+    },
+    {
+      "date": "2026-07-12",
+      "week": 1,
+      "dow": "sunday",
+      "status": "planned",
+      "type": "long",
+      "distance": 11.7,
+      "pace_s": 584,
+      "pace": "9:44",
+      "description": "Long run \u2014 conversational effort"
+    },
+    {
+      "date": "2026-07-13",
+      "week": 2,
+      "dow": "monday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-07-14",
+      "week": 2,
+      "dow": "tuesday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 2.0,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-07-15",
+      "week": 2,
+      "dow": "wednesday",
+      "status": "planned",
+      "type": "race_pace",
+      "distance": 2.0,
+      "pace_s": 526,
+      "pace": "8:46",
+      "description": "Goal-pace run @ 8:46/mi"
+    },
+    {
+      "date": "2026-07-16",
+      "week": 2,
+      "dow": "thursday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 2.0,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-07-17",
+      "week": 2,
+      "dow": "friday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-07-18",
+      "week": 2,
+      "dow": "saturday",
+      "status": "planned",
+      "type": "cross",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Cross-train 30\u201360 min (bike, swim, strength) or rest"
+    },
+    {
+      "date": "2026-07-19",
+      "week": 2,
+      "dow": "sunday",
+      "status": "planned",
+      "type": "long",
+      "distance": 11.7,
+      "pace_s": 584,
+      "pace": "9:44",
+      "description": "Long run \u2014 conversational effort"
+    },
+    {
+      "date": "2026-07-20",
+      "week": 3,
+      "dow": "monday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-07-21",
+      "week": 3,
+      "dow": "tuesday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.6,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-07-22",
+      "week": 3,
+      "dow": "wednesday",
+      "status": "planned",
+      "type": "race_pace",
+      "distance": 3.6,
+      "pace_s": 526,
+      "pace": "8:46",
+      "description": "Goal-pace run @ 8:46/mi"
+    },
+    {
+      "date": "2026-07-23",
+      "week": 3,
+      "dow": "thursday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.6,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-07-24",
+      "week": 3,
+      "dow": "friday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-07-25",
+      "week": 3,
+      "dow": "saturday",
+      "status": "planned",
+      "type": "cross",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Cross-train 30\u201360 min (bike, swim, strength) or rest"
+    },
+    {
+      "date": "2026-07-26",
+      "week": 3,
+      "dow": "sunday",
+      "status": "planned",
+      "type": "long",
+      "distance": 8.8,
+      "pace_s": 584,
+      "pace": "9:44",
+      "description": "Long run \u2014 conversational effort"
+    },
+    {
+      "date": "2026-07-27",
+      "week": 4,
+      "dow": "monday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-07-28",
+      "week": 4,
+      "dow": "tuesday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.3,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-07-29",
+      "week": 4,
+      "dow": "wednesday",
+      "status": "planned",
+      "type": "race_pace",
+      "distance": 3.3,
+      "pace_s": 526,
+      "pace": "8:46",
+      "description": "Goal-pace run @ 8:46/mi"
+    },
+    {
+      "date": "2026-07-30",
+      "week": 4,
+      "dow": "thursday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.3,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-07-31",
+      "week": 4,
+      "dow": "friday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-08-01",
+      "week": 4,
+      "dow": "saturday",
+      "status": "planned",
+      "type": "cross",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Cross-train 30\u201360 min (bike, swim, strength) or rest"
+    },
+    {
+      "date": "2026-08-02",
+      "week": 4,
+      "dow": "sunday",
+      "status": "planned",
+      "type": "long",
+      "distance": 11.8,
+      "pace_s": 584,
+      "pace": "9:44",
+      "description": "Long run \u2014 conversational effort"
+    },
+    {
+      "date": "2026-08-03",
+      "week": 5,
+      "dow": "monday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-08-04",
+      "week": 5,
+      "dow": "tuesday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 4.0,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-08-05",
+      "week": 5,
+      "dow": "wednesday",
+      "status": "planned",
+      "type": "race_pace",
+      "distance": 4.0,
+      "pace_s": 526,
+      "pace": "8:46",
+      "description": "Goal-pace run @ 8:46/mi"
+    },
+    {
+      "date": "2026-08-06",
+      "week": 5,
+      "dow": "thursday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 4.0,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-08-07",
+      "week": 5,
+      "dow": "friday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-08-08",
+      "week": 5,
+      "dow": "saturday",
+      "status": "planned",
+      "type": "cross",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Cross-train 30\u201360 min (bike, swim, strength) or rest"
+    },
+    {
+      "date": "2026-08-09",
+      "week": 5,
+      "dow": "sunday",
+      "status": "planned",
+      "type": "long",
+      "distance": 11.8,
+      "pace_s": 584,
+      "pace": "9:44",
+      "description": "Long run \u2014 conversational effort"
+    },
+    {
+      "date": "2026-08-10",
+      "week": 6,
+      "dow": "monday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-08-11",
+      "week": 6,
+      "dow": "tuesday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.6,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-08-12",
+      "week": 6,
+      "dow": "wednesday",
+      "status": "planned",
+      "type": "race_pace",
+      "distance": 3.6,
+      "pace_s": 526,
+      "pace": "8:46",
+      "description": "Goal-pace run @ 8:46/mi"
+    },
+    {
+      "date": "2026-08-13",
+      "week": 6,
+      "dow": "thursday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.6,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-08-14",
+      "week": 6,
+      "dow": "friday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-08-15",
+      "week": 6,
+      "dow": "saturday",
+      "status": "planned",
+      "type": "cross",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Cross-train 30\u201360 min (bike, swim, strength) or rest"
+    },
+    {
+      "date": "2026-08-16",
+      "week": 6,
+      "dow": "sunday",
+      "status": "planned",
+      "type": "long",
+      "distance": 8.9,
+      "pace_s": 584,
+      "pace": "9:44",
+      "description": "Long run \u2014 conversational effort"
+    },
+    {
+      "date": "2026-08-17",
+      "week": 7,
+      "dow": "monday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-08-18",
+      "week": 7,
+      "dow": "tuesday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.9,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-08-19",
+      "week": 7,
+      "dow": "wednesday",
+      "status": "planned",
+      "type": "race_pace",
+      "distance": 3.9,
+      "pace_s": 526,
+      "pace": "8:46",
+      "description": "Goal-pace run @ 8:46/mi"
+    },
+    {
+      "date": "2026-08-20",
+      "week": 7,
+      "dow": "thursday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.9,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-08-21",
+      "week": 7,
+      "dow": "friday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-08-22",
+      "week": 7,
+      "dow": "saturday",
+      "status": "planned",
+      "type": "cross",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Cross-train 30\u201360 min (bike, swim, strength) or rest"
+    },
+    {
+      "date": "2026-08-23",
+      "week": 7,
+      "dow": "sunday",
+      "status": "planned",
+      "type": "long",
+      "distance": 11.9,
+      "pace_s": 584,
+      "pace": "9:44",
+      "description": "Long run \u2014 conversational effort"
+    },
+    {
+      "date": "2026-08-24",
+      "week": 8,
+      "dow": "monday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-08-25",
+      "week": 8,
+      "dow": "tuesday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 4.7,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-08-26",
+      "week": 8,
+      "dow": "wednesday",
+      "status": "planned",
+      "type": "race_pace",
+      "distance": 4.7,
+      "pace_s": 526,
+      "pace": "8:46",
+      "description": "Goal-pace run @ 8:46/mi"
+    },
+    {
+      "date": "2026-08-27",
+      "week": 8,
+      "dow": "thursday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 4.7,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-08-28",
+      "week": 8,
+      "dow": "friday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-08-29",
+      "week": 8,
+      "dow": "saturday",
+      "status": "planned",
+      "type": "cross",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Cross-train 30\u201360 min (bike, swim, strength) or rest"
+    },
+    {
+      "date": "2026-08-30",
+      "week": 8,
+      "dow": "sunday",
+      "status": "planned",
+      "type": "long",
+      "distance": 11.9,
+      "pace_s": 584,
+      "pace": "9:44",
+      "description": "Long run \u2014 conversational effort"
+    },
+    {
+      "date": "2026-08-31",
+      "week": 9,
+      "dow": "monday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-09-01",
+      "week": 9,
+      "dow": "tuesday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.4,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-09-02",
+      "week": 9,
+      "dow": "wednesday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.4,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-09-03",
+      "week": 9,
+      "dow": "thursday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.4,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-09-04",
+      "week": 9,
+      "dow": "friday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-09-05",
+      "week": 9,
+      "dow": "saturday",
+      "status": "planned",
+      "type": "cross",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Cross-train 30\u201360 min (bike, swim, strength) or rest"
+    },
+    {
+      "date": "2026-09-06",
+      "week": 9,
+      "dow": "sunday",
+      "status": "planned",
+      "type": "long",
+      "distance": 8.0,
+      "pace_s": 584,
+      "pace": "9:44",
+      "description": "Long run \u2014 conversational effort"
+    },
+    {
+      "date": "2026-09-07",
+      "week": 10,
+      "dow": "monday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-09-08",
+      "week": 10,
+      "dow": "tuesday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.9,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-09-09",
+      "week": 10,
+      "dow": "wednesday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.9,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-09-10",
+      "week": 10,
+      "dow": "thursday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 3.9,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Easy run \u2014 conversational"
+    },
+    {
+      "date": "2026-09-11",
+      "week": 10,
+      "dow": "friday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-09-12",
+      "week": 10,
+      "dow": "saturday",
+      "status": "planned",
+      "type": "cross",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Cross-train 30\u201360 min (bike, swim, strength) or rest"
+    },
+    {
+      "date": "2026-09-13",
+      "week": 10,
+      "dow": "sunday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest"
+    },
+    {
+      "date": "2026-09-14",
+      "week": 10,
+      "dow": "monday",
+      "status": "planned",
+      "type": "rest",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest \u2014 recovery is training"
+    },
+    {
+      "date": "2026-09-15",
+      "week": 10,
+      "dow": "tuesday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 2.0,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Shakeout \u2014 very easy, stay loose"
+    },
+    {
+      "date": "2026-09-16",
+      "week": 10,
+      "dow": "wednesday",
+      "status": "planned",
+      "type": "easy",
+      "distance": 2.0,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "Shakeout \u2014 very easy, stay loose"
+    },
+    {
+      "date": "2026-09-17",
+      "week": 10,
+      "dow": "thursday",
+      "type": "race",
+      "distance": 13.1,
+      "pace_s": 526,
+      "pace": "8:46",
+      "description": "RACE DAY \u2014 Sample City Half Marathon, goal 1:55:00",
+      "status": "planned"
+    }
+  ],
+  "comparison": {
+    "days_done": 0,
+    "days_missed": 0,
+    "planned_distance_14d": 0,
+    "actual_distance_14d": 0,
+    "adherence_pct": null
+  }
+}

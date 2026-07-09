@@ -1,0 +1,26 @@
+# Secrets — never commit
+.env
+
+# Raw health data — never commit
+*.db
+*.sqlite
+*.sqlite3
+HealthData/
+*.fit
+*.tcx
+*.gpx
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Scratch
+*.log

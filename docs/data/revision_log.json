@@ -1,0 +1,17 @@
+[
+  {
+    "date": "2026-06-18T07:02:11",
+    "source": "generator",
+    "note": "Plan generated: novice2 tier \u2014 Recent average weekly volume 18 miles and longest recent run 11.7 miles meet the entry requirements for Novice 2."
+  },
+  {
+    "date": "2026-07-02T06:48:33",
+    "source": "deepseek",
+    "note": "Plan updated: long run pushed back 2 days because last week's mileage was 18% below plan and Tuesday's run showed elevated HR at easy pace."
+  },
+  {
+    "date": "2026-07-09T07:15:02",
+    "source": "deepseek",
+    "note": "Plan updated: adherence back to 95% and aerobic efficiency improving \u2014 tempo distance increased by 1 mile from next week."
+  }
+]

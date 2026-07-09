@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Running Dashboard</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃</text></svg>">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-row">
+    <h1 id="site-title">Running Dashboard</h1>
+    <span class="refreshed" id="refreshed-at"></span>
+    <button id="theme-toggle" title="Toggle dark mode">◐</button>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-page="overview" class="active">Overview</button>
+    <button data-page="calendar">Calendar</button>
+    <button data-page="trends">Trends</button>
+    <button data-page="strategy">Race Strategy</button>
+    <button data-page="raceinfo">Race Info</button>
+    <button data-page="log">Revision Log</button>
+  </nav>
+</header>
+
+<main>
+  <div id="load-error" class="card" style="display:none">
+    <div class="empty-state">Couldn't load dashboard data. Run
+      <code>python pipeline/refresh.py</code> (or <code>make sample</code>) to generate it.</div>
+  </div>
+
+  <!-- ================= OVERVIEW ================= -->
+  <section class="page active" id="page-overview">
+    <div class="card hero">
+      <div class="value" id="countdown">—</div>
+      <div class="label" id="countdown-label">days to race day</div>
+    </div>
+    <div class="tiles" id="overview-tiles"></div>
+    <div class="card" id="goal-assessment-card">
+      <h2>Goal assessment</h2>
+      <div id="goal-assessment"></div>
+    </div>
+    <div class="card">
+      <h2>Latest plan revision</h2>
+      <div class="note" id="latest-revision">No revisions yet.</div>
+    </div>
+    <div class="card">
+      <h2>This week's plan</h2>
+      <ul class="plan-list" id="week-plan"></ul>
+    </div>
+  </section>
+
+  <!-- ================= CALENDAR ================= -->
+  <section class="page" id="page-calendar">
+    <div class="card">
+      <div class="cal-controls">
+        <button id="cal-prev">‹</button>
+        <div class="cal-month-label" id="cal-month"></div>
+        <button id="cal-next">›</button>
+        <span class="spacer"></span>
+        <button id="view-grid" class="active">Grid</button>
+        <button id="view-list">List</button>
+      </div>
+      <div id="calendar-grid"></div>
+      <ul class="plan-list" id="calendar-list" style="display:none"></ul>
+      <div class="legend-row" id="cal-legend"></div>
+      <p class="seg-note">✓ done &nbsp; ◐ partial &nbsp; ✗ missed — compared against synced Garmin activities</p>
+    </div>
+  </section>
+
+  <!-- ================= TRENDS ================= -->
+  <section class="page" id="page-trends">
+    <div class="grid-2">
+      <div class="card">
+        <h2>Weekly mileage <span class="sub" id="weekly-units"></span></h2>
+        <div class="chart-wrap"><canvas id="chart-weekly"></canvas></div>
+        <details class="table-view"><summary>Table view</summary>
+          <div class="scroll-x"><table class="data" id="table-weekly"></table></div></details>
+      </div>
+      <div class="card">
+        <h2>Long-run progression</h2>
+        <div class="chart-wrap"><canvas id="chart-longrun"></canvas></div>
+        <details class="table-view"><summary>Table view</summary>
+          <div class="scroll-x"><table class="data" id="table-longrun"></table></div></details>
+      </div>
+      <div class="card">
+        <h2>Aerobic efficiency <span class="sub">(speed per heartbeat — higher is fitter)</span></h2>
+        <div class="chart-wrap"><canvas id="chart-eff"></canvas></div>
+        <p class="seg-note" id="eff-note"></p>
+        <details class="table-view"><summary>Table view</summary>
+          <div class="scroll-x"><table class="data" id="table-eff"></table></div></details>
+      </div>
+      <div class="card">
+        <h2>Training load ratio <span class="sub">(acute : chronic)</span></h2>
+        <div class="chart-wrap"><canvas id="chart-acwr"></canvas></div>
+        <p class="seg-note" id="acwr-note"></p>
+        <details class="table-view"><summary>Table view</summary>
+          <div class="scroll-x"><table class="data" id="table-acwr"></table></div></details>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Recent runs</h2>
+      <div class="scroll-x"><table class="data" id="table-runs"></table></div>
+    </div>
+  </section>
+
+  <!-- ================= STRATEGY ================= -->
+  <section class="page" id="page-strategy">
+    <div class="card" id="strategy-card">
+      <h2>Course elevation &amp; pace plan <span class="sub" id="strategy-sub"></span></h2>
+      <div class="chart-wrap tall"><canvas id="chart-elev"></canvas></div>
+      <div class="legend-row" id="elev-legend"></div>
+    </div>
+    <div class="card" id="segments-card">
+      <h2>Segment targets</h2>
+      <div class="scroll-x"><table class="data" id="table-segments"></table></div>
+    </div>
+    <div class="card" id="fueling-card">
+      <h2>Hydration &amp; fueling</h2>
+      <ul class="fuel-list" id="fuel-list"></ul>
+    </div>
+  </section>
+
+  <!-- ================= RACE INFO ================= -->
+  <section class="page" id="page-raceinfo">
+    <div class="card">
+      <h2>Race</h2>
+      <dl class="kv" id="race-kv"></dl>
+    </div>
+    <div class="card">
+      <h2>Course notes</h2>
+      <div id="course-notes" class="seg-note"></div>
+    </div>
+  </section>
+
+  <!-- ================= REVISION LOG ================= -->
+  <section class="page" id="page-log">
+    <div class="card">
+      <h2>Plan revision history</h2>
+      <ul class="timeline" id="revision-timeline"></ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Data: local GarminDB → <code>pipeline/refresh.py</code> → static JSON. No trackers, no API keys in this page.
+</footer>
+
+<script src="assets/js/vendor/chart.umd.min.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

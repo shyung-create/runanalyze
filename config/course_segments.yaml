@@ -1,0 +1,24 @@
+# Manual fallback for the course elevation profile.
+# Used when no vision-capable DeepSeek model is configured (DEEPSEEK_VISION_MODEL
+# empty) or when reading config/course_elevation.png fails.
+#
+# Split the course into logical segments by elevation. Distances are in the
+# unit set in race_config.yaml preferences.units. avg_grade_pct is the average
+# grade of the segment in percent (positive = uphill, negative = downhill).
+#
+# Example:
+# segments:
+#   - name: "Start — rolling"
+#     start: 0
+#     end: 3.0
+#     avg_grade_pct: 0.5
+#   - name: "The big climb"
+#     start: 3.0
+#     end: 5.5
+#     avg_grade_pct: 3.2
+#   - name: "Descent into downtown"
+#     start: 5.5
+#     end: 8.0
+#     avg_grade_pct: -2.0
+
+segments: []

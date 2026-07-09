@@ -1,0 +1,7 @@
+python-dotenv>=1.0
+PyYAML>=6.0
+requests>=2.31
+# GarminDB is used via its CLI (garmindb_cli.py). Install it separately:
+#   pip install garmindb
+# It is intentionally not pinned here so the pipeline can run against an
+# existing GarminDB installation without version conflicts.

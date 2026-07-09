@@ -1,0 +1,10 @@
+# Race-day details — placeholder structure, populate in a later phase.
+# Empty/null values render as "Not yet configured" on the dashboard.
+race_info:
+  location: ""                # city, start point
+  expected_temperature: null  # typical race-day temp range, e.g. "45-60F"
+  humidity: null              # e.g. "60-80%"
+  elevation_map_image: ""     # path to uploaded course elevation screenshot,
+                              # e.g. config/course_elevation.png
+  hydration_points: []        # list of {mile_or_km: <number>, type: water|electrolyte|gel}
+  course_notes: ""
