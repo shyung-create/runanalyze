@@ -24,40 +24,63 @@
 # Derived from a full-marathon elevation chart (mile splits, feet), read
 # directly rather than via DeepSeek vision (the configured model rejected
 # image input — DeepSeek's chat API doesn't support image_url content).
+# Segmented at every local peak/valley (not just grouped mile ranges) for a
+# finer per-segment pace breakdown; cross-checked against a second,
+# marker-annotated elevation chart of the same course.
 segments:
-  - name: "Start — flat with gentle rollers"
+  - name: "Start descent off the gun"
     start: 0.0
-    end: 12.87
-    avg_grade_pct: 0.1
-  - name: "Climb to the mile-9 high point"
-    start: 12.87
+    end: 1.61
+    avg_grade_pct: -0.3
+  - name: "Small rise, mile 1-2"
+    start: 1.61
+    end: 3.22
+    avg_grade_pct: 0.4
+  - name: "Gradual downhill drift, miles 2-5"
+    start: 3.22
+    end: 8.05
+    avg_grade_pct: -0.2
+  - name: "Sustained climb to the first summit (mile 9)"
+    start: 8.05
     end: 14.48
-    avg_grade_pct: 3.3
-  - name: "Descent off the mile-9 peak"
+    avg_grade_pct: 1.1
+  - name: "Descent off the mile-9 summit"
     start: 14.48
     end: 17.7
     avg_grade_pct: -2.2
-  - name: "Building climb toward mile 14"
+  - name: "The big climb to the course high point (mile 14)"
     start: 17.7
     end: 22.53
     avg_grade_pct: 1.9
-  - name: "Sharp descent off the mile-14 high point"
+  - name: "Sharp drop off the mile-14 high point"
     start: 22.53
     end: 24.14
     avg_grade_pct: -4.0
   - name: "Climbing into the back-half plateau"
     start: 24.14
-    end: 27.36
-    avg_grade_pct: 1.6
-  - name: "Rolling near the high point (miles 17-20)"
-    start: 27.36
+    end: 28.97
+    avg_grade_pct: 1.2
+  - name: "Short dip mid-plateau (mile 18-19)"
+    start: 28.97
+    end: 30.58
+    avg_grade_pct: -0.3
+  - name: "Second plateau rise (mile 19-20)"
+    start: 30.58
     end: 32.19
-    avg_grade_pct: 0.1
-  - name: "Steep descent begins"
+    avg_grade_pct: 0.2
+  - name: "Long descent begins, miles 20-23"
     start: 32.19
-    end: 35.41
-    avg_grade_pct: -2.2
-  - name: "Gentle rolling finish"
-    start: 35.41
+    end: 37.01
+    avg_grade_pct: -1.7
+  - name: "Small bump, mile 23-24"
+    start: 37.01
+    end: 38.62
+    avg_grade_pct: 0.5
+  - name: "Drop to the course low point (mile 25)"
+    start: 38.62
+    end: 40.23
+    avg_grade_pct: -0.9
+  - name: "Finish stretch"
+    start: 40.23
     end: 42.195
-    avg_grade_pct: -0.2
+    avg_grade_pct: 0.1
