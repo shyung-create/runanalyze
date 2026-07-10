@@ -33,5 +33,10 @@
     "date": "2026-07-10T08:15:14",
     "source": "deepseek",
     "note": "Plan updated on 2026-07-10: Changed blocked dates to mandatory rest, reduced mid-week runs to maintain consistent taper volume, and corrected workout types to 'easy' for clarity."
+  },
+  {
+    "date": "2026-07-10T08:16:29",
+    "source": "deepseek",
+    "note": "Plan updated on 2026-07-10: Changed the Sunday runs on July 12 and July 19 from 'easy' to 'long' to align with the athlete's preferred long run day and to reflect their role as the primary long runs during the taper, given they are run at long-run pace."
   }
 ]

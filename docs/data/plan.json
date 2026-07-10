@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-10T08:15:14",
+  "generated_at": "2026-07-10T08:16:29",
   "source": "llm-revised",
   "race": {
     "name": "SF Marathon",
@@ -83,11 +83,11 @@
       "date": "2026-07-12",
       "week": 10,
       "dow": "sunday",
-      "type": "easy",
+      "type": "long",
       "distance": 16.0,
       "pace_s": 378,
       "pace": "6:18",
-      "description": "Reduced long run to 10 miles to taper volume",
+      "description": "Reduced long run to 16 km to taper volume",
       "phase": "plan",
       "status": "planned",
       "revised": true
@@ -173,11 +173,11 @@
       "date": "2026-07-19",
       "week": 11,
       "dow": "sunday",
-      "type": "easy",
+      "type": "long",
       "distance": 9.0,
       "pace_s": 378,
       "pace": "6:18",
-      "description": "Easy 9 km medium run, reduced for taper",
+      "description": "Shorter long run 9 km for taper",
       "phase": "plan",
       "status": "planned",
       "revised": true
