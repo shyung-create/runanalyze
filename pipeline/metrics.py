@@ -102,21 +102,24 @@ def weekly_mileage(runs, today, weeks: int = 12) -> list[dict]:
 
 
 def rolling_weekly_volume(runs, today, weeks: int = 4) -> list[dict]:
-    """Trailing 7-day windows ending on `today` (the refresh date) — NOT
-    aligned to calendar Mon-Sun weeks. Window 0 (last in the returned list)
-    covers today-6..today; window 1 covers the 7 days before that, etc.
+    """Trailing 7-day windows ending the day *before* `today` (the refresh
+    date) — NOT aligned to calendar Mon-Sun weeks. Window 0 (last in the
+    returned list) covers today-7..today-1; window 1 covers the 7 days
+    before that, etc. E.g. refreshing on Jul 9 gives windows Jul2-Jul8,
+    Jun25-Jul1, ...
 
     Used for plan-review recalculation (tier selection, goal assessment) so
-    'this week's volume' means exactly the 7 days leading into the refresh,
-    recomputed fresh each time refresh.py runs, rather than snapping to
-    whichever calendar week happens to contain today. As a side effect every
-    window here is always fully elapsed (today is never in the future
-    relative to itself), so unlike calendar-week buckets there's no partial
-    "week in progress" to exclude before averaging.
+    'this week's volume' means exactly the 7 complete days leading into the
+    refresh, recomputed fresh each time refresh.py runs, rather than
+    snapping to whichever calendar week happens to contain today. Ending on
+    the day before (not today itself) means every window is always fully
+    elapsed even if today's run hasn't happened yet, so — unlike
+    calendar-week buckets — there's no partial "week in progress" to
+    exclude before averaging.
     """
     out = []
     for i in range(weeks):
-        end = today - timedelta(days=7 * i)
+        end = today - timedelta(days=1 + 7 * i)
         start = end - timedelta(days=6)
         window = [a for a in runs if start <= _act_date(a) <= end]
         dist = sum(float(a["distance"]) for a in window)
