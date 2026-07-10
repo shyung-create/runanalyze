@@ -18,5 +18,15 @@
     "date": "2026-07-10T07:58:01",
     "source": "generator",
     "note": "Plan generated on 2026-07-10 (race configuration or units changed): Hal Higdon: Advanced 1 tier \u2014 Recent volume ~67 km/wk with a 32.3 km longest run is the closest Hal Higdon fit where you'd join it (week 16: 55 km, longest run 19 km) \u2014 Higdon is preferred whenever a suitable tier exists (6 eligible)."
+  },
+  {
+    "date": "2026-07-10T08:01:59",
+    "source": "generator",
+    "note": "Plan generated on 2026-07-10 (--replan requested): Pfitzinger/Douglas: Up to 89 km per week, 12-week schedule tier \u2014 Recent volume ~67 km/wk with a 32.3 km longest run is the closest match to this program's demands where you'd join it (week 10: 69 km, longest run 26 km) among 9 eligible programs."
+  },
+  {
+    "date": "2026-07-10T08:03:10",
+    "source": "deepseek",
+    "note": "Plan updated on 2026-07-10: Adjusted the taper to be more conservative due to low load ratio (ACWR 0.59) and recent low mileage. Reduced interval intensity and long run distances in weeks 10 and 11 to avoid overtraining before race day."
   }
 ]
