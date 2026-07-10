@@ -22,9 +22,10 @@
     "verdict": "realistic",
     "notes": [
       "Projected 4:05:52 vs goal 4:00:00 (2% gap) \u2014 achievable with consistent training.",
-      "3 weeks remain but Hal Higdon: Advanced 1 is 18 weeks \u2014 you join at week 16; the earlier base weeks are dropped while the peak weeks and taper are preserved as published."
+      "3 weeks remain but Pfitzinger/Douglas: Up to 89 km per week, 12-week schedule is 12 weeks \u2014 you join at week 10; the earlier base weeks are dropped while the peak weeks and taper are preserved as published.",
+      "2026-07-10: planned recovery dropped \u2014 the day is a fixed rest day and no rest day was left in that week to swap with."
     ]
   },
-  "tier": "Hal Higdon: Advanced 1",
-  "tier_reason": "Recent volume ~67 km/wk with a 32.3 km longest run is the closest Hal Higdon fit where you'd join it (week 16: 55 km, longest run 19 km) \u2014 Higdon is preferred whenever a suitable tier exists (6 eligible)"
+  "tier": "Pfitzinger/Douglas: Up to 89 km per week, 12-week schedule",
+  "tier_reason": "Recent volume ~67 km/wk with a 32.3 km longest run is the closest match to this program's demands where you'd join it (week 10: 69 km, longest run 26 km) among 9 eligible programs"
 }
