@@ -2,7 +2,7 @@
   "race": {
     "name": "Sample City Half Marathon",
     "distance_type": "half",
-    "race_date": "2026-09-17",
+    "race_date": "2026-09-18",
     "target_time": "1:55:00",
     "target_time_s": 6900
   },
@@ -47,7 +47,7 @@
     "verdict": "stretch",
     "notes": [
       "Current fitness already projects 1:51:48 \u2014 faster than the 1:55:00 goal. Goal is realistic.",
-      "The program week you are joining calls for ~46 miles/wk vs your current ~22 miles/wk (+111%). That exceeds the 10% weekly increase guideline \u2014 treat the first weeks as targets to build toward, and let the next refresh re-plan around what you actually run.",
+      "The program week you are joining calls for ~46 miles/wk vs your current ~22 miles/wk (+109%). That exceeds the 10% weekly increase guideline \u2014 treat the first weeks as targets to build toward, and let the next refresh re-plan around what you actually run.",
       "10 weeks remain but Hansons Advanced Half Marathon is 18 weeks \u2014 you join at week 8; the earlier base weeks are dropped while the peak weeks and taper are preserved as published."
     ]
   },

@@ -60,7 +60,14 @@ def localize_program_name(name: str, units: str) -> str:
 def select_plan(catalog: dict, distance_type: str, avg_weekly_mi: float,
                 recent_long_mi: float, weeks_available: int,
                 plan_id: str | None = None, units: str = "miles") -> tuple[dict, str]:
-    """Pick the most advanced program the athlete can absorb.
+    """Pick the program whose demands are the closest match to the athlete's
+    current training, not the most demanding one they can technically
+    qualify for. Among eligible plans, minimize |joining-week volume -
+    current volume| rather than maximizing joining-week volume — otherwise
+    selection mechanically gravitates to whichever author's catalog has the
+    highest ceiling (Pfitzinger's tiers run up to 85 mi/wk, well past
+    Higdon's or Hansons') any time volume clears its entry bar, regardless
+    of whether it's actually the best-fitting program.
 
     Because a program is anchored to race day, less time than its full length
     means joining mid-program — so the entry test is against the *joining
@@ -101,15 +108,17 @@ def select_plan(catalog: dict, distance_type: str, avg_weekly_mi: float,
 
     eligible = [p for p in plans if entry_ok(p)]
     if eligible:
-        # the most demanding entry point the athlete still clears
-        chosen = max(eligible, key=lambda p: (join_vol(p), p["peak_volume"]))
+        # closest match to current volume, not the most demanding option cleared
+        chosen = min(eligible, key=lambda p: (abs(join_vol(p) - avg_weekly_mi),
+                                              p["peak_volume"]))
         wk = join_week(chosen) + 1
         reason = (
             f"Recent volume ~{disp(avg_weekly_mi):.0f} {vol_unit} with a "
-            f"{disp(recent_long_mi):.1f} {dist_unit} longest run clears the demands "
-            f"where you'd join this program (week {wk}: {disp(join_vol(chosen)):.0f} "
-            f"{dist_unit}, longest run {disp(join_long(chosen)):.0f} {dist_unit}) — "
-            f"the most advanced fit among {len(eligible)} eligible programs")
+            f"{disp(recent_long_mi):.1f} {dist_unit} longest run is the closest match "
+            f"to this program's demands where you'd join it (week {wk}: "
+            f"{disp(join_vol(chosen)):.0f} {dist_unit}, longest run "
+            f"{disp(join_long(chosen)):.0f} {dist_unit}) among {len(eligible)} "
+            f"eligible programs")
     else:
         chosen = min(plans, key=join_vol)
         reason = (
@@ -197,7 +206,7 @@ def assess_goal(fitness: dict, goal_time_s: int | None, distance_type: str,
 
 # ---------------------------------------------------------------- generate
 
-def generate_plan(race_cfg: dict, fitness: dict, weekly: list[dict],
+def generate_plan(race_cfg: dict, fitness: dict, rolling_weekly: list[dict],
                   long_runs: list[dict], today: date | None = None) -> dict:
     today = today or date.today()
     catalog = load_catalog()
@@ -222,8 +231,10 @@ def generate_plan(race_cfg: dict, fitness: dict, weekly: list[dict],
 
     goal_time_s = parse_time_hms(race.get("target_time") or "")
 
-    # exclude the current in-progress week from the volume average
-    recent = [w["distance"] for w in weekly[:-1][-4:] if w["distance"] > 0] or [0]
+    # rolling_weekly is trailing 7-day windows ending on `today` (the refresh
+    # date), not calendar Mon-Sun weeks — every window is fully elapsed by
+    # construction, so nothing needs to be excluded as "in progress" here.
+    recent = [w["distance"] for w in rolling_weekly if w["distance"] > 0] or [0]
     avg_weekly = sum(recent) / len(recent)
     recent_long = max((l["distance"] for l in long_runs[-6:]), default=0)
 
