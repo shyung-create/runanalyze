@@ -217,9 +217,11 @@ def main():
         sync_garmin()
 
     # 2. Extract + metrics
-    result = garmin_extract.extract_runs()
+    activities_since = race_cfg["preferences"].get("activities_since") or None
+    result = garmin_extract.extract_runs(start_date=activities_since)
     activities = result["activities"]
-    log.info("Extracted %d running activities", len(activities))
+    log.info("Extracted %d running activities%s", len(activities),
+             f" (since {activities_since})" if activities_since else "")
 
     db_units = garmin_extract.detect_garmindb_units()
     if db_units != units:

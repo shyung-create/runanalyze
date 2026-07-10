@@ -1,5 +1,5 @@
 {
-  "computed_at": "2026-07-09",
+  "computed_at": "2026-07-10",
   "units": "miles",
   "total_runs_analyzed": 56,
   "weekly": [
@@ -152,12 +152,6 @@
   ],
   "aerobic_efficiency": {
     "points": [
-      {
-        "date": "2026-04-16",
-        "avg_hr": 161,
-        "avg_pace_s": 518,
-        "efficiency": 1.2
-      },
       {
         "date": "2026-04-18",
         "avg_hr": 144,
@@ -423,10 +417,6 @@
   "load_ratio": {
     "series": [
       {
-        "date": "2026-06-12",
-        "acwr": 1.09
-      },
-      {
         "date": "2026-06-13",
         "acwr": 1.1
       },
@@ -532,6 +522,10 @@
       },
       {
         "date": "2026-07-09",
+        "acwr": 0.79
+      },
+      {
+        "date": "2026-07-10",
         "acwr": 0.79
       }
     ],

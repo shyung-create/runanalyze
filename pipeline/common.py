@@ -41,6 +41,7 @@ def load_race_config() -> dict:
     cfg["preferences"].setdefault("units", "miles")
     cfg["preferences"].setdefault("long_run_day", "sunday")
     cfg["preferences"].setdefault("max_run_days_per_week", 5)
+    cfg["preferences"].setdefault("activities_since", "")
     return cfg
 
 
