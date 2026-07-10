@@ -1,9 +1,9 @@
 # Target race configuration — edit me, then run `python pipeline/refresh.py`
 race:
-  name: ""              # target race name
-  distance_type: ""     # "half" or "full"
-  race_date: ""         # YYYY-MM-DD
-  target_time: ""       # HH:MM:SS goal finish time
+  name: "SF Marathon"              # target race name
+  distance_type: "full"     # "half" or "full"
+  race_date: "2026-07-26"         # YYYY-MM-DD
+  target_time: "04:00:00"       # HH:MM:SS goal finish time
 
 # Athlete / pipeline preferences
 preferences:
