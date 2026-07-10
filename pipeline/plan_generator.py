@@ -60,18 +60,15 @@ def localize_program_name(name: str, units: str) -> str:
 def select_plan(catalog: dict, distance_type: str, avg_weekly_mi: float,
                 recent_long_mi: float, weeks_available: int,
                 plan_id: str | None = None, units: str = "miles") -> tuple[dict, str]:
-    """Pick a program, preferring Hal Higdon when a suitable tier exists and
-    blending in Hansons/Pfitzinger only when it doesn't (no Higdon tier fits
-    the athlete's volume, or — for half marathons — this catalog has no
-    Higdon program at all).
+    """Pick the program whose demands are the closest match to the athlete's
+    current training, unbiased toward any author — Higdon, Hansons, and
+    Pfitzinger tiers all compete on equal footing.
 
-    Within whichever pool is used, pick the closest match to current
-    training rather than the most demanding option technically qualified
-    for: minimize |joining-week volume - current volume|. Otherwise
-    selection mechanically gravitates to whichever author's catalog has the
-    highest ceiling (Pfitzinger's tiers run up to 85 mi/wk, well past
-    Higdon's or Hansons') any time volume clears its entry bar, regardless
-    of fit.
+    Minimize |joining-week volume - current volume| rather than maximizing
+    joining-week volume: otherwise selection mechanically gravitates to
+    whichever author's catalog has the highest ceiling (Pfitzinger's tiers
+    run up to 85 mi/wk, well past Higdon's or Hansons') any time volume
+    clears its entry bar, regardless of fit.
 
     Because a program is anchored to race day, less time than its full length
     means joining mid-program — so the entry test is against the *joining
@@ -119,43 +116,24 @@ def select_plan(catalog: dict, distance_type: str, avg_weekly_mi: float,
     vol_unit = "km/wk" if units == "km" else "mi/wk"
     dist_unit = "km" if units == "km" else "mi"
 
-    higdon = [p for p in plans if "higdon" in p["id"]]
-    other = [p for p in plans if "higdon" not in p["id"]]
-    eligible_higdon = [p for p in higdon if entry_ok(p)]
-    eligible_other = [p for p in other if entry_ok(p)]
-
-    if eligible_higdon:
-        chosen = closest_fit(eligible_higdon)
+    eligible = [p for p in plans if entry_ok(p)]
+    if eligible:
+        chosen = closest_fit(eligible)
         wk = join_week(chosen) + 1
         reason = (
             f"Recent volume ~{disp(avg_weekly_mi):.0f} {vol_unit} with a "
-            f"{disp(recent_long_mi):.1f} {dist_unit} longest run is the closest Hal "
-            f"Higdon fit where you'd join it (week {wk}: {disp(join_vol(chosen)):.0f} "
-            f"{dist_unit}, longest run {disp(join_long(chosen)):.0f} {dist_unit}) — "
-            f"Higdon is preferred whenever a suitable tier exists "
-            f"({len(eligible_higdon)} eligible)")
-    elif eligible_other:
-        chosen = closest_fit(eligible_other)
-        wk = join_week(chosen) + 1
-        why_not_higdon = ("this catalog has no Hal Higdon half-marathon program"
-                          if not higdon else
-                          "no Hal Higdon marathon tier matches this training volume")
-        family = "Hansons" if "hansons" in chosen["id"] else "Pfitzinger"
-        reason = (
-            f"Recent volume ~{disp(avg_weekly_mi):.0f} {vol_unit} with a "
-            f"{disp(recent_long_mi):.1f} {dist_unit} longest run is the closest fit "
-            f"where you'd join it (week {wk}: {disp(join_vol(chosen)):.0f} {dist_unit}, "
-            f"longest run {disp(join_long(chosen)):.0f} {dist_unit}) — {why_not_higdon}, "
-            f"so blending in a {family} program instead ({len(eligible_other)} eligible)")
+            f"{disp(recent_long_mi):.1f} {dist_unit} longest run is the closest match "
+            f"to this program's demands where you'd join it (week {wk}: "
+            f"{disp(join_vol(chosen)):.0f} {dist_unit}, longest run "
+            f"{disp(join_long(chosen)):.0f} {dist_unit}) among {len(eligible)} "
+            f"eligible programs")
     else:
-        pool = higdon or plans
-        chosen = min(pool, key=join_vol)
-        source = "Higdon's" if higdon else "the catalog's"
+        chosen = min(plans, key=join_vol)
         reason = (
             f"Recent volume ~{disp(avg_weekly_mi):.0f} {vol_unit} is below every "
-            f"program's entry demands for the time remaining — using {source} "
-            f"gentlest available ({disp(join_vol(chosen)):.0f} {dist_unit} at the "
-            f"joining week); build carefully and let refreshes adjust")
+            f"program's entry demands for the time remaining — using the gentlest "
+            f"available ({disp(join_vol(chosen)):.0f} {dist_unit} at the joining "
+            f"week); build carefully and let refreshes adjust")
     return chosen, reason
 
 
