@@ -1,162 +1,224 @@
 {
-  "generated_at": "2026-07-10T14:18:00",
+  "generated_at": "2026-07-10T07:58:01",
   "configured": true,
   "source": "manual",
   "note": "",
-  "units": "miles",
-  "goal_time_s": 6900,
-  "goal_time": "1:55:00",
-  "base_pace_s": 521,
-  "base_pace": "8:42",
+  "units": "km",
+  "goal_time_s": 14400,
+  "goal_time": "4:00:00",
+  "base_pace_s": 339,
+  "base_pace": "5:40",
   "strategy": "even-effort: slower on climbs, controlled on descents, netting out to the goal time",
   "segments": [
     {
-      "name": "Start \u2014 downtown flats",
+      "name": "Start descent off the gun",
       "start": 0.0,
-      "end": 3.0,
-      "avg_grade_pct": 0.2,
-      "distance": 3.0,
-      "target_pace_s": 524,
-      "target_pace": "8:44",
-      "segment_time_s": 1572,
-      "cumulative_time_s": 1572,
-      "cumulative_time": "26:12",
+      "end": 1.61,
+      "avg_grade_pct": -0.3,
+      "distance": 1.61,
+      "target_pace_s": 338,
+      "target_pace": "5:38",
+      "segment_time_s": 544,
+      "cumulative_time_s": 544,
+      "cumulative_time": "9:05",
       "effort_note": "Flat/rolling \u2014 settle into rhythm"
     },
     {
-      "name": "Rolling hills",
-      "start": 3.0,
-      "end": 6.0,
-      "avg_grade_pct": 1.0,
-      "distance": 3.0,
-      "target_pace_s": 533,
-      "target_pace": "8:54",
-      "segment_time_s": 1600,
-      "cumulative_time_s": 3173,
-      "cumulative_time": "52:53",
+      "name": "Small rise, mile 1-2",
+      "start": 1.61,
+      "end": 3.22,
+      "avg_grade_pct": 0.4,
+      "distance": 1.61,
+      "target_pace_s": 342,
+      "target_pace": "5:43",
+      "segment_time_s": 551,
+      "cumulative_time_s": 1096,
+      "cumulative_time": "18:16",
+      "effort_note": "Flat/rolling \u2014 settle into rhythm"
+    },
+    {
+      "name": "Gradual downhill drift, miles 2-5",
+      "start": 3.22,
+      "end": 8.05,
+      "avg_grade_pct": -0.2,
+      "distance": 4.83,
+      "target_pace_s": 338,
+      "target_pace": "5:39",
+      "segment_time_s": 1636,
+      "cumulative_time_s": 2732,
+      "cumulative_time": "45:32",
+      "effort_note": "Flat/rolling \u2014 settle into rhythm"
+    },
+    {
+      "name": "Sustained climb to the first summit (mile 9)",
+      "start": 8.05,
+      "end": 14.48,
+      "avg_grade_pct": 1.1,
+      "distance": 6.43,
+      "target_pace_s": 347,
+      "target_pace": "5:48",
+      "segment_time_s": 2236,
+      "cumulative_time_s": 4968,
+      "cumulative_time": "1:22:49",
       "effort_note": "Uphill \u2014 hold effort, not pace"
     },
     {
-      "name": "The mile-7 climb",
-      "start": 6.0,
-      "end": 7.5,
-      "avg_grade_pct": 3.0,
-      "distance": 1.5,
-      "target_pace_s": 557,
-      "target_pace": "9:18",
-      "segment_time_s": 836,
-      "cumulative_time_s": 4009,
-      "cumulative_time": "1:06:50",
-      "effort_note": "Big climb \u2014 shorten stride, effort steady, let pace drift"
-    },
-    {
-      "name": "Ridge descent",
-      "start": 7.5,
-      "end": 9.5,
+      "name": "Descent off the mile-9 summit",
+      "start": 14.48,
+      "end": 17.7,
       "avg_grade_pct": -2.2,
-      "distance": 2.0,
-      "target_pace_s": 506,
-      "target_pace": "8:26",
-      "segment_time_s": 1012,
-      "cumulative_time_s": 5022,
-      "cumulative_time": "1:23:42",
+      "distance": 3.22,
+      "target_pace_s": 330,
+      "target_pace": "5:30",
+      "segment_time_s": 1062,
+      "cumulative_time_s": 6031,
+      "cumulative_time": "1:40:32",
       "effort_note": "Downhill \u2014 relax and let gravity work, stay controlled"
     },
     {
-      "name": "River flats",
-      "start": 9.5,
-      "end": 12.0,
+      "name": "The big climb to the course high point (mile 14)",
+      "start": 17.7,
+      "end": 22.53,
+      "avg_grade_pct": 1.9,
+      "distance": 4.83,
+      "target_pace_s": 353,
+      "target_pace": "5:54",
+      "segment_time_s": 1708,
+      "cumulative_time_s": 7740,
+      "cumulative_time": "2:09:00",
+      "effort_note": "Uphill \u2014 hold effort, not pace"
+    },
+    {
+      "name": "Sharp drop off the mile-14 high point",
+      "start": 22.53,
+      "end": 24.14,
+      "avg_grade_pct": -4.0,
+      "distance": 1.61,
+      "target_pace_s": 322,
+      "target_pace": "5:22",
+      "segment_time_s": 518,
+      "cumulative_time_s": 8259,
+      "cumulative_time": "2:17:39",
+      "effort_note": "Steep descent \u2014 quick light steps, don't brake, don't sprint"
+    },
+    {
+      "name": "Climbing into the back-half plateau",
+      "start": 24.14,
+      "end": 28.97,
+      "avg_grade_pct": 1.2,
+      "distance": 4.83,
+      "target_pace_s": 348,
+      "target_pace": "5:49",
+      "segment_time_s": 1683,
+      "cumulative_time_s": 9942,
+      "cumulative_time": "2:45:43",
+      "effort_note": "Uphill \u2014 hold effort, not pace"
+    },
+    {
+      "name": "Short dip mid-plateau (mile 18-19)",
+      "start": 28.97,
+      "end": 30.58,
       "avg_grade_pct": -0.3,
-      "distance": 2.5,
-      "target_pace_s": 519,
-      "target_pace": "8:40",
-      "segment_time_s": 1298,
-      "cumulative_time_s": 6320,
-      "cumulative_time": "1:45:21",
+      "distance": 1.61,
+      "target_pace_s": 338,
+      "target_pace": "5:38",
+      "segment_time_s": 544,
+      "cumulative_time_s": 10487,
+      "cumulative_time": "2:54:47",
       "effort_note": "Flat/rolling \u2014 settle into rhythm"
     },
     {
-      "name": "Finish kick",
-      "start": 12.0,
-      "end": 13.1,
-      "avg_grade_pct": 0.4,
-      "distance": 1.1,
-      "target_pace_s": 526,
-      "target_pace": "8:46",
-      "segment_time_s": 579,
-      "cumulative_time_s": 6900,
-      "cumulative_time": "1:55:00",
+      "name": "Second plateau rise (mile 19-20)",
+      "start": 30.58,
+      "end": 32.19,
+      "avg_grade_pct": 0.2,
+      "distance": 1.61,
+      "target_pace_s": 341,
+      "target_pace": "5:41",
+      "segment_time_s": 549,
+      "cumulative_time_s": 11036,
+      "cumulative_time": "3:03:57",
+      "effort_note": "Flat/rolling \u2014 settle into rhythm"
+    },
+    {
+      "name": "Long descent begins, miles 20-23",
+      "start": 32.19,
+      "end": 37.01,
+      "avg_grade_pct": -1.7,
+      "distance": 4.82,
+      "target_pace_s": 332,
+      "target_pace": "5:32",
+      "segment_time_s": 1601,
+      "cumulative_time_s": 12637,
+      "cumulative_time": "3:30:38",
+      "effort_note": "Downhill \u2014 relax and let gravity work, stay controlled"
+    },
+    {
+      "name": "Small bump, mile 23-24",
+      "start": 37.01,
+      "end": 38.62,
+      "avg_grade_pct": 0.5,
+      "distance": 1.61,
+      "target_pace_s": 343,
+      "target_pace": "5:43",
+      "segment_time_s": 552,
+      "cumulative_time_s": 13190,
+      "cumulative_time": "3:39:51",
+      "effort_note": "Flat/rolling \u2014 settle into rhythm"
+    },
+    {
+      "name": "Drop to the course low point (mile 25)",
+      "start": 38.62,
+      "end": 40.23,
+      "avg_grade_pct": -0.9,
+      "distance": 1.61,
+      "target_pace_s": 335,
+      "target_pace": "5:36",
+      "segment_time_s": 540,
+      "cumulative_time_s": 13731,
+      "cumulative_time": "3:48:51",
+      "effort_note": "Flat/rolling \u2014 settle into rhythm"
+    },
+    {
+      "name": "Finish stretch",
+      "start": 40.23,
+      "end": 42.195,
+      "avg_grade_pct": 0.1,
+      "distance": 1.97,
+      "target_pace_s": 340,
+      "target_pace": "5:40",
+      "segment_time_s": 668,
+      "cumulative_time_s": 14399,
+      "cumulative_time": "4:00:00",
       "effort_note": "Flat/rolling \u2014 settle into rhythm"
     }
   ],
-  "hydration": [
-    {
-      "at": 2.0,
-      "type": "water",
-      "eta_s": 1048,
-      "eta": "17:28"
-    },
-    {
-      "at": 4.5,
-      "type": "water",
-      "eta_s": 2372,
-      "eta": "39:32"
-    },
-    {
-      "at": 6.5,
-      "type": "electrolyte",
-      "eta_s": 3451,
-      "eta": "57:31"
-    },
-    {
-      "at": 8.5,
-      "type": "gel",
-      "eta_s": 4515,
-      "eta": "1:15:15"
-    },
-    {
-      "at": 10.5,
-      "type": "water",
-      "eta_s": 5541,
-      "eta": "1:32:21"
-    },
-    {
-      "at": 12.0,
-      "type": "water",
-      "eta_s": 6320,
-      "eta": "1:45:20"
-    }
-  ],
+  "hydration": [],
   "fueling_plan": [
     {
-      "at": 2.0,
-      "time": "17:28",
-      "action": "Drink water \u2014 a few sips minimum"
+      "at": 7.1,
+      "time": "40:00",
+      "action": "Take a gel (carry it \u2014 no station nearby)"
     },
     {
-      "at": 4.5,
-      "time": "39:32",
-      "action": "Take a gel (station here \u2014 wash it down with water)"
+      "at": 14.1,
+      "time": "1:20:00",
+      "action": "Take a gel (carry it \u2014 no station nearby)"
     },
     {
-      "at": 6.5,
-      "time": "57:31",
-      "action": "Take electrolytes"
+      "at": 21.2,
+      "time": "2:00:00",
+      "action": "Take a gel (carry it \u2014 no station nearby)"
     },
     {
-      "at": 8.5,
-      "time": "1:15:15",
-      "action": "Take a gel (station here \u2014 wash it down with water)"
+      "at": 28.3,
+      "time": "2:40:00",
+      "action": "Take a gel (carry it \u2014 no station nearby)"
     },
     {
-      "at": 10.5,
-      "time": "1:32:21",
-      "action": "Drink water \u2014 a few sips minimum"
-    },
-    {
-      "at": 12.0,
-      "time": "1:45:20",
-      "action": "Drink water \u2014 a few sips minimum"
+      "at": 35.3,
+      "time": "3:20:00",
+      "action": "Take a gel (carry it \u2014 no station nearby)"
     }
   ],
   "elevation_profile": [
@@ -165,28 +227,60 @@
       "elevation": 0.0
     },
     {
-      "distance": 3.0,
-      "elevation": 31.7
+      "distance": 1.61,
+      "elevation": -4.8
     },
     {
-      "distance": 6.0,
-      "elevation": 190.1
+      "distance": 3.22,
+      "elevation": 1.6
     },
     {
-      "distance": 7.5,
-      "elevation": 427.7
+      "distance": 8.05,
+      "elevation": -8.1
     },
     {
-      "distance": 9.5,
-      "elevation": 195.4
+      "distance": 14.48,
+      "elevation": 62.7
     },
     {
-      "distance": 12.0,
-      "elevation": 155.8
+      "distance": 17.7,
+      "elevation": -8.2
     },
     {
-      "distance": 13.1,
-      "elevation": 179.0
+      "distance": 22.53,
+      "elevation": 83.6
+    },
+    {
+      "distance": 24.14,
+      "elevation": 19.2
+    },
+    {
+      "distance": 28.97,
+      "elevation": 77.2
+    },
+    {
+      "distance": 30.58,
+      "elevation": 72.3
+    },
+    {
+      "distance": 32.19,
+      "elevation": 75.6
+    },
+    {
+      "distance": 37.01,
+      "elevation": -6.4
+    },
+    {
+      "distance": 38.62,
+      "elevation": 1.7
+    },
+    {
+      "distance": 40.23,
+      "elevation": -12.8
+    },
+    {
+      "distance": 42.2,
+      "elevation": -10.9
     }
   ]
 }

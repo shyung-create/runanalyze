@@ -1,56 +1,30 @@
 {
   "race": {
-    "name": "Sample City Half Marathon",
-    "distance_type": "half",
-    "race_date": "2026-09-18",
-    "target_time": "1:55:00",
-    "target_time_s": 6900
+    "name": "SF Marathon",
+    "distance_type": "full",
+    "race_date": "2026-07-26",
+    "target_time": "04:00:00",
+    "target_time_s": 14400
   },
   "race_info": {
-    "location": "Sample City \u2014 Riverside Park start",
-    "expected_temperature": "48-58F",
-    "humidity": null,
-    "elevation_map_image": "",
-    "hydration_points": [
-      {
-        "mile_or_km": 2.0,
-        "type": "water"
-      },
-      {
-        "mile_or_km": 4.5,
-        "type": "water"
-      },
-      {
-        "mile_or_km": 6.5,
-        "type": "electrolyte"
-      },
-      {
-        "mile_or_km": 8.5,
-        "type": "gel"
-      },
-      {
-        "mile_or_km": 10.5,
-        "type": "water"
-      },
-      {
-        "mile_or_km": 12.0,
-        "type": "water"
-      }
-    ],
-    "course_notes": "Rolling first half; the mile 7 climb is the crux. Fast final 5K along the river."
+    "location": "San Francisco",
+    "expected_temperature": "55-68F",
+    "humidity": "70%",
+    "elevation_map_image": "config/elevation.png",
+    "hydration_points": [],
+    "course_notes": ""
   },
-  "units": "miles",
-  "goal_time": "1:55:00",
-  "projected_time": "1:51:48",
-  "projected_time_s": 6708,
+  "units": "km",
+  "goal_time": "4:00:00",
+  "projected_time": "4:05:52",
+  "projected_time_s": 14752,
   "goal_assessment": {
-    "verdict": "stretch",
+    "verdict": "realistic",
     "notes": [
-      "Current fitness already projects 1:51:48 \u2014 faster than the 1:55:00 goal. Goal is realistic.",
-      "The program week you are joining calls for ~46 miles/wk vs your current ~22 miles/wk (+109%). That exceeds the 10% weekly increase guideline \u2014 treat the first weeks as targets to build toward, and let the next refresh re-plan around what you actually run.",
-      "10 weeks remain but Hansons Advanced Half Marathon is 18 weeks \u2014 you join at week 8; the earlier base weeks are dropped while the peak weeks and taper are preserved as published."
+      "Projected 4:05:52 vs goal 4:00:00 (2% gap) \u2014 achievable with consistent training.",
+      "3 weeks remain but Hal Higdon: Advanced 1 is 18 weeks \u2014 you join at week 16; the earlier base weeks are dropped while the peak weeks and taper are preserved as published."
     ]
   },
-  "tier": "Hansons Advanced Half Marathon",
-  "tier_reason": "Recent volume ~22 mi/wk is below every program's entry demands for the time remaining \u2014 using the catalog's gentlest available (41 mi at the joining week); build carefully and let refreshes adjust"
+  "tier": "Hal Higdon: Advanced 1",
+  "tier_reason": "Recent volume ~67 km/wk with a 32.3 km longest run is the closest Hal Higdon fit where you'd join it (week 16: 55 km, longest run 19 km) \u2014 Higdon is preferred whenever a suitable tier exists (6 eligible)"
 }
