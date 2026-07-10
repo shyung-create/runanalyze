@@ -107,7 +107,7 @@ def main():
     mx = metrics_mod.compute_all(acts, units, TODAY)
     mx["missing_fields"] = []
 
-    plan = plan_generator.generate_plan(race_cfg, mx["fitness"], mx["weekly"],
+    plan = plan_generator.generate_plan(race_cfg, mx["fitness"], mx["rolling_weekly"],
                                         mx["long_runs"], TODAY)
 
     # Mark a bit of plan history as done/missed for the calendar demo

@@ -267,7 +267,7 @@ def main():
         reason = ("race configuration changed" if config_changed
                   else "no existing plan")
         log.info("Generating a fresh plan (%s)", reason)
-        plan = plan_generator.generate_plan(race_cfg, mx["fitness"], mx["weekly"],
+        plan = plan_generator.generate_plan(race_cfg, mx["fitness"], mx["rolling_weekly"],
                                             mx["long_runs"], today)
         comparison = compare_plan_actual(plan, activities, today_iso)
         append_revision(
