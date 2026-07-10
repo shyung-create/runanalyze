@@ -8,6 +8,7 @@ Usage:
     python pipeline/refresh.py --no-sync  # skip the GarminDB download step
     python pipeline/refresh.py --no-llm   # deterministic only, no DeepSeek calls
     python pipeline/refresh.py --no-git   # don't commit/push
+    python pipeline/refresh.py --replan   # regenerate the plan from scratch
 """
 
 from __future__ import annotations
@@ -200,6 +201,9 @@ def main():
     ap.add_argument("--no-sync", action="store_true", help="skip GarminDB download")
     ap.add_argument("--no-llm", action="store_true", help="skip all DeepSeek calls")
     ap.add_argument("--no-git", action="store_true", help="skip commit/push")
+    ap.add_argument("--replan", action="store_true",
+                    help="discard the existing plan and regenerate from scratch "
+                         "(current fitness, program selection, paces)")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
 
@@ -241,7 +245,10 @@ def main():
         old_plan["race"].get("race_date") != str(race.get("race_date") or "")
         or old_plan["race"].get("target_time") != (race.get("target_time") or "")
         or old_plan["race"].get("distance_type") != (race.get("distance_type") or "half")
+        or old_plan.get("units") != units
     )
+    if args.replan and old_plan:
+        config_changed = True
 
     if old_plan and not config_changed:
         comparison = compare_plan_actual(old_plan, activities, today_iso)
@@ -264,7 +271,8 @@ def main():
                 f"{today_iso}: DeepSeek revision failed validation — keeping the "
                 f"existing plan unchanged. Metrics were refreshed.", "error")
     else:
-        reason = ("race configuration changed" if config_changed
+        reason = ("--replan requested" if args.replan and old_plan
+                  else "race configuration or units changed" if config_changed
                   else "no existing plan")
         log.info("Generating a fresh plan (%s)", reason)
         plan = plan_generator.generate_plan(race_cfg, mx["fitness"], mx["rolling_weekly"],
