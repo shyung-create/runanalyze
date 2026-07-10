@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-07-09T22:27:37",
+  "generated_at": "2026-07-10T01:57:51",
   "source": "catalog",
   "race": {
     "name": "Sample City Half Marathon",
     "distance_type": "half",
-    "race_date": "2026-09-17",
+    "race_date": "2026-09-18",
     "target_time": "1:55:00",
     "target_time_s": 6900
   },
@@ -54,9 +54,9 @@
   },
   "days": [
     {
-      "date": "2026-07-09",
+      "date": "2026-07-10",
       "week": 8,
-      "dow": "thursday",
+      "dow": "friday",
       "type": "long",
       "distance": 12.0,
       "pace_s": 584,
@@ -66,9 +66,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-10",
+      "date": "2026-07-11",
       "week": 9,
-      "dow": "friday",
+      "dow": "saturday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -78,9 +78,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-11",
+      "date": "2026-07-12",
       "week": 9,
-      "dow": "saturday",
+      "dow": "sunday",
       "type": "intervals",
       "distance": 7.0,
       "pace_s": 469,
@@ -90,9 +90,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "week": 9,
-      "dow": "sunday",
+      "dow": "monday",
       "type": "cross",
       "distance": null,
       "pace_s": null,
@@ -102,9 +102,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-13",
+      "date": "2026-07-14",
       "week": 9,
-      "dow": "monday",
+      "dow": "tuesday",
       "type": "race_pace",
       "distance": 8.0,
       "pace_s": 526,
@@ -114,9 +114,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-14",
+      "date": "2026-07-15",
       "week": 9,
-      "dow": "tuesday",
+      "dow": "wednesday",
       "type": "easy",
       "distance": 6.0,
       "pace_s": 569,
@@ -126,9 +126,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-15",
+      "date": "2026-07-16",
       "week": 9,
-      "dow": "wednesday",
+      "dow": "thursday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -138,9 +138,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-16",
+      "date": "2026-07-17",
       "week": 9,
-      "dow": "thursday",
+      "dow": "friday",
       "type": "long",
       "distance": 10.0,
       "pace_s": 584,
@@ -150,9 +150,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-17",
+      "date": "2026-07-18",
       "week": 10,
-      "dow": "friday",
+      "dow": "saturday",
       "type": "easy",
       "distance": 7.0,
       "pace_s": 569,
@@ -162,9 +162,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-18",
+      "date": "2026-07-19",
       "week": 10,
-      "dow": "saturday",
+      "dow": "sunday",
       "type": "intervals",
       "distance": 9.0,
       "pace_s": 469,
@@ -174,9 +174,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-19",
+      "date": "2026-07-20",
       "week": 10,
-      "dow": "sunday",
+      "dow": "monday",
       "type": "cross",
       "distance": null,
       "pace_s": null,
@@ -186,9 +186,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-20",
+      "date": "2026-07-21",
       "week": 10,
-      "dow": "monday",
+      "dow": "tuesday",
       "type": "race_pace",
       "distance": 8.0,
       "pace_s": 526,
@@ -198,9 +198,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-21",
+      "date": "2026-07-22",
       "week": 10,
-      "dow": "tuesday",
+      "dow": "wednesday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -210,9 +210,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-22",
+      "date": "2026-07-23",
       "week": 10,
-      "dow": "wednesday",
+      "dow": "thursday",
       "type": "easy",
       "distance": 6.0,
       "pace_s": 569,
@@ -222,9 +222,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-23",
+      "date": "2026-07-24",
       "week": 10,
-      "dow": "thursday",
+      "dow": "friday",
       "type": "long",
       "distance": 12.0,
       "pace_s": 584,
@@ -234,9 +234,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-24",
+      "date": "2026-07-25",
       "week": 11,
-      "dow": "friday",
+      "dow": "saturday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -246,9 +246,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-25",
+      "date": "2026-07-26",
       "week": 11,
-      "dow": "saturday",
+      "dow": "sunday",
       "type": "intervals",
       "distance": 10.0,
       "pace_s": 469,
@@ -258,9 +258,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-26",
+      "date": "2026-07-27",
       "week": 11,
-      "dow": "sunday",
+      "dow": "monday",
       "type": "cross",
       "distance": null,
       "pace_s": null,
@@ -270,9 +270,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-27",
+      "date": "2026-07-28",
       "week": 11,
-      "dow": "monday",
+      "dow": "tuesday",
       "type": "race_pace",
       "distance": 9.0,
       "pace_s": 526,
@@ -282,9 +282,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-28",
+      "date": "2026-07-29",
       "week": 11,
-      "dow": "tuesday",
+      "dow": "wednesday",
       "type": "easy",
       "distance": 6.0,
       "pace_s": 569,
@@ -294,9 +294,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-29",
+      "date": "2026-07-30",
       "week": 11,
-      "dow": "wednesday",
+      "dow": "thursday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -306,9 +306,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-30",
+      "date": "2026-07-31",
       "week": 11,
-      "dow": "thursday",
+      "dow": "friday",
       "type": "long",
       "distance": 10.0,
       "pace_s": 584,
@@ -318,9 +318,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-07-31",
+      "date": "2026-08-01",
       "week": 12,
-      "dow": "friday",
+      "dow": "saturday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -330,9 +330,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-01",
+      "date": "2026-08-02",
       "week": 12,
-      "dow": "saturday",
+      "dow": "sunday",
       "type": "intervals",
       "distance": 10.0,
       "pace_s": 469,
@@ -342,9 +342,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-02",
+      "date": "2026-08-03",
       "week": 12,
-      "dow": "sunday",
+      "dow": "monday",
       "type": "cross",
       "distance": null,
       "pace_s": null,
@@ -354,9 +354,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-03",
+      "date": "2026-08-04",
       "week": 12,
-      "dow": "monday",
+      "dow": "tuesday",
       "type": "race_pace",
       "distance": 9.0,
       "pace_s": 526,
@@ -366,9 +366,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-04",
+      "date": "2026-08-05",
       "week": 12,
-      "dow": "tuesday",
+      "dow": "wednesday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -378,9 +378,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-05",
+      "date": "2026-08-06",
       "week": 12,
-      "dow": "wednesday",
+      "dow": "thursday",
       "type": "easy",
       "distance": 6.0,
       "pace_s": 569,
@@ -390,9 +390,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-06",
+      "date": "2026-08-07",
       "week": 12,
-      "dow": "thursday",
+      "dow": "friday",
       "type": "long",
       "distance": 14.0,
       "pace_s": 584,
@@ -402,9 +402,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-07",
+      "date": "2026-08-08",
       "week": 13,
-      "dow": "friday",
+      "dow": "saturday",
       "type": "easy",
       "distance": 7.0,
       "pace_s": 569,
@@ -414,9 +414,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-08",
+      "date": "2026-08-09",
       "week": 13,
-      "dow": "saturday",
+      "dow": "sunday",
       "type": "intervals",
       "distance": 10.0,
       "pace_s": 469,
@@ -426,9 +426,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-09",
+      "date": "2026-08-10",
       "week": 13,
-      "dow": "sunday",
+      "dow": "monday",
       "type": "cross",
       "distance": null,
       "pace_s": null,
@@ -438,9 +438,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-10",
+      "date": "2026-08-11",
       "week": 13,
-      "dow": "monday",
+      "dow": "tuesday",
       "type": "race_pace",
       "distance": 9.0,
       "pace_s": 526,
@@ -450,9 +450,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-11",
+      "date": "2026-08-12",
       "week": 13,
-      "dow": "tuesday",
+      "dow": "wednesday",
       "type": "easy",
       "distance": 6.0,
       "pace_s": 569,
@@ -462,9 +462,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-12",
+      "date": "2026-08-13",
       "week": 13,
-      "dow": "wednesday",
+      "dow": "thursday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -474,9 +474,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-13",
+      "date": "2026-08-14",
       "week": 13,
-      "dow": "thursday",
+      "dow": "friday",
       "type": "long",
       "distance": 10.0,
       "pace_s": 584,
@@ -486,9 +486,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-14",
+      "date": "2026-08-15",
       "week": 14,
-      "dow": "friday",
+      "dow": "saturday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -498,9 +498,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-15",
+      "date": "2026-08-16",
       "week": 14,
-      "dow": "saturday",
+      "dow": "sunday",
       "type": "intervals",
       "distance": 10.0,
       "pace_s": 469,
@@ -510,9 +510,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-16",
+      "date": "2026-08-17",
       "week": 14,
-      "dow": "sunday",
+      "dow": "monday",
       "type": "cross",
       "distance": null,
       "pace_s": null,
@@ -522,9 +522,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-17",
+      "date": "2026-08-18",
       "week": 14,
-      "dow": "monday",
+      "dow": "tuesday",
       "type": "race_pace",
       "distance": 10.0,
       "pace_s": 526,
@@ -534,9 +534,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-18",
+      "date": "2026-08-19",
       "week": 14,
-      "dow": "tuesday",
+      "dow": "wednesday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -546,9 +546,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-19",
+      "date": "2026-08-20",
       "week": 14,
-      "dow": "wednesday",
+      "dow": "thursday",
       "type": "easy",
       "distance": 6.0,
       "pace_s": 569,
@@ -558,9 +558,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-20",
+      "date": "2026-08-21",
       "week": 14,
-      "dow": "thursday",
+      "dow": "friday",
       "type": "long",
       "distance": 14.0,
       "pace_s": 584,
@@ -570,9 +570,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-21",
+      "date": "2026-08-22",
       "week": 15,
-      "dow": "friday",
+      "dow": "saturday",
       "type": "easy",
       "distance": 7.0,
       "pace_s": 569,
@@ -582,9 +582,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-22",
+      "date": "2026-08-23",
       "week": 15,
-      "dow": "saturday",
+      "dow": "sunday",
       "type": "intervals",
       "distance": 10.0,
       "pace_s": 469,
@@ -594,9 +594,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-23",
+      "date": "2026-08-24",
       "week": 15,
-      "dow": "sunday",
+      "dow": "monday",
       "type": "cross",
       "distance": null,
       "pace_s": null,
@@ -606,9 +606,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-24",
+      "date": "2026-08-25",
       "week": 15,
-      "dow": "monday",
+      "dow": "tuesday",
       "type": "race_pace",
       "distance": 10.0,
       "pace_s": 526,
@@ -618,9 +618,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-25",
+      "date": "2026-08-26",
       "week": 15,
-      "dow": "tuesday",
+      "dow": "wednesday",
       "type": "easy",
       "distance": 6.0,
       "pace_s": 569,
@@ -630,9 +630,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-26",
+      "date": "2026-08-27",
       "week": 15,
-      "dow": "wednesday",
+      "dow": "thursday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -642,9 +642,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-27",
+      "date": "2026-08-28",
       "week": 15,
-      "dow": "thursday",
+      "dow": "friday",
       "type": "long",
       "distance": 10.0,
       "pace_s": 584,
@@ -654,9 +654,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-28",
+      "date": "2026-08-29",
       "week": 16,
-      "dow": "friday",
+      "dow": "saturday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -666,9 +666,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-29",
+      "date": "2026-08-30",
       "week": 16,
-      "dow": "saturday",
+      "dow": "sunday",
       "type": "intervals",
       "distance": 10.0,
       "pace_s": 469,
@@ -678,9 +678,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-30",
+      "date": "2026-08-31",
       "week": 16,
-      "dow": "sunday",
+      "dow": "monday",
       "type": "cross",
       "distance": null,
       "pace_s": null,
@@ -690,9 +690,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-08-31",
+      "date": "2026-09-01",
       "week": 16,
-      "dow": "monday",
+      "dow": "tuesday",
       "type": "race_pace",
       "distance": 10.0,
       "pace_s": 526,
@@ -702,9 +702,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-09-01",
+      "date": "2026-09-02",
       "week": 16,
-      "dow": "tuesday",
+      "dow": "wednesday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -714,9 +714,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-09-02",
+      "date": "2026-09-03",
       "week": 16,
-      "dow": "wednesday",
+      "dow": "thursday",
       "type": "easy",
       "distance": 6.0,
       "pace_s": 569,
@@ -726,9 +726,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-09-03",
+      "date": "2026-09-04",
       "week": 16,
-      "dow": "thursday",
+      "dow": "friday",
       "type": "long",
       "distance": 14.0,
       "pace_s": 584,
@@ -738,9 +738,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-09-04",
+      "date": "2026-09-05",
       "week": 17,
-      "dow": "friday",
+      "dow": "saturday",
       "type": "easy",
       "distance": 7.0,
       "pace_s": 569,
@@ -750,9 +750,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-09-05",
+      "date": "2026-09-06",
       "week": 17,
-      "dow": "saturday",
+      "dow": "sunday",
       "type": "intervals",
       "distance": 10.0,
       "pace_s": 469,
@@ -762,9 +762,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-09-06",
+      "date": "2026-09-07",
       "week": 17,
-      "dow": "sunday",
+      "dow": "monday",
       "type": "cross",
       "distance": null,
       "pace_s": null,
@@ -774,9 +774,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-09-07",
+      "date": "2026-09-08",
       "week": 17,
-      "dow": "monday",
+      "dow": "tuesday",
       "type": "race_pace",
       "distance": 8.0,
       "pace_s": 526,
@@ -786,9 +786,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-09-08",
+      "date": "2026-09-09",
       "week": 17,
-      "dow": "tuesday",
+      "dow": "wednesday",
       "type": "easy",
       "distance": 6.0,
       "pace_s": 569,
@@ -798,38 +798,26 @@
       "status": "planned"
     },
     {
-      "date": "2026-09-09",
+      "date": "2026-09-10",
       "week": 17,
-      "dow": "wednesday",
+      "dow": "thursday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
       "pace": "9:29",
       "description": "5 miles Easy",
-      "phase": "plan",
-      "status": "planned"
-    },
-    {
-      "date": "2026-09-10",
-      "week": 17,
-      "dow": "thursday",
-      "type": "easy",
-      "distance": 8.0,
-      "pace_s": 569,
-      "pace": "9:29",
-      "description": "8 miles Easy",
       "phase": "plan",
       "status": "planned"
     },
     {
       "date": "2026-09-11",
-      "week": 18,
+      "week": 17,
       "dow": "friday",
       "type": "easy",
-      "distance": 5.0,
+      "distance": 8.0,
       "pace_s": 569,
       "pace": "9:29",
-      "description": "5 miles Easy",
+      "description": "8 miles Easy",
       "phase": "plan",
       "status": "planned"
     },
@@ -849,30 +837,6 @@
       "date": "2026-09-13",
       "week": 18,
       "dow": "sunday",
-      "type": "cross",
-      "distance": null,
-      "pace_s": null,
-      "pace": "",
-      "description": "Rest or Cross-Train",
-      "phase": "plan",
-      "status": "planned"
-    },
-    {
-      "date": "2026-09-14",
-      "week": 18,
-      "dow": "monday",
-      "type": "easy",
-      "distance": 6.0,
-      "pace_s": 569,
-      "pace": "9:29",
-      "description": "6 miles Easy",
-      "phase": "plan",
-      "status": "planned"
-    },
-    {
-      "date": "2026-09-15",
-      "week": 18,
-      "dow": "tuesday",
       "type": "easy",
       "distance": 5.0,
       "pace_s": 569,
@@ -882,9 +846,45 @@
       "status": "planned"
     },
     {
+      "date": "2026-09-14",
+      "week": 18,
+      "dow": "monday",
+      "type": "cross",
+      "distance": null,
+      "pace_s": null,
+      "pace": "",
+      "description": "Rest or Cross-Train",
+      "phase": "plan",
+      "status": "planned"
+    },
+    {
+      "date": "2026-09-15",
+      "week": 18,
+      "dow": "tuesday",
+      "type": "easy",
+      "distance": 6.0,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "6 miles Easy",
+      "phase": "plan",
+      "status": "planned"
+    },
+    {
       "date": "2026-09-16",
       "week": 18,
       "dow": "wednesday",
+      "type": "easy",
+      "distance": 5.0,
+      "pace_s": 569,
+      "pace": "9:29",
+      "description": "5 miles Easy",
+      "phase": "plan",
+      "status": "planned"
+    },
+    {
+      "date": "2026-09-17",
+      "week": 18,
+      "dow": "thursday",
       "type": "easy",
       "distance": 3.0,
       "pace_s": 569,
@@ -894,9 +894,9 @@
       "status": "planned"
     },
     {
-      "date": "2026-09-17",
+      "date": "2026-09-18",
       "week": 18,
-      "dow": "thursday",
+      "dow": "friday",
       "type": "race",
       "distance": 13.1,
       "pace_s": 526,

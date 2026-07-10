@@ -87,7 +87,7 @@ def _build_select(conn, table: str, field_map: dict) -> tuple[str, list[str], li
     return ", ".join(selects), fields, missing
 
 
-def extract_runs(limit_days: int | None = None) -> dict:
+def extract_runs(limit_days: int | None = None, start_date: str | None = None) -> dict:
     """Return {'activities': [...], 'missing_fields': [...], 'db_path': str}.
 
     Each activity dict has the keys of ACTIVITY_FIELDS + STEPS_FIELDS + 'laps',
@@ -95,6 +95,12 @@ def extract_runs(limit_days: int | None = None) -> dict:
     are returned in the unit GarminDB was configured with (see README).
     GPS coordinates are intentionally never read — nothing location-derived
     is published.
+
+    start_date (YYYY-MM-DD, optional) excludes activities before that date —
+    useful to ignore older history entirely (e.g. old devices, bad FIT
+    parses) without needing GarminDB to re-import a trimmed set. This is a
+    string comparison against start_time's 'YYYY-MM-DD ...' text format,
+    which sorts correctly lexicographically.
     """
     path = db_dir() / "garmin_activities.db"
     if not path.exists():
@@ -119,9 +125,12 @@ def extract_runs(limit_days: int | None = None) -> dict:
             log.warning("No 'sport' column — returning ALL activities, filter manually")
         if limit_days and "start_time" not in missing:
             conditions.append(f"start_time >= date('now', '-{int(limit_days)} day')")
+        if start_date and "start_time" not in missing:
+            conditions.append("start_time >= ?")
         where = f"WHERE {' AND '.join(conditions)}" if conditions else ""
+        params = [start_date] if (start_date and "start_time" not in missing) else []
         order = "ORDER BY start_time" if "start_time" not in missing else ""
-        rows = conn.execute(f"SELECT {sel} FROM activities {where} {order}").fetchall()
+        rows = conn.execute(f"SELECT {sel} FROM activities {where} {order}", params).fetchall()
         activities = [dict(r) for r in rows]
 
         # Running-specific fields live in steps_activities in most versions

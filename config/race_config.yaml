@@ -10,6 +10,8 @@ preferences:
   units: "km"           # "miles" or "km" — must match your GarminDB measurement setting
   long_run_day: "sunday"   # day of week for the weekly long run
   max_run_days_per_week: 5
+  activities_since: "2024-06-01"  # ignore any activity before this date
+  #                     # (YYYY-MM-DD). Leave "" to use full history.
   # plan_id: ""         # optional — force a specific program instead of
   #                     # auto-selection. Valid ids (see pipeline/plans_catalog.json):
   #                     # full: marathon_higdon_novice_1, marathon_higdon_novice_2,
