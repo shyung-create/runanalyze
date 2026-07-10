@@ -76,11 +76,22 @@ weather, hydration points, course notes) and drop a screenshot of the course
 elevation map at `config/course_elevation.png` — the dashboard shows
 "Not yet configured" until then.
 
-### 4. Enable GitHub Pages
+### 4. Publish the dashboard
 
-Repo → Settings → Pages → Source: **Deploy from a branch**, branch
-`main` (or your default), folder **`/docs`**. The site appears at
-`https://<user>.github.io/<repo>/`.
+The dashboard is a pure static site (`docs/`) — any static host works.
+Pick one:
+
+**GitHub Pages** (simplest if your repo is public — private repos need a
+paid GitHub plan): Repo → Settings → Pages → Source: **Deploy from a
+branch**, branch `main` (or your default), folder **`/docs`**. Site
+appears at `https://<user>.github.io/<repo>/`.
+
+**Netlify** (works with private repos on the free tier): the repo
+includes `netlify.toml` (publish dir `docs`, no build step needed). At
+netlify.com → **Add new site → Import an existing project** → pick this
+repo and branch → deploy. It auto-redeploys on every push, so
+`refresh.py --push` updates the live site automatically. Vercel and
+Cloudflare Pages work the same way if you'd rather use one of those.
 
 The repo ships with **sample data** in `docs/data/` so the site renders
 before your first real refresh (the header shows "sample data").
