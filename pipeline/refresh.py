@@ -204,6 +204,9 @@ def main():
     ap.add_argument("--replan", action="store_true",
                     help="discard the existing plan and regenerate from scratch "
                          "(current fitness, program selection, paces)")
+    ap.add_argument("--note", metavar="TEXT",
+                    help="free-text instruction for the DeepSeek plan revision, "
+                         "e.g. \"move this week's long run to Saturday\"")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
 
@@ -256,8 +259,15 @@ def main():
         # 4. LLM revision of remaining days
         revised = None
         if llm and llm.available:
-            log.info("Asking DeepSeek to revise the remaining plan...")
-            revised = llm.revise_plan(plan, mx, race_cfg, comparison, today_iso)
+            log.info("Asking DeepSeek to revise the remaining plan%s...",
+                     " (with your note)" if args.note else "")
+            revised = llm.revise_plan(plan, mx, race_cfg, comparison, today_iso,
+                                      note=args.note)
+        elif args.note:
+            log.warning("--note given but DeepSeek is unavailable (%s) — the note "
+                        "cannot be applied; fixed rest days/blocked dates from "
+                        "race_config.yaml are still enforced.",
+                        "--no-llm" if args.no_llm else "DEEPSEEK_API_KEY not set")
         elif llm and not llm.available:
             log.warning("DEEPSEEK_API_KEY not set — keeping deterministic plan")
         if revised:
@@ -281,6 +291,11 @@ def main():
         append_revision(
             f"Plan generated on {today_iso} ({reason}): {plan['tier']} tier — "
             f"{plan['tier_reason']}.", "generator")
+
+    # Hard backstop: fixed rest days / blocked dates hold no matter where the
+    # plan came from (fresh generation, kept plan, or LLM revision).
+    plan_generator.enforce_fixed_rest(plan["days"], race_cfg["preferences"],
+                                      today_iso, plan["race"]["race_date"])
 
     plan["comparison"] = comparison["summary"]
 
