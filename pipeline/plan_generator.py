@@ -234,6 +234,104 @@ def assess_goal(fitness: dict, goal_time_s: int | None, distance_type: str,
     return {"verdict": verdict, "notes": notes}
 
 
+# ---------------------------------------------------- schedule constraints
+
+# fields that move when two days trade workouts (date/dow/week stay put)
+_PAYLOAD_KEYS = ("type", "distance", "pace", "pace_s", "description", "phase")
+
+
+def _swap_workouts(a: dict, b: dict) -> None:
+    for k in _PAYLOAD_KEYS:
+        a[k], b[k] = b.get(k), a.get(k)
+
+
+def _constraint_sets(prefs: dict) -> tuple[set, set, str]:
+    rest_days = {str(x).lower() for x in (prefs.get("rest_days") or [])}
+    blocked = {str(x) for x in (prefs.get("blocked_dates") or [])}
+    long_day = str(prefs.get("long_run_day") or "").lower()
+    if long_day in rest_days:
+        log.warning("long_run_day %r is also a fixed rest day — ignoring the "
+                    "long-run placement preference", long_day)
+        long_day = ""
+    return rest_days, blocked, long_day
+
+
+def apply_schedule_constraints(days: list[dict], prefs: dict,
+                               race_date_iso: str) -> list[str]:
+    """Reorder workouts within each calendar week (Mon-Sun) so fixed rest
+    days, one-off blocked dates, and the preferred long-run day are honored.
+
+    Swap-based: a workout landing on a fixed rest day trades places with a
+    rest/cross day in the same week, so weekly volume and session content
+    are preserved — only their weekday placement changes. Race day never
+    moves. Returns human-readable notes for anything that couldn't be
+    honored cleanly.
+    """
+    notes: list[str] = []
+    rest_days, blocked, long_day = _constraint_sets(prefs)
+    if not rest_days and not blocked and not long_day:
+        return notes
+
+    def must_rest(d):
+        return d["dow"] in rest_days or d["date"] in blocked
+
+    weeks: dict[tuple, list[dict]] = {}
+    for d in days:
+        iso = date.fromisoformat(d["date"]).isocalendar()
+        weeks.setdefault((iso.year, iso.week), []).append(d)
+
+    for group in weeks.values():
+        movable = [d for d in group if d["date"] != race_date_iso]
+        # 1. fixed rest days / blocked dates: swap the workout out
+        for d in movable:
+            if must_rest(d) and d["type"] not in ("rest", "cross"):
+                partners = [p for p in movable if p is not d and not must_rest(p)
+                            and p["type"] in ("rest", "cross")]
+                if partners:
+                    dd = date.fromisoformat(d["date"])
+                    partner = min(partners, key=lambda p: abs(
+                        (date.fromisoformat(p["date"]) - dd).days))
+                    _swap_workouts(d, partner)
+                else:
+                    notes.append(
+                        f"{d['date']}: planned {d['type']} dropped — the day is a "
+                        f"fixed rest day and no rest day was left in that week to "
+                        f"swap with.")
+                    d.update(type="rest", distance=None, pace="", pace_s=None,
+                             description="Rest (fixed rest day)")
+        # 2. long run onto the preferred day
+        if long_day:
+            longs = [d for d in movable if d["type"] == "long"]
+            target = next((p for p in movable if p["dow"] == long_day), None)
+            if longs and target is not None and not must_rest(target) \
+                    and target["type"] != "race":
+                lr = max(longs, key=lambda d: d.get("distance") or 0)
+                if target is not lr:
+                    _swap_workouts(lr, target)
+    return notes
+
+
+def enforce_fixed_rest(days: list[dict], prefs: dict, today_iso: str,
+                       race_date_iso: str) -> list[str]:
+    """Hard backstop used after LLM plan revisions (which are asked, but not
+    guaranteed, to respect constraints): any future non-race day on a fixed
+    rest day or blocked date becomes rest outright. No swapping here — a
+    revision's placement intent is unknowable, so this only enforces,
+    it doesn't reshuffle."""
+    rest_days, blocked, _ = _constraint_sets(prefs)
+    changed = []
+    for d in days:
+        if (d["date"] >= today_iso and d["date"] != race_date_iso
+                and (d["dow"] in rest_days or d["date"] in blocked)
+                and d["type"] not in ("rest", "cross")):
+            changed.append(f"{d['date']} ({d['type']} → rest)")
+            d.update(type="rest", distance=None, pace="", pace_s=None,
+                     description="Rest (fixed rest day)")
+    if changed:
+        log.info("Fixed rest days enforced on: %s", ", ".join(changed))
+    return changed
+
+
 # ---------------------------------------------------------------- generate
 
 def generate_plan(race_cfg: dict, fitness: dict, rolling_weekly: list[dict],
@@ -329,6 +427,8 @@ def generate_plan(race_cfg: dict, fitness: dict, rolling_weekly: list[dict],
             "description": desc, "phase": phase, "status": "planned",
         })
         d += timedelta(days=1)
+
+    compromises += apply_schedule_constraints(days, prefs, race_date.isoformat())
 
     joining_offset = max((today - plan_start).days, 0)
     joining_week_vol = plan_def["weekly_volume"][min(joining_offset // 7,
