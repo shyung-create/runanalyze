@@ -78,15 +78,26 @@ def sync_garmin():
 
 def compare_plan_actual(plan: dict, activities: list[dict], today_iso: str) -> dict:
     """Mark past plan days done/missed/partial against actual runs, and build
-    a 14-day summary used for LLM revision context."""
+    a 14-day summary used for LLM revision context.
+
+    Today counts as "past" (compared against actual, cross-referenced with
+    a done/missed/partial mark) only if a run is already logged for today —
+    e.g. refreshing in the evening after today's run. Otherwise today stays
+    an upcoming/prescribed day, same as tomorrow, since it hasn't happened
+    yet. Either way the rolling weekly volume used for plan review is
+    unaffected — that always sums the 7 complete days ending yesterday.
+    """
     by_date: dict[str, list] = {}
     for a in activities:
         if a.get("date"):
             by_date.setdefault(a["date"], []).append(a)
 
+    today_has_run = bool(by_date.get(today_iso))
+
     recent = []
     for day in plan.get("days", []):
-        if day["date"] >= today_iso:
+        is_past = day["date"] < today_iso or (today_has_run and day["date"] == today_iso)
+        if not is_past:
             continue
         actual = by_date.get(day["date"], [])
         dist = sum(float(x.get("distance") or 0) for x in actual)
