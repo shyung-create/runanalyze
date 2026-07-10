@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-10T02:16:35",
+  "generated_at": "2026-07-10T02:36:09",
   "source": "catalog",
   "race": {
     "name": "Sample City Half Marathon",
@@ -11,7 +11,7 @@
   "units": "miles",
   "plan_id": "half_hansons_advanced",
   "tier": "Hansons Advanced Half Marathon",
-  "tier_reason": "Recent volume ~22 mi/wk is below every program's entry demands for the time remaining \u2014 using the gentlest available (41 mi at the joining week); build carefully and let refreshes adjust",
+  "tier_reason": "Recent volume ~22 mi/wk is below every program's entry demands for the time remaining \u2014 using the catalog's gentlest available (41 mi at the joining week); build carefully and let refreshes adjust",
   "plan_attribution": "MIT (c) 2020 Cody Hoover; plans encode published programs by Hal Higdon, Pete Pfitzinger/Scott Douglas/Philip Latter, and Keith & Kevin Hanson \u2014 support the original books",
   "weeks": 10,
   "compressed": true,
