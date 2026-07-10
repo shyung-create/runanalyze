@@ -158,7 +158,7 @@
 
   function planRow(d, today) {
     const dist = d.distance ? `${d.distance} ${unitAbbr()}` : "";
-    const pace = d.pace ? ` @ ${d.pace}` : "";
+    const pace = d.pace ? ` @ ${d.pace}/${unitAbbr()}` : "";
     return `<li class="${d.date === today ? "today-row" : ""}">
       <span class="d">${esc(shortDate(d.date))}</span>
       <span class="t"><span class="badge dot" style="--c:${typeColor(d.type)}">${esc(typeLabel(d.type))}</span></span>
@@ -207,9 +207,9 @@
         html += compMark(p);
         const dist = p.distance ? `<span class="dist">${p.distance}</span>` : "";
         html += `<div class="wtype" style="--c:${typeColor(p.type)}" title="${esc(p.description || "")}">
-          ${dist} ${esc(typeLabel(p.type))}${p.pace ? `<br>@ ${esc(p.pace)}` : ""}</div>`;
+          ${dist} ${esc(typeLabel(p.type))}${p.pace ? `<br>@ ${esc(p.pace)}/${unitAbbr()}` : ""}</div>`;
         if (p.actual?.distance)
-          html += `<div class="seg-note">ran ${p.actual.distance}${p.actual.avg_pace ? ` @ ${esc(p.actual.avg_pace)}` : ""}</div>`;
+          html += `<div class="seg-note">ran ${p.actual.distance}${p.actual.avg_pace ? ` @ ${esc(p.actual.avg_pace)}/${unitAbbr()}` : ""}</div>`;
       }
       html += `</div>`;
     }

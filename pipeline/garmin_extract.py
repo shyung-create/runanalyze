@@ -188,20 +188,31 @@ def _extract_laps(conn) -> dict[str, list[dict]]:
 
 
 def _normalize(a: dict) -> None:
-    """Add parsed convenience fields to an activity dict, in place."""
+    """Add parsed convenience fields to an activity dict, in place.
+
+    Pace is always DERIVED from duration / distance rather than read from
+    GarminDB's stored avg_pace column: that column's per-mile vs per-km
+    basis doesn't reliably track the distance unit (observed storing
+    min/mile alongside km distances), which poisoned every downstream
+    fitness/pace calculation. Duration and distance are trustworthy, so
+    the ratio always is too; the stored value is only a last resort when
+    no duration exists.
+    """
     for k in ACTIVITY_FIELDS:
         a.setdefault(k, None)
     dt = parse_date(a.get("start_time"))
     a["date"] = dt.strftime("%Y-%m-%d") if dt else None
     a["elapsed_time_s"] = parse_duration_s(a.get("elapsed_time"))
     a["moving_time_s"] = parse_duration_s(a.get("moving_time"))
-    a["avg_pace_s"] = parse_duration_s(a.get("avg_pace"))  # sec per unit-distance
+    a["avg_pace_s"] = None
     dur = a["moving_time_s"] or a["elapsed_time_s"]
-    if not a["avg_pace_s"] and dur and a.get("distance"):
+    if dur and a.get("distance"):
         try:
             a["avg_pace_s"] = dur / float(a["distance"])
         except (TypeError, ZeroDivisionError, ValueError):
             pass
+    if a["avg_pace_s"] is None:  # last resort: stored column, basis unknown
+        a["avg_pace_s"] = parse_duration_s(a.get("avg_pace"))
 
 
 def detect_garmindb_units() -> str:
