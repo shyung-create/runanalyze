@@ -21,4 +21,43 @@
 #     end: 8.0
 #     avg_grade_pct: -2.0
 
-segments: []
+# Derived from a full-marathon elevation chart (mile splits, feet), read
+# directly rather than via DeepSeek vision (the configured model rejected
+# image input — DeepSeek's chat API doesn't support image_url content).
+segments:
+  - name: "Start — flat with gentle rollers"
+    start: 0.0
+    end: 12.87
+    avg_grade_pct: 0.1
+  - name: "Climb to the mile-9 high point"
+    start: 12.87
+    end: 14.48
+    avg_grade_pct: 3.3
+  - name: "Descent off the mile-9 peak"
+    start: 14.48
+    end: 17.7
+    avg_grade_pct: -2.2
+  - name: "Building climb toward mile 14"
+    start: 17.7
+    end: 22.53
+    avg_grade_pct: 1.9
+  - name: "Sharp descent off the mile-14 high point"
+    start: 22.53
+    end: 24.14
+    avg_grade_pct: -4.0
+  - name: "Climbing into the back-half plateau"
+    start: 24.14
+    end: 27.36
+    avg_grade_pct: 1.6
+  - name: "Rolling near the high point (miles 17-20)"
+    start: 27.36
+    end: 32.19
+    avg_grade_pct: 0.1
+  - name: "Steep descent begins"
+    start: 32.19
+    end: 35.41
+    avg_grade_pct: -2.2
+  - name: "Gentle rolling finish"
+    start: 35.41
+    end: 42.195
+    avg_grade_pct: -0.2
