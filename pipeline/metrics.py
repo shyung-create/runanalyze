@@ -30,6 +30,7 @@ def compute_all(activities: list[dict], units: str, today: date | None = None) -
         "units": units,
         "total_runs_analyzed": len(runs),
         "weekly": weekly_mileage(runs, today),
+        "rolling_weekly": rolling_weekly_volume(runs, today),
         "long_runs": long_run_progression(runs, today),
         "aerobic_efficiency": pace_at_hr_trend(runs, today),
         "load_ratio": acute_chronic_ratio(runs, today),
@@ -98,6 +99,30 @@ def weekly_mileage(runs, today, weeks: int = 12) -> list[dict]:
          "runs": b["runs"], "time_s": b["time_s"]}
         for ws, b in sorted(buckets.items())
     ]
+
+
+def rolling_weekly_volume(runs, today, weeks: int = 4) -> list[dict]:
+    """Trailing 7-day windows ending on `today` (the refresh date) — NOT
+    aligned to calendar Mon-Sun weeks. Window 0 (last in the returned list)
+    covers today-6..today; window 1 covers the 7 days before that, etc.
+
+    Used for plan-review recalculation (tier selection, goal assessment) so
+    'this week's volume' means exactly the 7 days leading into the refresh,
+    recomputed fresh each time refresh.py runs, rather than snapping to
+    whichever calendar week happens to contain today. As a side effect every
+    window here is always fully elapsed (today is never in the future
+    relative to itself), so unlike calendar-week buckets there's no partial
+    "week in progress" to exclude before averaging.
+    """
+    out = []
+    for i in range(weeks):
+        end = today - timedelta(days=7 * i)
+        start = end - timedelta(days=6)
+        window = [a for a in runs if start <= _act_date(a) <= end]
+        dist = sum(float(a["distance"]) for a in window)
+        out.append({"window_start": start.isoformat(), "window_end": end.isoformat(),
+                    "distance": round(dist, 1), "runs": len(window)})
+    return list(reversed(out))  # oldest first, matches weekly_mileage ordering
 
 
 def long_run_progression(runs, today, weeks: int = 12) -> list[dict]:

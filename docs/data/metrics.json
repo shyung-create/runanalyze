@@ -76,6 +76,32 @@
       "time_s": 6335
     }
   ],
+  "rolling_weekly": [
+    {
+      "window_start": "2026-06-13",
+      "window_end": "2026-06-19",
+      "distance": 22.9,
+      "runs": 3
+    },
+    {
+      "window_start": "2026-06-20",
+      "window_end": "2026-06-26",
+      "distance": 24.0,
+      "runs": 3
+    },
+    {
+      "window_start": "2026-06-27",
+      "window_end": "2026-07-03",
+      "distance": 23.6,
+      "runs": 3
+    },
+    {
+      "window_start": "2026-07-04",
+      "window_end": "2026-07-10",
+      "distance": 17.6,
+      "runs": 3
+    }
+  ],
   "long_runs": [
     {
       "week_start": "2026-04-20",

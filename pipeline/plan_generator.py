@@ -197,7 +197,7 @@ def assess_goal(fitness: dict, goal_time_s: int | None, distance_type: str,
 
 # ---------------------------------------------------------------- generate
 
-def generate_plan(race_cfg: dict, fitness: dict, weekly: list[dict],
+def generate_plan(race_cfg: dict, fitness: dict, rolling_weekly: list[dict],
                   long_runs: list[dict], today: date | None = None) -> dict:
     today = today or date.today()
     catalog = load_catalog()
@@ -222,8 +222,10 @@ def generate_plan(race_cfg: dict, fitness: dict, weekly: list[dict],
 
     goal_time_s = parse_time_hms(race.get("target_time") or "")
 
-    # exclude the current in-progress week from the volume average
-    recent = [w["distance"] for w in weekly[:-1][-4:] if w["distance"] > 0] or [0]
+    # rolling_weekly is trailing 7-day windows ending on `today` (the refresh
+    # date), not calendar Mon-Sun weeks — every window is fully elapsed by
+    # construction, so nothing needs to be excluded as "in progress" here.
+    recent = [w["distance"] for w in rolling_weekly if w["distance"] > 0] or [0]
     avg_weekly = sum(recent) / len(recent)
     recent_long = max((l["distance"] for l in long_runs[-6:]), default=0)
 
