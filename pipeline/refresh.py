@@ -303,6 +303,30 @@ def main():
             f"Plan generated on {today_iso} ({reason}): {plan['tier']} tier — "
             f"{plan['tier_reason']}.", "generator")
 
+        # A freshly generated plan still needs the athlete's note applied —
+        # otherwise --replan silently drops --note, since the deterministic
+        # generator has no channel for free-text instructions.
+        if args.note:
+            if llm and llm.available:
+                log.info("Applying your note to the freshly generated plan...")
+                revised = llm.revise_plan(plan, mx, race_cfg, comparison, today_iso,
+                                          note=args.note)
+                if revised:
+                    plan["days"] = revised["days"]
+                    plan["source"] = "llm-revised"
+                    append_revision(f"Plan updated on {today_iso}: "
+                                    f"{revised['revision_note']}", "deepseek")
+                else:
+                    append_revision(
+                        f"{today_iso}: could not apply your note (revision failed "
+                        f"validation) — the freshly generated plan was kept as-is.",
+                        "error")
+            else:
+                log.warning("--note given but DeepSeek is unavailable (%s) — the "
+                            "note cannot be applied; fixed rest days/blocked dates "
+                            "from race_config.yaml are still enforced.",
+                            "--no-llm" if args.no_llm else "DEEPSEEK_API_KEY not set")
+
     # Hard backstop: fixed rest days / blocked dates hold no matter where the
     # plan came from (fresh generation, kept plan, or LLM revision).
     plan_generator.enforce_fixed_rest(plan["days"], race_cfg["preferences"],
