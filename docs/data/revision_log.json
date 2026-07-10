@@ -28,5 +28,10 @@
     "date": "2026-07-10T08:03:10",
     "source": "deepseek",
     "note": "Plan updated on 2026-07-10: Adjusted the taper to be more conservative due to low load ratio (ACWR 0.59) and recent low mileage. Reduced interval intensity and long run distances in weeks 10 and 11 to avoid overtraining before race day."
+  },
+  {
+    "date": "2026-07-10T08:15:14",
+    "source": "deepseek",
+    "note": "Plan updated on 2026-07-10: Changed blocked dates to mandatory rest, reduced mid-week runs to maintain consistent taper volume, and corrected workout types to 'easy' for clarity."
   }
 ]
