@@ -117,10 +117,21 @@ class DeepSeekClient:
     # -------------------------------------------------------- plan revision
 
     def revise_plan(self, plan: dict, metrics: dict, race_cfg: dict,
-                    comparison: dict, today_iso: str) -> dict | None:
+                    comparison: dict, today_iso: str,
+                    note: str | None = None) -> dict | None:
         """Ask the model to revise remaining plan days. Returns
-        {'days': [...], 'revision_note': str} validated, or None on failure."""
+        {'days': [...], 'revision_note': str} validated, or None on failure.
+
+        `note` is free-text from the athlete (refresh.py --note "...") — the
+        interactive channel for one-off adjustments like "move this week's
+        long run to Saturday, I have a wedding Sunday"."""
         remaining = [d for d in plan["days"] if d["date"] >= today_iso]
+        prefs = race_cfg.get("preferences", {})
+        constraints = {
+            "fixed_rest_days": prefs.get("rest_days") or [],
+            "blocked_dates": prefs.get("blocked_dates") or [],
+            "preferred_long_run_day": prefs.get("long_run_day") or "",
+        }
         system = (
             "You are a running coach revising a training plan. Reply ONLY with "
             'JSON: {"revision_note": str, "changed_days": [{"date": "YYYY-MM-DD", '
@@ -129,6 +140,12 @@ class DeepSeekClient:
             "never change days before " + today_iso + "; keep the race-day entry; "
             'allowed types: easy, tempo, intervals, race_pace, long, cross, rest, race. '
             "Respect the 10% weekly mileage growth guideline and keep the taper. "
+            "HARD constraints from the athlete's config (never violate): weekdays in "
+            "constraints.fixed_rest_days and dates in constraints.blocked_dates must "
+            "be rest; prefer placing weekly long runs on "
+            "constraints.preferred_long_run_day. If athlete_note is non-empty it is "
+            "a direct instruction from the athlete — honor it (within safety) and "
+            "acknowledge it in revision_note. "
             "revision_note must be 1-3 human-readable sentences explaining WHAT "
             "changed and WHY, citing the data (e.g. missed mileage, elevated HR, "
             "load ratio)."
@@ -138,6 +155,8 @@ class DeepSeekClient:
             "race": plan.get("race"),
             "units": plan.get("units"),
             "training_paces": plan.get("paces"),
+            "constraints": constraints,
+            "athlete_note": (note or "").strip(),
             "plan_vs_actual_last_14_days": comparison,
             "fitness_and_load": {
                 "fitness": metrics.get("fitness"),

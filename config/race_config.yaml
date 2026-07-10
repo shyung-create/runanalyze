@@ -8,7 +8,10 @@ race:
 # Athlete / pipeline preferences
 preferences:
   units: "km"           # "miles" or "km" — must match your GarminDB measurement setting
-  long_run_day: "sunday"   # day of week for the weekly long run
+  long_run_day: "sunday"   # weekly long run lands here (swapped within the week)
+  rest_days: []         # weekdays that are ALWAYS rest, e.g. [friday, monday] —
+  #                     # the displaced workout swaps to a rest day in the same week
+  blocked_dates: []     # one-off no-run dates, e.g. [2026-07-22]
   max_run_days_per_week: 5
   activities_since: "2024-06-01"  # ignore any activity before this date
   #                     # (YYYY-MM-DD). Leave "" to use full history.
