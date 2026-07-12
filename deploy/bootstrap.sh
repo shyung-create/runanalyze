@@ -15,6 +15,7 @@ SERVICE_USER="runanalyze"
 SERVICE_HOME="/home/${SERVICE_USER}"
 APP_DIR="${SERVICE_HOME}/runanalyze"
 REPO_URL="${REPO_URL:-https://github.com/<owner>/runanalyze.git}"   # override: REPO_URL=... ./bootstrap.sh
+BRANCH="${BRANCH:-}"                                                # override: BRANCH=your-branch ./bootstrap.sh — clones the default branch if unset
 TIMEZONE="${TIMEZONE:-}"                                            # override: TIMEZONE=America/Los_Angeles ./bootstrap.sh
 
 log()  { echo "[bootstrap] $*"; }
@@ -79,7 +80,11 @@ else
   #   sudo -u runanalyze ssh-keyscan github.com >> ${SERVICE_HOME}/.ssh/known_hosts
   #   # then add the printed public key at GitHub -> Settings -> Deploy keys,
   #   # "Allow write access" checked, and clone via git@github.com:... instead.
-  sudo -u "$SERVICE_USER" git clone "$REPO_URL" "$APP_DIR"
+  if [ -n "$BRANCH" ]; then
+    sudo -u "$SERVICE_USER" git clone -b "$BRANCH" "$REPO_URL" "$APP_DIR"
+  else
+    sudo -u "$SERVICE_USER" git clone "$REPO_URL" "$APP_DIR"
+  fi
 fi
 
 # ---------------------------------------------------------------- 4. Python venv
