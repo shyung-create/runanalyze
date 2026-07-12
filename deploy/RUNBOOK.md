@@ -41,10 +41,10 @@ Two equivalent paths — pick one:
 2. Admin tab → Garmin connection panel → enter your Garmin Connect email + password → Save.
 3. SSH in and run the sync once interactively, so any first-time MFA challenge (see CLAUDE.md's decision: MFA disabled on this account — if that ever changes, this manual step becomes necessary every time the cached session dies, not just once) has somewhere to go:
    ```bash
-   sudo -u runanalyze /home/runanalyze/runanalyze/.venv/bin/python \
-     -m garmindb_cli --activities --download --import --analyze --latest
+   sudo -u runanalyze bash -c "cd /home/runanalyze/runanalyze && .venv/bin/python .venv/bin/garmindb_cli.py --activities --download --import --analyze --latest"
    ```
-4. Confirm `~/.GarminDb/garth_session` now exists (`ls -la /home/runanalyze/.GarminDb/`) and the Admin tab's status shows "Connected".
+   `garmindb_cli.py` installs as a standalone script in the venv's `bin/`, not an importable module — `python -m garmindb_cli` doesn't work. The `cd` matters too: it writes `garmindb.log` to a relative path in whatever directory it's launched from.
+4. Confirm `~/.GarminDb/garmin_tokens.json` now exists (`sudo ls -la /home/runanalyze/.GarminDb/`) and the Admin tab's status shows "Connected". (As of garmindb 3.8.0, the session cache is `garmin_tokens.json` — it replaced the older `garth_session` file when garmindb dropped the deprecated `garth` library for a `garminconnect`-based adapter.)
 
 **B. By hand**, if you'd rather not use the web form for the first auth:
 ```bash
@@ -55,7 +55,13 @@ sudo chmod 600 /home/runanalyze/.GarminDb/GarminConnectConfig.json
 ```
 Then run the interactive sync from step A.3 to confirm it works and clear any MFA prompt.
 
-Once either path succeeds:
+**Either path — check `settings.metric` before trusting any numbers.** Neither the web form nor the example file above sets this correctly for you; it defaults to `false` (miles), and the web form *never* touches it at all (it only writes `credentials.user`/`password`). If your Garmin account/device actually records in km, `settings.metric` must be `true`, or every distance gets inflated `×1.609344` and every elevation gets shrunk `×0.3048` (`pipeline/garmin_extract.py`'s `detect_garmindb_units()` reads this field to decide whether GarminDB's raw storage is km or miles — get it wrong and `convert_units()` in `refresh.py` "corrects" data that was already right). Symptom to recognize this by if it happens anyway: lap distances landing suspiciously close to `1.61` (a runner's real 1-mile auto-lap, mis-relabeled as km) and paces that look implausibly fast compared to your other runs.
+```bash
+sudo -u runanalyze $EDITOR /home/runanalyze/.GarminDb/GarminConnectConfig.json   # settings.metric: true if your account is km
+```
+If you fix this after already publishing wrong data, re-run a refresh (`--no-sync`, since GarminDB itself doesn't need re-syncing) to regenerate corrected JSON — the bad conversion only affects `docs/data/*.json`, never the raw GarminDB databases.
+
+Once everything above succeeds:
 ```bash
 sudo systemctl start runanalyze.timer
 ```
