@@ -10,15 +10,30 @@ pushes. `docs/` is a pure static site (vendored Chart.js, no CDN) that reads tha
 Target: Oracle Always Free (Ampere A1, aarch64, ~2 OCPU / 12 GB, Ubuntu), serving a
 web UI where I enter Garmin credentials, trigger a live pull, and watch the plan update.
 
-## Non-negotiable constraints (do not violate; ask me before deviating)
-- **The Garmin password is NEVER persisted.** Not to disk, not to a database, not to a
-  log, not to an env file, not into git, not as a subprocess argv. It may exist only in
-  memory long enough to mint a garth OAuth token. Any temp credential file is 0600 in
-  PrivateTmp and removed in a `finally`.
-- **Never generate a real secret.** Placeholders only. I place every credential by hand.
+## Credential model (deliberate — do not "improve" this without asking)
+The real Garmin Connect username and password live in
+**`~/.GarminDb/GarminConnectConfig.json`**, mode **0600**, owned by the dedicated service
+user. This is GarminDB's native config format and it is what the tool requires. Storing it
+lets an unattended run **re-authenticate itself on token expiry** instead of silently
+breaking until I intervene. That is the tradeoff I have chosen.
+
+Because the password is at rest, these controls are non-negotiable:
+- **Exactly one location.** The password lives in that one 0600 file and NOWHERE else:
+  not in the repo, not in git, not in a log or journald entry, not in an exception
+  traceback, not in a subprocess argv or `/proc/<pid>/cmdline`, not in a URL or query
+  string, not in an env var, not in a tempfile left behind, not in a backup.
+- **Write-only in the UI.** The web app may WRITE the credential file. It must never read
+  the password back, echo it to the client, or expose it via any endpoint. Status = a
+  boolean ("configured" / "last auth OK at <time>"), never the value.
+- Writes to that file are **atomic** (temp file in the same dir → `chmod 0600` → rename)
+  and **preserve the other keys** already in GarminConnectConfig.json.
+- **Never generate a real credential.** Placeholders only. I place secrets by hand.
+- The web app must never serve `~/.GarminDb`, `~/HealthData`, or any `.db/.fit/.gpx/.tcx`
+  path. Explicit guard + a test.
+
+## Other non-negotiable constraints
 - **Raw health data stays on the box**: `~/HealthData/**`, `*.db`, `*.fit/tcx/gpx` are
-  never committed and never served by the web app. Published JSON is derived and
-  aggregated only — no GPS.
+  never committed and never served. Published JSON is derived/aggregated only — no GPS.
 - No containers. Native systemd. Scheduling via a systemd **timer**, not cron.
 - Runs as a dedicated non-root service user. Secrets only in chmod 600 files.
 - ARM64-native deps — the venv is built on the instance, never copied from my laptop.
