@@ -31,6 +31,12 @@ ProtectHome=tmpfs
 BindPaths=/home/runanalyze/runanalyze /home/runanalyze/.GarminDb
 # Deliberately NOT granted: /home/runanalyze/HealthData. The web app has
 # no route that reads raw health data — least privilege, not an oversight.
+# Same finding as runanalyze.service: default process umask leaves new
+# files/dirs group/world-readable (this unit writes GarminConnectConfig.json
+# via webapp/garmin_config.py's atomic write, which already chmods 0600
+# explicitly -- but UMask here is defense in depth for anything else this
+# process or a future route ever creates).
+UMask=0077
 
 [Install]
 WantedBy=multi-user.target

@@ -20,3 +20,10 @@ ProtectHome=tmpfs
 # Adds HealthData on top of the web unit's set — garmindb_cli.py writes
 # its SQLite databases there.
 BindPaths=/home/runanalyze/runanalyze /home/runanalyze/.GarminDb /home/runanalyze/HealthData
+# Found live: garmindb_cli.py (and the DB library underneath it) create
+# files/dirs using whatever the process umask allows -- they have no idea
+# about this project's 0600/0700 model. Default umask left the token
+# cache at 664 and the whole HealthData tree at 775/644. UMask here
+# applies to every file this unit or anything it execs ever creates, not
+# just a one-time chmod on what exists today.
+UMask=0077
