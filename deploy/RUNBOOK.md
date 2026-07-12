@@ -124,7 +124,7 @@ sudo tailscale serve status      # confirms the 443 -> 127.0.0.1:8000 mapping is
 ```
 If `tailscale serve` shows nothing, re-run:
 ```bash
-sudo tailscale serve --bg 443 http://127.0.0.1:8000
+sudo tailscale serve --bg --https=443 8000
 ```
 Tailscale's own certs (via its MagicDNS HTTPS feature) renew automatically;
 nothing in this repo manages TLS material.

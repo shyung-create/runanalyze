@@ -120,7 +120,11 @@ fi
 
 if tailscale status &>/dev/null; then
   log "Tailscale already authenticated — configuring tailscale serve..."
-  tailscale serve --bg 443 http://127.0.0.1:8000
+  # Confirmed against `tailscale serve --help` on the actual installed
+  # version (1.98.8) after an earlier syntax guess (--bg 443 http://...)
+  # turned out wrong for this CLI version. Target is the bare local port;
+  # --https=443 is explicit rather than relying on "default mode".
+  tailscale serve --bg --https=443 8000
 else
   warn "Tailscale is installed but not authenticated yet. Run:" \
        "    sudo tailscale up" \
