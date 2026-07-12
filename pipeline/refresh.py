@@ -100,7 +100,13 @@ def sync_garmin():
                                     "--analyze", "--latest"]
     log.info("Syncing GarminDB: %s", " ".join(cmd))
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True)
+        # cwd is explicit, not inherited: garmindb_cli.py writes garmindb.log
+        # to a *relative* path in whatever directory it's launched from
+        # (confirmed empirically — it errors with a permission denial if
+        # that directory isn't writable by whoever it's running as).
+        # WorkingDirectory= in the systemd unit already makes this correct
+        # by inheritance, but don't depend on that silently.
+        result = subprocess.run(cmd, capture_output=True, text=True, cwd=REPO_ROOT)
     except FileNotFoundError as e:
         raise GarminSyncError(
             "garmindb_cli.py not found — set GARMINDB_CLI in .env to its full "
