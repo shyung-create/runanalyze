@@ -1,0 +1,22 @@
+[Unit]
+Description=runanalyze nightly refresh
+OnFailure=runanalyze-notify-failure@%n.service
+
+[Service]
+Type=oneshot
+User=runanalyze
+Group=runanalyze
+WorkingDirectory=/home/runanalyze/runanalyze
+EnvironmentFile=/home/runanalyze/runanalyze/.env
+# --push is mandatory for any unattended run — without it, git_publish()
+# hits an input() prompt that raises EOFError under systemd (no tty) and
+# silently never pushes. See pipeline/refresh.py's git_publish().
+ExecStart=/home/runanalyze/runanalyze/.venv/bin/python pipeline/refresh.py --push
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=tmpfs
+# Adds HealthData on top of the web unit's set — garmindb_cli.py writes
+# its SQLite databases there.
+BindPaths=/home/runanalyze/runanalyze /home/runanalyze/.GarminDb /home/runanalyze/HealthData

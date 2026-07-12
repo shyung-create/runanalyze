@@ -14,6 +14,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import fcntl
 import os
 import shutil
 import subprocess
@@ -31,9 +32,25 @@ import metrics as metrics_mod
 import plan_generator
 import pace_strategy
 from deepseek_client import DeepSeekClient, validate_segments
+from notify import notify_failure
 
 HALF_MI, FULL_MI = 13.109, 26.219
 KM_PER_MILE = 1.609344
+
+# Single-flight lock: acquired by main() before anything else. Shared by
+# both the systemd-timer-triggered run and any web-app-spawned subprocess —
+# neither knows about the other directly, they just both try to flock the
+# same file. This is the authoritative concurrency guard (the web app's own
+# pre-check in webapp/jobs.py is best-effort UX only, not the safety net).
+VAR_DIR = REPO_ROOT / "var"
+LOCK_PATH = VAR_DIR / "refresh.lock"
+LAST_AUTH_OK_PATH = VAR_DIR / "last_auth_ok"
+LAST_AUTH_FAIL_PATH = VAR_DIR / "last_auth_fail"
+
+
+class GarminSyncError(Exception):
+    """Raised when GarminDB's sync subprocess fails — never swallow this;
+    it means we must not publish a refresh built on stale/incomplete data."""
 
 
 def load_dotenv():
@@ -63,17 +80,32 @@ def resolve_garmindb_cli() -> list[str]:
 
 
 def sync_garmin():
+    """Run GarminDB's sync. Raises GarminSyncError on any failure — the
+    caller must treat that as fatal (never publish a refresh built on a
+    failed sync). Previously this caught the error, logged it, and
+    continued with stale data; that silently violated the "never publish a
+    stale refresh after a failed Garmin sync" rule, so it no longer does.
+    """
+    VAR_DIR.mkdir(mode=0o700, exist_ok=True)
     cmd = resolve_garmindb_cli() + ["--activities", "--download", "--import",
                                     "--analyze", "--latest"]
     log.info("Syncing GarminDB: %s", " ".join(cmd))
     try:
         subprocess.run(cmd, check=True)
-    except FileNotFoundError:
-        log.error("garmindb_cli.py not found — set GARMINDB_CLI in .env to its "
-                  "full path (e.g. C:\\...\\Scripts\\garmindb_cli.py) or install "
-                  "GarminDB (pip install garmindb). Continuing with existing data.")
+    except FileNotFoundError as e:
+        raise GarminSyncError(
+            "garmindb_cli.py not found — set GARMINDB_CLI in .env to its full "
+            "path or install GarminDB (pip install garmindb)."
+        ) from e
     except subprocess.CalledProcessError as e:
-        log.error("GarminDB sync failed (%s). Continuing with existing data.", e)
+        # Confirmed from reading garmindb/garth source directly: an auth
+        # failure (bad credentials, MFA required and unreachable
+        # headlessly, or a Garmin-side SSO block) raises an uncaught
+        # exception inside garmindb_cli.py, which crashes it non-zero. That
+        # non-zero exit is exactly what lands here.
+        LAST_AUTH_FAIL_PATH.write_text(datetime.now().isoformat(timespec="seconds"))
+        raise GarminSyncError(f"GarminDB sync failed (exit {e.returncode}).") from e
+    LAST_AUTH_OK_PATH.write_text(datetime.now().isoformat(timespec="seconds"))
 
 
 def compare_plan_actual(plan: dict, activities: list[dict], today_iso: str) -> dict:
@@ -223,6 +255,39 @@ def main():
 
     setup_logging(args.verbose)
     load_dotenv()
+
+    # Single-flight lock — the very first thing main() does, before touching
+    # anything else. Authoritative for both the timer-triggered run and any
+    # web-app-spawned subprocess (see module docstring above LOCK_PATH).
+    VAR_DIR.mkdir(mode=0o700, exist_ok=True)
+    LOCK_PATH.touch(exist_ok=True)
+    lock_fd = os.open(LOCK_PATH, os.O_RDWR)
+    try:
+        fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        log.info("Another refresh is already running (lock held) — skipping this run.")
+        os.close(lock_fd)
+        return
+
+    try:
+        _run(args)
+    except GarminSyncError as e:
+        log.error("Garmin sync failed — aborting before publish: %s", e)
+        notify_failure(f"Garmin sync/auth failed: {e}")
+        sys.exit(1)
+    except Exception as e:
+        log.exception("Refresh failed")
+        notify_failure(f"Refresh failed: {type(e).__name__}: {e}")
+        sys.exit(1)
+    finally:
+        try:
+            fcntl.flock(lock_fd, fcntl.LOCK_UN)
+        except OSError:
+            pass
+        os.close(lock_fd)
+
+
+def _run(args):
     today = date.today()
     today_iso = today.isoformat()
 

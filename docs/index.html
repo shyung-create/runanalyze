@@ -23,6 +23,7 @@
     <button data-page="strategy">Race Strategy</button>
     <button data-page="raceinfo">Race Info</button>
     <button data-page="log">Revision Log</button>
+    <button data-page="admin">Admin</button>
   </nav>
 </header>
 
@@ -143,6 +144,43 @@
       <ul class="timeline" id="revision-timeline"></ul>
     </div>
   </section>
+
+  <!-- ================= ADMIN ================= -->
+  <section class="page" id="page-admin">
+    <div class="card" id="garmin-panel">
+      <h2>Garmin connection</h2>
+      <div id="garmin-status" class="admin-status"></div>
+      <form id="garmin-form" class="admin-form">
+        <label for="garmin-username">Garmin Connect email</label>
+        <input type="email" id="garmin-username" name="username" autocomplete="off" required>
+        <label for="garmin-password">Garmin Connect password</label>
+        <input type="password" id="garmin-password" name="password" autocomplete="off" required>
+        <button type="submit">Save credentials</button>
+        <div class="admin-note">
+          Stored only in <code>~/.GarminDb/GarminConnectConfig.json</code>, mode <code>0600</code>,
+          readable only by the service account that runs the sync — never shown here again, never
+          logged. Used so scheduled syncs can re-authenticate themselves if the cached session expires.
+        </div>
+        <div id="garmin-form-msg" class="admin-msg"></div>
+      </form>
+    </div>
+
+    <div class="card" id="refresh-panel">
+      <h2>Refresh</h2>
+      <div class="admin-row">
+        <label><input type="checkbox" id="opt-no-llm"> Skip DeepSeek (deterministic only)</label>
+        <label><input type="checkbox" id="opt-replan"> Replan from scratch</label>
+      </div>
+      <input type="text" id="opt-note" placeholder="Optional note for the plan revision (e.g. move long run to Saturday)">
+      <button id="refresh-btn" type="button">Refresh now</button>
+      <div id="refresh-status" class="admin-status"></div>
+      <pre id="refresh-log" class="admin-log" style="display:none"></pre>
+      <div class="admin-note">
+        Last refresh: <span id="last-refresh-at">—</span><br>
+        Last error: <span id="last-refresh-error">none</span>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer>
@@ -151,5 +189,6 @@
 
 <script src="assets/js/vendor/chart.umd.min.js"></script>
 <script src="assets/js/app.js"></script>
+<script src="assets/js/admin.js"></script>
 </body>
 </html>

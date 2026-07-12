@@ -1,0 +1,36 @@
+[Unit]
+Description=runanalyze web dashboard
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=runanalyze
+Group=runanalyze
+WorkingDirectory=/home/runanalyze/runanalyze
+EnvironmentFile=/home/runanalyze/runanalyze/.env
+ExecStart=/home/runanalyze/runanalyze/.venv/bin/uvicorn webapp.main:app --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=10
+
+# Binds to loopback only (see ExecStart --host). Reachability comes from
+# `tailscale serve` proxying https://<tailnet-name>/ -> 127.0.0.1:8000 —
+# this unit never touches the tailscale0 interface directly.
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+# ProtectHome=yes would hide the service user's own home entirely, which
+# is where the repo/venv/credential file/var dir all live — incompatible
+# with this service. ProtectHome=tmpfs + BindPaths is the tighter
+# alternative to ProtectHome=no: it mounts an EMPTY tmpfs over /home for
+# this unit's namespace, then punches through only the paths listed below.
+# Anything else under /home (including other accounts' homes, or stray
+# files in this account's own home outside these paths) stays invisible.
+ProtectHome=tmpfs
+BindPaths=/home/runanalyze/runanalyze /home/runanalyze/.GarminDb
+# Deliberately NOT granted: /home/runanalyze/HealthData. The web app has
+# no route that reads raw health data — least privilege, not an oversight.
+
+[Install]
+WantedBy=multi-user.target

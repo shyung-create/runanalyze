@@ -223,3 +223,31 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .empty-state { color: var(--muted); text-align: center; padding: 28px 10px; font-size: 14px; }
 footer { color: var(--muted); font-size: 12px; text-align: center; padding: 18px 0 30px; }
 footer a { color: var(--ink-2); }
+
+/* ------- admin panel ------- */
+.admin-status { margin-bottom: 12px; }
+.admin-form { display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
+.admin-form label { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+.admin-form input[type="email"], .admin-form input[type="password"], .admin-form input[type="text"] {
+  padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--page); color: var(--ink); font: inherit;
+}
+.admin-form button, #refresh-btn {
+  border: none; border-radius: 8px; background: var(--s1); color: white;
+  padding: 9px 14px; font: inherit; font-weight: 600; cursor: pointer; width: fit-content;
+}
+.admin-form button:disabled, #refresh-btn:disabled { opacity: 0.6; cursor: default; }
+.admin-note { color: var(--muted); font-size: 12.5px; margin-top: 6px; }
+.admin-msg { font-size: 13px; min-height: 1.2em; }
+.admin-msg.good { color: var(--good-text); }
+.admin-msg.bad { color: var(--critical); }
+.admin-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; font-size: 14px; }
+#opt-note {
+  width: 100%; max-width: 480px; padding: 8px 10px; margin-bottom: 10px;
+  border: 1px solid var(--border); border-radius: 8px; background: var(--page); color: var(--ink); font: inherit;
+}
+.admin-log {
+  background: var(--page); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px; font-size: 12px; max-height: 220px; overflow-y: auto; margin: 10px 0;
+  white-space: pre-wrap; word-break: break-word;
+}

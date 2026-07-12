@@ -1,0 +1,18 @@
+[Unit]
+Description=Telegram alert for a failed runanalyze unit (%i)
+
+[Service]
+Type=oneshot
+User=runanalyze
+Group=runanalyze
+WorkingDirectory=/home/runanalyze/runanalyze
+EnvironmentFile=/home/runanalyze/runanalyze/.env
+ExecStart=/home/runanalyze/runanalyze/.venv/bin/python pipeline/notify_unit_failure.py %i
+
+# This is a redundant safety net, not the primary alert path: refresh.py
+# itself calls notify_failure() directly on any failure (see refresh.py's
+# main()), which covers both the timer-triggered run AND any web-app-
+# spawned subprocess — systemd's OnFailure= only fires for actual systemd
+# units, so it can't see the web-triggered case at all. This unit exists
+# for the rarer case refresh.py dies before reaching its own except block
+# (e.g. can't even start the interpreter, OOM-killed).

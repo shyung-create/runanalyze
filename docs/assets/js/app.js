@@ -490,4 +490,8 @@
   }
 
   init();
+
+  // Hook for webapp/assets/js/admin.js to re-fetch data/*.json and
+  // re-render after a refresh completes, without a full page reload.
+  window.RunAnalyzeApp = { reload: init };
 })();

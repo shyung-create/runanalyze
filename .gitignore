@@ -10,6 +10,13 @@ HealthData/
 *.tcx
 *.gpx
 
+# webapp runtime state — job records, logs, the single-flight lock file.
+# Never publishable, never secrets, just noise.
+/var/
+
+# pytest
+.pytest_cache/
+
 # Python
 __pycache__/
 *.pyc
