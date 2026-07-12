@@ -85,26 +85,42 @@ def sync_garmin():
     failed sync). Previously this caught the error, logged it, and
     continued with stale data; that silently violated the "never publish a
     stale refresh after a failed Garmin sync" rule, so it no longer does.
+
+    Exit code alone is NOT trustworthy as of garmindb 3.8.0: confirmed by
+    reading garmindb_cli.py directly — a real login failure is caught
+    internally and reported via `logger.error("Failed to login!")` followed
+    by a bare `sys.exit()`, which is exit code 0 (success). Trusting
+    subprocess.run(check=True) alone would silently defeat this whole
+    function's purpose on that path, so failure is also detected by
+    scanning captured output for that exact known marker, independent of
+    the exit code.
     """
     VAR_DIR.mkdir(mode=0o700, exist_ok=True)
     cmd = resolve_garmindb_cli() + ["--activities", "--download", "--import",
                                     "--analyze", "--latest"]
     log.info("Syncing GarminDB: %s", " ".join(cmd))
     try:
-        subprocess.run(cmd, check=True)
+        result = subprocess.run(cmd, capture_output=True, text=True)
     except FileNotFoundError as e:
         raise GarminSyncError(
             "garmindb_cli.py not found — set GARMINDB_CLI in .env to its full "
             "path or install GarminDB (pip install garmindb)."
         ) from e
-    except subprocess.CalledProcessError as e:
-        # Confirmed from reading garmindb/garth source directly: an auth
-        # failure (bad credentials, MFA required and unreachable
-        # headlessly, or a Garmin-side SSO block) raises an uncaught
-        # exception inside garmindb_cli.py, which crashes it non-zero. That
-        # non-zero exit is exactly what lands here.
+
+    # Surface GarminDB's own output in our logs either way — capture_output
+    # means it no longer streams live to journald, so replay it now.
+    if result.stdout:
+        log.info("GarminDB output:\n%s", result.stdout)
+    if result.stderr:
+        log.info("GarminDB stderr:\n%s", result.stderr)
+
+    login_failed_silently = "Failed to login!" in (result.stdout + result.stderr)
+    if result.returncode != 0 or login_failed_silently:
         LAST_AUTH_FAIL_PATH.write_text(datetime.now().isoformat(timespec="seconds"))
-        raise GarminSyncError(f"GarminDB sync failed (exit {e.returncode}).") from e
+        reason = ("GarminDB reported a login failure (exit 0 — detected via "
+                   "output, not exit code)") if login_failed_silently and result.returncode == 0 \
+            else f"GarminDB sync failed (exit {result.returncode})"
+        raise GarminSyncError(reason)
     LAST_AUTH_OK_PATH.write_text(datetime.now().isoformat(timespec="seconds"))
 
 

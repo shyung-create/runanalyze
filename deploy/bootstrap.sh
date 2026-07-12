@@ -96,7 +96,13 @@ else
 fi
 sudo -u "$SERVICE_USER" "${APP_DIR}/.venv/bin/pip" install -q --upgrade pip
 sudo -u "$SERVICE_USER" "${APP_DIR}/.venv/bin/pip" install -q -r "${APP_DIR}/requirements.txt"
-sudo -u "$SERVICE_USER" "${APP_DIR}/.venv/bin/pip" install -q garmindb
+# >=3.8.0 pin is load-bearing, not cosmetic: 3.7.0 and earlier authenticate
+# via the now-deprecated `garth` library (its own README calls itself
+# "deprecated and no longer maintained"); 3.8.0 replaced that with a
+# garminconnect-based adapter with materially different session-file
+# location and failure behavior — see pipeline/refresh.py's sync_garmin()
+# for the exact failure-detection logic this depends on.
+sudo -u "$SERVICE_USER" "${APP_DIR}/.venv/bin/pip" install -q "garmindb>=3.8.0"
 log "venv ready. Check the output above for anything that compiled from source" \
     "(expected to resolve to prebuilt aarch64 wheels — confirm, don't assume)."
 
