@@ -7,10 +7,10 @@
     "target_time_s": 14400
   },
   "race_info": {
-    "location": "San Francisco",
-    "expected_temperature": "55-68F",
-    "humidity": "70%",
-    "elevation_map_image": "config/elevation.png",
+    "location": "",
+    "expected_temperature": null,
+    "humidity": null,
+    "elevation_map_image": "",
     "hydration_points": [],
     "course_notes": ""
   },

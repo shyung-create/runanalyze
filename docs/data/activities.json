@@ -2,172 +2,6 @@
   "units": "km",
   "runs": [
     {
-      "date": "2026-05-19",
-      "distance": 11.39,
-      "duration_s": 4208,
-      "avg_pace_s": 369,
-      "avg_hr": 150,
-      "max_hr": 165,
-      "cadence_spm": 162,
-      "ascent": 47.0,
-      "training_effect": null,
-      "anaerobic_training_effect": null,
-      "laps": [
-        {
-          "lap": 0,
-          "distance": 1.0,
-          "time_s": 379,
-          "avg_hr": 141
-        },
-        {
-          "lap": 1,
-          "distance": 1.0,
-          "time_s": 358,
-          "avg_hr": 145
-        },
-        {
-          "lap": 2,
-          "distance": 1.0,
-          "time_s": 372,
-          "avg_hr": 150
-        },
-        {
-          "lap": 3,
-          "distance": 1.0,
-          "time_s": 353,
-          "avg_hr": 150
-        },
-        {
-          "lap": 4,
-          "distance": 1.0,
-          "time_s": 366,
-          "avg_hr": 156
-        },
-        {
-          "lap": 5,
-          "distance": 1.0,
-          "time_s": 351,
-          "avg_hr": 152
-        },
-        {
-          "lap": 6,
-          "distance": 1.0,
-          "time_s": 349,
-          "avg_hr": 155
-        },
-        {
-          "lap": 7,
-          "distance": 1.0,
-          "time_s": 351,
-          "avg_hr": 156
-        },
-        {
-          "lap": 8,
-          "distance": 1.0,
-          "time_s": 366,
-          "avg_hr": 153
-        },
-        {
-          "lap": 9,
-          "distance": 1.0,
-          "time_s": 349,
-          "avg_hr": 154
-        },
-        {
-          "lap": 10,
-          "distance": 1.0,
-          "time_s": 468,
-          "avg_hr": 140
-        },
-        {
-          "lap": 11,
-          "distance": 0.39,
-          "time_s": 142,
-          "avg_hr": 148
-        }
-      ]
-    },
-    {
-      "date": "2026-05-22",
-      "distance": 10.91,
-      "duration_s": 3800,
-      "avg_pace_s": 348,
-      "avg_hr": 146,
-      "max_hr": 161,
-      "cadence_spm": 168,
-      "ascent": 48.0,
-      "training_effect": null,
-      "anaerobic_training_effect": null,
-      "laps": [
-        {
-          "lap": 0,
-          "distance": 1.0,
-          "time_s": 367,
-          "avg_hr": 136
-        },
-        {
-          "lap": 1,
-          "distance": 1.0,
-          "time_s": 343,
-          "avg_hr": 140
-        },
-        {
-          "lap": 2,
-          "distance": 1.0,
-          "time_s": 375,
-          "avg_hr": 141
-        },
-        {
-          "lap": 3,
-          "distance": 1.0,
-          "time_s": 335,
-          "avg_hr": 145
-        },
-        {
-          "lap": 4,
-          "distance": 1.0,
-          "time_s": 356,
-          "avg_hr": 150
-        },
-        {
-          "lap": 5,
-          "distance": 1.0,
-          "time_s": 337,
-          "avg_hr": 146
-        },
-        {
-          "lap": 6,
-          "distance": 1.0,
-          "time_s": 344,
-          "avg_hr": 147
-        },
-        {
-          "lap": 7,
-          "distance": 1.0,
-          "time_s": 332,
-          "avg_hr": 152
-        },
-        {
-          "lap": 8,
-          "distance": 1.0,
-          "time_s": 344,
-          "avg_hr": 151
-        },
-        {
-          "lap": 9,
-          "distance": 1.0,
-          "time_s": 345,
-          "avg_hr": 149
-        },
-        {
-          "lap": 10,
-          "distance": 0.91,
-          "time_s": 317,
-          "avg_hr": 151
-        }
-      ]
-    },
-    {
       "date": "2026-05-23",
       "distance": 16.13,
       "duration_s": 5592,
@@ -2992,6 +2826,214 @@
           "distance": 0.01,
           "time_s": 3,
           "avg_hr": 152
+        }
+      ]
+    },
+    {
+      "date": "2026-07-11",
+      "distance": 11.22,
+      "duration_s": 4004,
+      "avg_pace_s": 357,
+      "avg_hr": 150,
+      "max_hr": 163,
+      "cadence_spm": 174,
+      "ascent": 65.0,
+      "training_effect": null,
+      "anaerobic_training_effect": null,
+      "laps": [
+        {
+          "lap": 0,
+          "distance": 1.0,
+          "time_s": 373,
+          "avg_hr": 136
+        },
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 347,
+          "avg_hr": 146
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 357,
+          "avg_hr": 148
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 348,
+          "avg_hr": 150
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 371,
+          "avg_hr": 153
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 350,
+          "avg_hr": 151
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 356,
+          "avg_hr": 153
+        },
+        {
+          "lap": 7,
+          "distance": 1.0,
+          "time_s": 349,
+          "avg_hr": 155
+        },
+        {
+          "lap": 8,
+          "distance": 1.0,
+          "time_s": 351,
+          "avg_hr": 154
+        },
+        {
+          "lap": 9,
+          "distance": 1.0,
+          "time_s": 353,
+          "avg_hr": 155
+        },
+        {
+          "lap": 10,
+          "distance": 1.0,
+          "time_s": 355,
+          "avg_hr": 154
+        },
+        {
+          "lap": 11,
+          "distance": 0.22,
+          "time_s": 88,
+          "avg_hr": 151
+        }
+      ]
+    },
+    {
+      "date": "2026-07-12",
+      "distance": 17.42,
+      "duration_s": 6592,
+      "avg_pace_s": 378,
+      "avg_hr": 142,
+      "max_hr": 160,
+      "cadence_spm": 166,
+      "ascent": 91.0,
+      "training_effect": null,
+      "anaerobic_training_effect": null,
+      "laps": [
+        {
+          "lap": 0,
+          "distance": 1.0,
+          "time_s": 362,
+          "avg_hr": 132
+        },
+        {
+          "lap": 1,
+          "distance": 1.0,
+          "time_s": 360,
+          "avg_hr": 141
+        },
+        {
+          "lap": 2,
+          "distance": 1.0,
+          "time_s": 358,
+          "avg_hr": 144
+        },
+        {
+          "lap": 3,
+          "distance": 1.0,
+          "time_s": 357,
+          "avg_hr": 144
+        },
+        {
+          "lap": 4,
+          "distance": 1.0,
+          "time_s": 350,
+          "avg_hr": 148
+        },
+        {
+          "lap": 5,
+          "distance": 1.0,
+          "time_s": 357,
+          "avg_hr": 148
+        },
+        {
+          "lap": 6,
+          "distance": 1.0,
+          "time_s": 371,
+          "avg_hr": 147
+        },
+        {
+          "lap": 7,
+          "distance": 1.0,
+          "time_s": 375,
+          "avg_hr": 147
+        },
+        {
+          "lap": 8,
+          "distance": 1.0,
+          "time_s": 371,
+          "avg_hr": 144
+        },
+        {
+          "lap": 9,
+          "distance": 1.0,
+          "time_s": 353,
+          "avg_hr": 147
+        },
+        {
+          "lap": 10,
+          "distance": 1.0,
+          "time_s": 372,
+          "avg_hr": 150
+        },
+        {
+          "lap": 11,
+          "distance": 1.0,
+          "time_s": 376,
+          "avg_hr": 141
+        },
+        {
+          "lap": 12,
+          "distance": 1.0,
+          "time_s": 362,
+          "avg_hr": 145
+        },
+        {
+          "lap": 13,
+          "distance": 1.0,
+          "time_s": 371,
+          "avg_hr": 143
+        },
+        {
+          "lap": 14,
+          "distance": 1.0,
+          "time_s": 374,
+          "avg_hr": 141
+        },
+        {
+          "lap": 15,
+          "distance": 1.0,
+          "time_s": 372,
+          "avg_hr": 144
+        },
+        {
+          "lap": 16,
+          "distance": 1.0,
+          "time_s": 487,
+          "avg_hr": 133
+        },
+        {
+          "lap": 17,
+          "distance": 0.42,
+          "time_s": 258,
+          "avg_hr": 123
         }
       ]
     }

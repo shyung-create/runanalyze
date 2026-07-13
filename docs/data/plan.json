@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-10T08:16:29",
+  "generated_at": "2026-07-13T08:10:47",
   "source": "llm-revised",
   "race": {
     "name": "SF Marathon",
@@ -64,7 +64,9 @@
       "pace": "",
       "description": "Rest (fixed rest day)",
       "phase": "plan",
-      "status": "planned"
+      "status": "past",
+      "actual": null,
+      "completion": "done"
     },
     {
       "date": "2026-07-11",
@@ -76,8 +78,15 @@
       "pace": "6:09",
       "description": "Easy run 10 km to maintain sharpness without excess fatigue",
       "phase": "plan",
-      "status": "planned",
-      "revised": true
+      "status": "past",
+      "revised": true,
+      "actual": {
+        "distance": 11.2,
+        "avg_hr": 150,
+        "avg_pace_s": 357,
+        "avg_pace": "5:57"
+      },
+      "completion": "done"
     },
     {
       "date": "2026-07-12",
@@ -89,8 +98,15 @@
       "pace": "6:18",
       "description": "Reduced long run to 16 km to taper volume",
       "phase": "plan",
-      "status": "planned",
-      "revised": true
+      "status": "past",
+      "revised": true,
+      "actual": {
+        "distance": 17.4,
+        "avg_hr": 142,
+        "avg_pace_s": 378,
+        "avg_pace": "6:18"
+      },
+      "completion": "done"
     },
     {
       "date": "2026-07-13",
@@ -109,19 +125,6 @@
       "date": "2026-07-14",
       "week": 11,
       "dow": "tuesday",
-      "type": "easy",
-      "distance": 6.0,
-      "pace_s": 369,
-      "pace": "6:09",
-      "description": "Easy recovery 6 km to maintain taper",
-      "phase": "plan",
-      "status": "planned",
-      "revised": true
-    },
-    {
-      "date": "2026-07-15",
-      "week": 11,
-      "dow": "wednesday",
       "type": "rest",
       "distance": null,
       "pace_s": null,
@@ -132,14 +135,27 @@
       "revised": true
     },
     {
-      "date": "2026-07-16",
+      "date": "2026-07-15",
       "week": 11,
-      "dow": "thursday",
+      "dow": "wednesday",
       "type": "easy",
       "distance": 6.0,
       "pace_s": 369,
       "pace": "6:09",
-      "description": "Easy 6 km with strides, reduced for taper",
+      "description": "Easy run 6 km \u2013 strictly at easy pace 6:09/km",
+      "phase": "plan",
+      "status": "planned",
+      "revised": true
+    },
+    {
+      "date": "2026-07-16",
+      "week": 11,
+      "dow": "thursday",
+      "type": "easy",
+      "distance": 8.0,
+      "pace_s": 369,
+      "pace": "6:09",
+      "description": "Easy run 8 km with strides",
       "phase": "plan",
       "status": "planned",
       "revised": true
@@ -149,10 +165,10 @@
       "week": 11,
       "dow": "friday",
       "type": "easy",
-      "distance": 5.0,
+      "distance": 6.0,
       "pace_s": 369,
       "pace": "6:09",
-      "description": "Easy 5 km recovery",
+      "description": "Easy run 6 km recovery \u2013 strictly at easy pace 6:09/km",
       "phase": "plan",
       "status": "planned",
       "revised": true
@@ -161,23 +177,24 @@
       "date": "2026-07-18",
       "week": 11,
       "dow": "saturday",
-      "type": "cross",
-      "distance": null,
-      "pace_s": null,
-      "pace": "",
-      "description": "Rest or cross-training",
+      "type": "easy",
+      "distance": 5.0,
+      "pace_s": 369,
+      "pace": "6:09",
+      "description": "Easy run 5 km recovery",
       "phase": "plan",
-      "status": "planned"
+      "status": "planned",
+      "revised": true
     },
     {
       "date": "2026-07-19",
       "week": 11,
       "dow": "sunday",
       "type": "long",
-      "distance": 9.0,
+      "distance": 14.0,
       "pace_s": 378,
       "pace": "6:18",
-      "description": "Shorter long run 9 km for taper",
+      "description": "Long run 14 km at easy long pace \u2013 keep relaxed",
       "phase": "plan",
       "status": "planned",
       "revised": true
@@ -271,10 +288,10 @@
     }
   ],
   "comparison": {
-    "days_done": 0,
+    "days_done": 3,
     "days_missed": 0,
-    "planned_distance_14d": 0,
-    "actual_distance_14d": 0,
-    "adherence_pct": null
+    "planned_distance_14d": 26.0,
+    "actual_distance_14d": 28.6,
+    "adherence_pct": 110
   }
 }
