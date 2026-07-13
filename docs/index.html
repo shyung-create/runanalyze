@@ -176,6 +176,18 @@
         change an already-generated plan; trigger a refresh afterward (Replan from
         scratch recommended) to apply it.
       </div>
+
+      <h3>Specific rest dates</h3>
+      <div id="blocked-dates-list" class="admin-row"></div>
+      <div class="admin-row">
+        <input type="date" id="blocked-date-input">
+        <button id="blocked-date-add-btn" type="button">Add rest date</button>
+      </div>
+      <div id="blocked-dates-msg" class="admin-msg"></div>
+      <div class="admin-note">
+        One-off dates that are always rest, regardless of weekday — e.g. a specific
+        travel day. Existing dates are listed above; click × to remove one.
+      </div>
     </div>
 
     <div class="card" id="refresh-panel">

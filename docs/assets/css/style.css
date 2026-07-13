@@ -251,3 +251,23 @@ footer a { color: var(--ink-2); }
   padding: 10px; font-size: 12px; max-height: 220px; overflow-y: auto; margin: 10px 0;
   white-space: pre-wrap; word-break: break-word;
 }
+.card h3 { font-size: 13px; font-weight: 600; color: var(--ink-2); margin: 18px 0 8px; }
+#blocked-date-input {
+  padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--page); color: var(--ink); font: inherit;
+}
+#blocked-date-add-btn {
+  border: none; border-radius: 8px; background: var(--s1); color: white;
+  padding: 8px 12px; font: inherit; font-weight: 600; cursor: pointer;
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
+  padding: 4px 6px 4px 10px; border-radius: 99px; border: 1px solid var(--border);
+  color: var(--ink-2); background: var(--page);
+}
+.chip button {
+  border: none; background: none; color: var(--muted); cursor: pointer;
+  font: inherit; line-height: 1; padding: 2px 4px;
+}
+.chip button:hover { color: var(--critical); }
+.admin-note.empty { font-style: italic; }

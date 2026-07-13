@@ -114,6 +114,70 @@
     });
   }
 
+  // ------------------------------------------------------------ blocked dates (specific rest dates)
+  let blockedDates = [];
+
+  function renderBlockedDates() {
+    const el = $("#blocked-dates-list");
+    if (blockedDates.length === 0) {
+      el.innerHTML = `<span class="admin-note empty">No specific rest dates set.</span>`;
+      return;
+    }
+    el.innerHTML = blockedDates.map((d) =>
+      `<span class="chip" data-date="${esc(d)}">${esc(d)} <button type="button" data-remove="${esc(d)}" aria-label="Remove ${esc(d)}">&times;</button></span>`
+    ).join("");
+  }
+
+  async function loadBlockedDates() {
+    const resp = await api("/api/race-config");
+    const data = await resp.json();
+    blockedDates = data.blocked_dates || [];
+    renderBlockedDates();
+  }
+
+  async function saveBlockedDates(nextDates) {
+    const msg = $("#blocked-dates-msg");
+    msg.textContent = "Saving...";
+    try {
+      const resp = await api("/api/race-config/blocked-dates", {
+        method: "POST", body: JSON.stringify({ dates: nextDates }),
+      });
+      if (!resp.ok) {
+        msg.textContent = "Could not save — check the server log.";
+        msg.className = "admin-msg bad";
+        return;
+      }
+      const data = await resp.json();
+      blockedDates = data.blocked_dates || [];
+      renderBlockedDates();
+      msg.textContent = "Saved. Trigger a refresh to apply it to the plan.";
+      msg.className = "admin-msg good";
+    } catch {
+      msg.textContent = "Request failed.";
+      msg.className = "admin-msg bad";
+    }
+  }
+
+  function initBlockedDatesForm() {
+    $("#blocked-date-add-btn").addEventListener("click", () => {
+      const input = $("#blocked-date-input");
+      const value = input.value;
+      if (!value) return;
+      if (blockedDates.includes(value)) {
+        input.value = "";
+        return;
+      }
+      input.value = "";
+      saveBlockedDates([...blockedDates, value]);
+    });
+
+    $("#blocked-dates-list").addEventListener("click", (e) => {
+      const date = e.target.dataset.remove;
+      if (!date) return;
+      saveBlockedDates(blockedDates.filter((d) => d !== date));
+    });
+  }
+
   // ------------------------------------------------------------ refresh trigger + polling
   function setRefreshUI(running) {
     $("#refresh-btn").disabled = running;
@@ -176,6 +240,8 @@
     initGarminForm();
     await loadRestDays();
     initRestDaysForm();
+    await loadBlockedDates();
+    initBlockedDatesForm();
     $("#refresh-btn").addEventListener("click", startRefresh);
   }
 

@@ -75,3 +75,61 @@ def test_write_rest_days_clearing_back_to_empty(isolated_race_config):
     race_config.write_rest_days(["saturday"])
     race_config.write_rest_days([])
     assert race_config.read_rest_days() == []
+
+
+# ------------------------------------------------------------ blocked_dates
+
+def test_read_blocked_dates_empty(isolated_race_config):
+    assert race_config.read_blocked_dates() == []
+
+
+def test_write_blocked_dates_updates_value(isolated_race_config):
+    race_config.write_blocked_dates(["2026-07-22", "2026-08-01"])
+    assert race_config.read_blocked_dates() == ["2026-07-22", "2026-08-01"]
+
+
+def test_write_blocked_dates_returns_strings_not_date_objects(isolated_race_config):
+    # PyYAML auto-parses unquoted YYYY-MM-DD as datetime.date on load --
+    # confirmed plan_generator.py already handles this via str(x), but our
+    # own read path should hand back plain strings too, not leak that detail.
+    race_config.write_blocked_dates(["2026-07-22"])
+    result = race_config.read_blocked_dates()
+    assert result == ["2026-07-22"]
+    assert all(isinstance(d, str) for d in result)
+
+
+def test_write_blocked_dates_preserves_every_comment_and_other_field(isolated_race_config):
+    original = isolated_race_config.read_text()
+    race_config.write_blocked_dates(["2026-07-22"])
+    new = isolated_race_config.read_text()
+    for line in original.splitlines():
+        if "#" in line and "blocked_dates:" not in line:
+            assert line in new, f"comment line lost: {line!r}"
+    assert 'name: "SF Marathon"' in new
+    assert "rest_days: []" in new
+
+
+def test_write_blocked_dates_rejects_invalid_date(isolated_race_config):
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_blocked_dates(["not-a-date"])
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_blocked_dates(["2026-13-45"])  # not a real calendar date
+    assert race_config.read_blocked_dates() == []
+
+
+def test_write_blocked_dates_dedupes_and_sorts(isolated_race_config):
+    race_config.write_blocked_dates(["2026-08-01", "2026-07-22", "2026-07-22"])
+    assert race_config.read_blocked_dates() == ["2026-07-22", "2026-08-01"]
+
+
+def test_write_blocked_dates_independent_of_rest_days(isolated_race_config):
+    race_config.write_rest_days(["monday"])
+    race_config.write_blocked_dates(["2026-07-22"])
+    assert race_config.read_rest_days() == ["monday"]
+    assert race_config.read_blocked_dates() == ["2026-07-22"]
+
+
+def test_write_blocked_dates_no_stray_temp_files(isolated_race_config):
+    race_config.write_blocked_dates(["2026-07-22"])
+    leftovers = list(isolated_race_config.parent.glob(".race_config.yaml.tmp-*"))
+    assert leftovers == []

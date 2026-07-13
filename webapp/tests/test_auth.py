@@ -63,6 +63,12 @@ def test_csrf_required_on_post_without_any_cookie():
     assert resp.status_code == 403
 
 
+def test_csrf_required_on_blocked_dates_post_without_any_cookie():
+    client = TestClient(app)
+    resp = client.post("/api/race-config/blocked-dates", json={"dates": []})
+    assert resp.status_code == 403
+
+
 def test_csrf_required_on_rest_days_post_without_any_cookie():
     client = TestClient(app)
     resp = client.post("/api/race-config/rest-days", json={"days": ["monday"]})
