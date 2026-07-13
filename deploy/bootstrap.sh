@@ -94,12 +94,23 @@ fi
 # refresh had already succeeded — data was regenerated — only the commit
 # step failed). Generic bot identity, not the operator's own name/email:
 # this becomes the visible commit author in a public repo's history.
-if sudo -u "$SERVICE_USER" git config --global user.email &>/dev/null; then
+#
+# Repo-local config (`-C APP_DIR`, no --global), not ~/.gitconfig:
+# runanalyze-web.service's ProtectHome=tmpfs + BindPaths only bind-mounts
+# APP_DIR/.GarminDb/HealthData, not the home directory root — a global
+# ~/.gitconfig set from an interactive shell is invisible to the refresh
+# subprocess the web app spawns (found live: `--global` set successfully
+# over SSH, refresh still failed with the exact same "Author identity
+# unknown" error, because that subprocess's sandboxed mount namespace
+# never bind-mounted the home root where ~/.gitconfig lives). APP_DIR
+# itself is already bound for both units, so repo-local config works
+# for both the web-triggered and scheduled-timer paths.
+if sudo -u "$SERVICE_USER" git -C "$APP_DIR" config user.email &>/dev/null; then
   log "git author identity already configured for ${SERVICE_USER}."
 else
   log "Setting git author identity for ${SERVICE_USER} (runanalyze-bot)..."
-  sudo -u "$SERVICE_USER" git config --global user.name "runanalyze-bot"
-  sudo -u "$SERVICE_USER" git config --global user.email "runanalyze-bot@users.noreply.github.com"
+  sudo -u "$SERVICE_USER" git -C "$APP_DIR" config user.name "runanalyze-bot"
+  sudo -u "$SERVICE_USER" git -C "$APP_DIR" config user.email "runanalyze-bot@users.noreply.github.com"
 fi
 
 # ---------------------------------------------------------------- 4. Python venv

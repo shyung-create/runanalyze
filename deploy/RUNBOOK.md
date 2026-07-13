@@ -82,16 +82,22 @@ Both go through the same single-flight lock (`<APP_DIR>/var/refresh.lock`) as
 the web-triggered path — starting this while a web-triggered refresh is
 running is a harmless no-op (`refresh.py` logs "already running" and exits 0).
 
-`bootstrap.sh` sets a git author identity (`runanalyze-bot`) for the
-service user on first setup — required because `git_publish()` runs `git
-commit` after every refresh. If you're on an older checkout from before
-that step existed, a refresh will regenerate `docs/data/*.json` correctly
-but then fail at the commit with "Author identity unknown" (exit 128).
-Fix once:
+`bootstrap.sh` sets a **repo-local** git author identity (`runanalyze-bot`)
+for the service user on first setup — required because `git_publish()`
+runs `git commit` after every refresh. If you're on an older checkout from
+before that step existed, a refresh will regenerate `docs/data/*.json`
+correctly but then fail at the commit with "Author identity unknown"
+(exit 128). Fix once:
 ```bash
-sudo -u runanalyze git config --global user.name "runanalyze-bot"
-sudo -u runanalyze git config --global user.email "runanalyze-bot@users.noreply.github.com"
+sudo -u runanalyze git -C /home/runanalyze/runanalyze config user.name "runanalyze-bot"
+sudo -u runanalyze git -C /home/runanalyze/runanalyze config user.email "runanalyze-bot@users.noreply.github.com"
 ```
+Must be repo-local (`-C <path>`, no `--global`) — `runanalyze-web.service`'s
+`ProtectHome=tmpfs` only bind-mounts the app dir, `.GarminDb`, and
+`HealthData`, not the home directory root, so a global `~/.gitconfig` is
+invisible to the refresh subprocess the web app spawns even though it's
+visible in an interactive SSH shell (confirmed live: `--global` appeared
+to succeed, the next refresh failed with the identical error).
 
 ## Logs
 
