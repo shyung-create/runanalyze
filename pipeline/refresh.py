@@ -71,9 +71,22 @@ def resolve_garmindb_cli() -> list[str]:
     Windows raises WinError 193 ("not a valid Win32 application"). Detect a
     .py target and always launch it through the current Python interpreter,
     which works cross-platform.
+
+    shutil.which() alone isn't enough under systemd: runanalyze-web.service
+    invokes uvicorn by its full venv path rather than activating the venv,
+    so PATH never includes the venv's bin/ — found live, `which()` came up
+    empty, silently fell back to the bare filename, and that then errored
+    against REPO_ROOT as cwd (which never had it) instead of the venv this
+    very process is running under. Checking next to sys.executable first —
+    whichever venv actually launched this interpreter — is more robust than
+    depending on PATH or assuming a fixed REPO_ROOT/.venv layout.
     """
     cli = os.environ.get("GARMINDB_CLI", "garmindb_cli.py").strip()
-    resolved = shutil.which(cli) or cli
+    if os.path.isabs(cli) or os.sep in cli:
+        resolved = cli  # explicit path given — respect it as-is
+    else:
+        venv_candidate = Path(sys.executable).resolve().parent / cli
+        resolved = str(venv_candidate) if venv_candidate.is_file() else (shutil.which(cli) or cli)
     if resolved.lower().endswith(".py"):
         return [sys.executable, resolved]
     return [resolved]
