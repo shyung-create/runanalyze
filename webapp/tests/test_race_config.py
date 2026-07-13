@@ -16,6 +16,8 @@ preferences:
   #                     # the displaced workout swaps to a rest day in the same week
   blocked_dates: []     # one-off no-run dates, e.g. [2026-07-22]
   max_run_days_per_week: 5
+  # plan_id: ""         # optional -- force a specific program instead of
+  #                     # auto-selection.
 """
 
 
@@ -133,3 +135,121 @@ def test_write_blocked_dates_no_stray_temp_files(isolated_race_config):
     race_config.write_blocked_dates(["2026-07-22"])
     leftovers = list(isolated_race_config.parent.glob(".race_config.yaml.tmp-*"))
     assert leftovers == []
+
+
+# ------------------------------------------------------------ race details
+
+VALID_DETAILS = dict(
+    name="Chicago Marathon", distance_type="full", race_date="2026-10-11",
+    target_time="03:45:00", long_run_day="saturday", plan_id="",
+)
+
+
+def test_read_race_details_matches_sample(isolated_race_config):
+    details = race_config.read_race_details()
+    assert details == {
+        "name": "SF Marathon", "distance_type": "full", "race_date": "2026-07-26",
+        "target_time": "04:00:00", "long_run_day": "sunday", "plan_id": "",
+    }
+
+
+def test_write_race_details_updates_all_fields(isolated_race_config):
+    race_config.write_race_details(**VALID_DETAILS)
+    assert race_config.read_race_details() == VALID_DETAILS
+
+
+def test_write_race_details_preserves_comments_and_other_fields(isolated_race_config):
+    original = isolated_race_config.read_text()
+    race_config.write_race_details(**VALID_DETAILS)
+    new = isolated_race_config.read_text()
+    for line in original.splitlines():
+        if "#" in line and not any(k in line for k in
+                                    ("name:", "distance_type:", "race_date:", "target_time:", "long_run_day:")):
+            assert line in new, f"comment line lost: {line!r}"
+    assert "rest_days: []" in new
+    assert "max_run_days_per_week: 5" in new
+
+
+def test_write_race_details_rejects_bad_distance_type(isolated_race_config):
+    bad = dict(VALID_DETAILS, distance_type="marathon")
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_race_details(**bad)
+    assert race_config.read_race_details()["distance_type"] == "full"
+
+
+def test_write_race_details_rejects_bad_race_date(isolated_race_config):
+    bad = dict(VALID_DETAILS, race_date="not-a-date")
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_race_details(**bad)
+
+
+def test_write_race_details_rejects_bad_target_time(isolated_race_config):
+    bad = dict(VALID_DETAILS, target_time="4:00pm")
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_race_details(**bad)
+
+
+def test_write_race_details_rejects_bad_long_run_day(isolated_race_config):
+    bad = dict(VALID_DETAILS, long_run_day="funday")
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_race_details(**bad)
+
+
+def test_write_race_details_rejects_name_with_double_quote(isolated_race_config):
+    bad = dict(VALID_DETAILS, name='Race "The Big One"')
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_race_details(**bad)
+
+
+def test_write_race_details_rejects_empty_name(isolated_race_config):
+    bad = dict(VALID_DETAILS, name="   ")
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_race_details(**bad)
+
+
+def test_write_race_details_rejects_plan_id_not_in_catalog(isolated_race_config):
+    bad = dict(VALID_DETAILS, plan_id="not_a_real_plan")
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_race_details(**bad)
+
+
+def test_write_race_details_rejects_plan_id_wrong_distance_type(isolated_race_config):
+    # half_hansons_beginner is a "half" plan; distance_type here is "full".
+    bad = dict(VALID_DETAILS, plan_id="half_hansons_beginner")
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_race_details(**bad)
+
+
+def test_write_race_details_accepts_valid_plan_id_for_distance_type(isolated_race_config):
+    good = dict(VALID_DETAILS, plan_id="marathon_higdon_novice_1")
+    race_config.write_race_details(**good)
+    assert race_config.read_race_details()["plan_id"] == "marathon_higdon_novice_1"
+
+
+def test_write_race_details_can_clear_plan_id_back_to_auto(isolated_race_config):
+    race_config.write_race_details(**dict(VALID_DETAILS, plan_id="marathon_higdon_novice_1"))
+    race_config.write_race_details(**VALID_DETAILS)  # plan_id=""
+    assert race_config.read_race_details()["plan_id"] == ""
+    # Re-commented, not left as an empty active line.
+    assert '# plan_id: ""' in isolated_race_config.read_text()
+
+
+def test_write_race_details_rejects_invalid_write_without_touching_file(isolated_race_config):
+    original = isolated_race_config.read_text()
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_race_details(**dict(VALID_DETAILS, distance_type="marathon"))
+    assert isolated_race_config.read_text() == original
+
+
+def test_write_race_details_no_stray_temp_files(isolated_race_config):
+    race_config.write_race_details(**VALID_DETAILS)
+    leftovers = list(isolated_race_config.parent.glob(".race_config.yaml.tmp-*"))
+    assert leftovers == []
+
+
+def test_plan_catalog_by_distance_type_grouped_and_sorted():
+    catalog = race_config.plan_catalog_by_distance_type()
+    assert set(catalog.keys()) == {"half", "full"}
+    assert catalog["half"] == sorted(catalog["half"])
+    assert "marathon_higdon_novice_1" in catalog["full"]
+    assert "half_hansons_beginner" in catalog["half"]

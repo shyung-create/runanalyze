@@ -32,6 +32,7 @@ GARMIN_CONFIG_FILE = GARMIN_CONFIG_DIR / "GarminConnectConfig.json"
 GARMIN_SESSION_FILE = GARMIN_CONFIG_DIR / "garmin_tokens.json"
 
 RACE_CONFIG_FILE = REPO_ROOT / "config" / "race_config.yaml"
+PLANS_CATALOG_FILE = REPO_ROOT / "pipeline" / "plans_catalog.json"
 
 VENV_PYTHON = REPO_ROOT / ".venv" / "bin" / "python"
 REFRESH_SCRIPT = REPO_ROOT / "pipeline" / "refresh.py"

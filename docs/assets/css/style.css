@@ -228,9 +228,10 @@ footer a { color: var(--ink-2); }
 .admin-status { margin-bottom: 12px; }
 .admin-form { display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
 .admin-form label { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
-.admin-form input[type="email"], .admin-form input[type="password"], .admin-form input[type="text"] {
+.admin-form input[type="email"], .admin-form input[type="password"], .admin-form input[type="text"],
+.admin-form input[type="date"], .admin-form select {
   padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px;
-  background: var(--page); color: var(--ink); font: inherit;
+  background: var(--page); color: var(--ink); font: inherit; max-width: 360px;
 }
 .admin-form button, #refresh-btn {
   border: none; border-radius: 8px; background: var(--s1); color: white;

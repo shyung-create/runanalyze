@@ -75,6 +75,15 @@ def test_csrf_required_on_rest_days_post_without_any_cookie():
     assert resp.status_code == 403
 
 
+def test_csrf_required_on_race_details_post_without_any_cookie():
+    client = TestClient(app)
+    resp = client.post("/api/race-config/details", json={
+        "name": "X", "distance_type": "full", "race_date": "2026-10-11",
+        "target_time": "03:45:00", "long_run_day": "saturday",
+    })
+    assert resp.status_code == 403
+
+
 def test_csrf_rejects_mismatched_token():
     client = TestClient(app)
     client.get("/")  # mints a real cookie

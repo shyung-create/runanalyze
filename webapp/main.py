@@ -185,6 +185,13 @@ async def trigger_refresh(body: RefreshIn, payload: dict = Depends(require_csrf_
 class RaceConfigOut(BaseModel):
     rest_days: list[str]
     blocked_dates: list[str]
+    name: str
+    distance_type: str
+    race_date: str
+    target_time: str
+    long_run_day: str
+    plan_id: str
+    plan_catalog: dict[str, list[str]]
 
 
 class RestDaysIn(BaseModel):
@@ -195,12 +202,27 @@ class BlockedDatesIn(BaseModel):
     dates: list[str]
 
 
-@app.get("/api/race-config", response_model=RaceConfigOut)
-def get_race_config(payload: dict = Depends(auth.ensure_csrf)):
+class RaceDetailsIn(BaseModel):
+    name: str
+    distance_type: str
+    race_date: str
+    target_time: str
+    long_run_day: str
+    plan_id: str = ""  # "" = auto-select, see race_config.read_race_details()
+
+
+def _race_config_out() -> RaceConfigOut:
     return RaceConfigOut(
         rest_days=race_config.read_rest_days(),
         blocked_dates=race_config.read_blocked_dates(),
+        plan_catalog=race_config.plan_catalog_by_distance_type(),
+        **race_config.read_race_details(),
     )
+
+
+@app.get("/api/race-config", response_model=RaceConfigOut)
+def get_race_config(payload: dict = Depends(auth.ensure_csrf)):
+    return _race_config_out()
 
 
 @app.post("/api/race-config/blocked-dates", response_model=RaceConfigOut)
@@ -210,10 +232,7 @@ def set_blocked_dates(body: BlockedDatesIn, payload: dict = Depends(require_csrf
     except race_config.RaceConfigError as e:
         raise HTTPException(status_code=400, detail=str(e))
     log.info("blocked_dates updated: %s", body.dates)
-    return RaceConfigOut(
-        rest_days=race_config.read_rest_days(),
-        blocked_dates=race_config.read_blocked_dates(),
-    )
+    return _race_config_out()
 
 
 @app.post("/api/race-config/rest-days", response_model=RaceConfigOut)
@@ -223,10 +242,21 @@ def set_rest_days(body: RestDaysIn, payload: dict = Depends(require_csrf_post)):
     except race_config.RaceConfigError as e:
         raise HTTPException(status_code=400, detail=str(e))
     log.info("rest_days updated: %s", body.days)
-    return RaceConfigOut(
-        rest_days=race_config.read_rest_days(),
-        blocked_dates=race_config.read_blocked_dates(),
-    )
+    return _race_config_out()
+
+
+@app.post("/api/race-config/details", response_model=RaceConfigOut)
+def set_race_details(body: RaceDetailsIn, payload: dict = Depends(require_csrf_post)):
+    try:
+        race_config.write_race_details(
+            name=body.name, distance_type=body.distance_type, race_date=body.race_date,
+            target_time=body.target_time, long_run_day=body.long_run_day, plan_id=body.plan_id,
+        )
+    except race_config.RaceConfigError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    log.info("race details updated: distance_type=%s race_date=%s plan_id=%s",
+              body.distance_type, body.race_date, body.plan_id or "(auto)")
+    return _race_config_out()
 
 
 @app.get("/api/jobs/{job_id}")

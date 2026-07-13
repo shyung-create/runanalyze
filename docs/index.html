@@ -165,6 +165,42 @@
       </form>
     </div>
 
+    <div class="card" id="race-details-panel">
+      <h2>Race details</h2>
+      <form id="race-details-form" class="admin-form">
+        <label for="race-name">Race name</label>
+        <input type="text" id="race-name" name="name" required>
+
+        <label for="race-distance-type">Distance</label>
+        <select id="race-distance-type" name="distance_type">
+          <option value="half">Half marathon</option>
+          <option value="full">Full marathon</option>
+        </select>
+
+        <label for="race-date">Race date</label>
+        <input type="date" id="race-date" name="race_date" required>
+
+        <label for="race-target-time">Goal finish time (HH:MM:SS)</label>
+        <input type="text" id="race-target-time" name="target_time" pattern="\d{2}:\d{2}:\d{2}" placeholder="04:00:00" required>
+
+        <label for="race-long-run-day">Long run day</label>
+        <select id="race-long-run-day" name="long_run_day"></select>
+
+        <label for="race-plan-id">Plan override</label>
+        <select id="race-plan-id" name="plan_id">
+          <option value="">Auto-select</option>
+        </select>
+
+        <button type="submit">Save race details</button>
+        <div class="admin-note">
+          Changing the distance narrows the plan-override list to matching programs.
+          Saving doesn't retroactively change an already-generated plan; trigger a
+          refresh afterward (Replan from scratch recommended) to apply it.
+        </div>
+        <div id="race-details-msg" class="admin-msg"></div>
+      </form>
+    </div>
+
     <div class="card" id="rest-days-panel">
       <h2>Rest days</h2>
       <div class="admin-row" id="rest-days-checks"></div>

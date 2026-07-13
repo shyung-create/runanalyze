@@ -76,11 +76,80 @@
     });
   }
 
-  // ------------------------------------------------------------ rest days
+  // ------------------------------------------------------------ shared day constants
   const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
   const DAY_LABEL = { monday: "Mon", tuesday: "Tue", wednesday: "Wed", thursday: "Thu",
     friday: "Fri", saturday: "Sat", sunday: "Sun" };
+  const DAY_LABEL_FULL = { monday: "Monday", tuesday: "Tuesday", wednesday: "Wednesday",
+    thursday: "Thursday", friday: "Friday", saturday: "Saturday", sunday: "Sunday" };
 
+  // ------------------------------------------------------------ race details
+  let planCatalog = { half: [], full: [] };
+
+  function populatePlanIdOptions(distanceType, selectedId) {
+    const sel = $("#race-plan-id");
+    const ids = planCatalog[distanceType] || [];
+    const stillValid = ids.includes(selectedId);
+    sel.innerHTML = `<option value="">Auto-select</option>` +
+      ids.map((id) => `<option value="${esc(id)}">${esc(id)}</option>`).join("");
+    sel.value = stillValid ? selectedId : "";
+  }
+
+  async function loadRaceDetails() {
+    const resp = await api("/api/race-config");
+    const data = await resp.json();
+    planCatalog = data.plan_catalog || { half: [], full: [] };
+
+    $("#race-name").value = data.name || "";
+    $("#race-distance-type").value = data.distance_type || "full";
+    $("#race-date").value = data.race_date || "";
+    $("#race-target-time").value = data.target_time || "";
+
+    $("#race-long-run-day").innerHTML = DAYS.map((d) =>
+      `<option value="${d}">${DAY_LABEL_FULL[d]}</option>`
+    ).join("");
+    $("#race-long-run-day").value = data.long_run_day || "sunday";
+
+    populatePlanIdOptions(data.distance_type, data.plan_id || "");
+  }
+
+  function initRaceDetailsForm() {
+    $("#race-distance-type").addEventListener("change", () => {
+      populatePlanIdOptions($("#race-distance-type").value, $("#race-plan-id").value);
+    });
+
+    $("#race-details-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const body = {
+        name: $("#race-name").value,
+        distance_type: $("#race-distance-type").value,
+        race_date: $("#race-date").value,
+        target_time: $("#race-target-time").value,
+        long_run_day: $("#race-long-run-day").value,
+        plan_id: $("#race-plan-id").value,
+      };
+      const msg = $("#race-details-msg");
+      msg.textContent = "Saving...";
+      try {
+        const resp = await api("/api/race-config/details", {
+          method: "POST", body: JSON.stringify(body),
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          msg.textContent = err.detail || "Could not save — check the server log.";
+          msg.className = "admin-msg bad";
+          return;
+        }
+        msg.textContent = "Saved. Trigger a refresh to apply it to the plan.";
+        msg.className = "admin-msg good";
+      } catch {
+        msg.textContent = "Request failed.";
+        msg.className = "admin-msg bad";
+      }
+    });
+  }
+
+  // ------------------------------------------------------------ rest days
   async function loadRestDays() {
     const resp = await api("/api/race-config");
     const data = await resp.json();
@@ -238,6 +307,8 @@
     await loadCsrf();
     await refreshGarminStatus();
     initGarminForm();
+    await loadRaceDetails();
+    initRaceDetailsForm();
     await loadRestDays();
     initRestDaysForm();
     await loadBlockedDates();
