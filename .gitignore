@@ -1,6 +1,14 @@
 # Secrets — never commit
 .env
 
+# Live, per-deployment race config — mutated directly by the web app and
+# by hand. Tracking this in git meant a `git pull`/`reset --hard` on a
+# live instance would silently overwrite the athlete's real settings with
+# whatever placeholder is committed here — that happened once already.
+# Only config/race_config.yaml.example is tracked; the real file is seeded
+# from it once (see deploy/bootstrap.sh) and never touched by git again.
+/config/race_config.yaml
+
 # Raw health data — never commit
 *.db
 *.sqlite

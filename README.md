@@ -58,7 +58,13 @@ Fill in `.env`:
 
 ### 3. Configure your race
 
-Edit `config/race_config.yaml`:
+`config/race_config.yaml` is gitignored (it's your personal race config, not
+tracked in git — see `webapp/race_config.py`'s module docstring for why).
+Copy the template once, then edit your copy:
+
+```bash
+cp config/race_config.yaml.example config/race_config.yaml
+```
 
 ```yaml
 race:

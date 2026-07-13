@@ -32,6 +32,12 @@ the access control (deliberate tradeoff, see `webapp/auth.py`'s module
 docstring). Anything reachable at the tailnet URL below is usable
 immediately, no credentials beyond Tailscale itself.
 
+`config/race_config.yaml` isn't a secret, so `bootstrap.sh` auto-seeds it
+from `config/race_config.yaml.example` if it's missing — nothing to place
+by hand. It's gitignored and never touched by `update.sh` or a rollback;
+edit your real race name/date/rest days/blocked dates either by hand or
+via the dashboard's Admin tab once the web app is running.
+
 ## First Garmin auth
 
 Two equivalent paths — pick one:
@@ -174,9 +180,15 @@ sudo cp deploy/*.service deploy/*.timer /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl restart runanalyze-web.service runanalyze.timer
 ```
-This never touches `.env`, `~/.GarminDb`, `~/HealthData`, or `var/` —
-same guarantee as `update.sh`, since a code rollback has no business
-touching runtime state or credentials. If you kept the git-publish path
-and the bad commit already got pushed live, the rollback here only affects
-the *instance's* code — you'd separately want to revert the published
-commit if `docs/data/*.json` itself was corrupted by the bad run.
+This never touches `.env`, `~/.GarminDb`, `~/HealthData`, `var/`, or
+`config/race_config.yaml` — same guarantee as `update.sh`, since a code
+rollback has no business touching runtime state or credentials. (Before
+`race_config.yaml` was gitignored, a `reset --hard` here *did* overwrite
+it with whatever placeholder was committed at that revision — happened
+once in practice, wiping a live athlete's real race details and blocked
+dates. It's untracked now specifically so this can't recur; if you're
+running an older checkout where the file is still tracked, back it up
+before any `reset --hard`.) If you kept the git-publish path and the bad
+commit already got pushed live, the rollback here only affects the
+*instance's* code — you'd separately want to revert the published commit
+if `docs/data/*.json` itself was corrupted by the bad run.

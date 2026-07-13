@@ -106,6 +106,20 @@ sudo -u "$SERVICE_USER" "${APP_DIR}/.venv/bin/pip" install -q "garmindb>=3.8.0"
 log "venv ready. Check the output above for anything that compiled from source" \
     "(expected to resolve to prebuilt aarch64 wheels — confirm, don't assume)."
 
+# ---------------------------------------------------------------- 4b. race_config.yaml (gitignored, seeded once)
+# Not a secret (no credentials in it) — safe to auto-seed, unlike
+# GarminConnectConfig.json. Never overwritten on a re-run: once the athlete
+# has customized it (by hand or via the dashboard), nothing here should
+# ever touch it again, and since it's gitignored, `git pull`/`reset` on
+# this instance can't clobber it either — see .gitignore's comment for why
+# that distinction matters.
+if [ -f "${APP_DIR}/config/race_config.yaml" ]; then
+  log "config/race_config.yaml already exists — leaving it untouched."
+else
+  log "Seeding config/race_config.yaml from the example template..."
+  sudo -u "$SERVICE_USER" cp "${APP_DIR}/config/race_config.yaml.example" "${APP_DIR}/config/race_config.yaml"
+fi
+
 # ---------------------------------------------------------------- 5. var/ dir (job state, lock, logs)
 sudo -u "$SERVICE_USER" mkdir -p "${APP_DIR}/var/logs"
 chmod 700 "${APP_DIR}/var" "${APP_DIR}/var/logs"
@@ -170,6 +184,13 @@ Bootstrap done. Place these BY HAND before starting anything
           tab's Garmin connection panel, OR
        b) seed ${SERVICE_HOME}/.GarminDb/GarminConnectConfig.json by hand
           from deploy/GarminConnectConfig.example.json (chmod 600).
+
+  2b. ${APP_DIR}/config/race_config.yaml was auto-seeded from the example
+      template (not a secret, so this script did it for you) — edit your
+      real race name/date/rest days either by hand or via the dashboard's
+      Admin tab once it's running. This file is gitignored: no future
+      \`git pull\` or \`git reset\` on this instance will ever touch it
+      again once you've customized it.
 
   3. If Tailscale isn't authenticated yet: sudo tailscale up,
      then re-run this script.

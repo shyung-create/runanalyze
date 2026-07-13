@@ -1,4 +1,8 @@
-# Target race configuration — edit me, then run `python pipeline/refresh.py`
+# Template only — this file is tracked in git and never read by the pipeline.
+# On first setup, copy it to config/race_config.yaml (gitignored, not tracked)
+# and edit THAT file — either by hand or via the dashboard's Admin tab, which
+# writes to it directly. Never edit config/race_config.yaml.example itself
+# expecting it to take effect.
 race:
   name: "SF Marathon"              # target race name
   distance_type: "full"     # "half" or "full"
