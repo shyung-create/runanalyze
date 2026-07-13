@@ -15,12 +15,10 @@
   async function api(path, opts = {}) {
     const headers = Object.assign({ "Content-Type": "application/json" }, opts.headers || {});
     if (opts.method && opts.method !== "GET") headers["X-CSRF-Token"] = csrfToken;
-    const resp = await fetch(path, Object.assign({}, opts, { headers }));
-    if (resp.status === 401) {
-      window.location.href = "/login";
-      throw new Error("not authenticated");
-    }
-    return resp;
+    // No login/401 handling — Tailscale's tailnet-only reachability is the
+    // access control, not an app-level session. A 403 here means a CSRF
+    // mismatch (stale token after a cookie reset), not "not logged in".
+    return fetch(path, Object.assign({}, opts, { headers }));
   }
 
   async function loadCsrf() {

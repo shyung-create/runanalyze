@@ -160,10 +160,8 @@ Bootstrap done. Place these BY HAND before starting anything
   1. ${APP_DIR}/.env  (chmod 600, owned by ${SERVICE_USER})
      Copy from deploy/runanalyze.env.example and fill in:
        - DEEPSEEK_API_KEY, DEEPSEEK_BASE_URL, DEEPSEEK_MODEL
-       - DASHBOARD_USER, DASHBOARD_PASSWORD_HASH
-           generate with: sudo -u ${SERVICE_USER} \\
-             ${APP_DIR}/.venv/bin/python ${APP_DIR}/webapp/scripts/hash_password.py
-       - SESSION_SECRET_KEY
+       - SESSION_SECRET_KEY (signs the CSRF cookie — no login exists;
+         Tailscale's tailnet-only reachability is the access control)
            generate with: python3 -c "import secrets; print(secrets.token_hex(32))"
        - TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 

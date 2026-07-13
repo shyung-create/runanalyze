@@ -6,12 +6,10 @@ requests>=2.31
 # It is intentionally not pinned here so the pipeline can run against an
 # existing GarminDB installation without version conflicts.
 
-# Web dashboard (webapp/)
+# Web dashboard (webapp/) — no login (Tailscale tailnet-only reachability
+# is the access control), so no argon2/jinja2/python-multipart needed.
 fastapi>=0.115
 uvicorn[standard]>=0.32
-argon2-cffi>=23.1
-itsdangerous>=2.2
-jinja2>=3.1
-python-multipart>=0.0.9
+itsdangerous>=2.2   # signs the CSRF cookie
 httpx>=0.27          # fastapi.testclient
 pytest>=8.0

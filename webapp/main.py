@@ -1,11 +1,13 @@
-"""FastAPI app: dashboard login, Garmin credential form, refresh trigger,
-job polling, and the existing static docs/ dashboard — served unchanged.
+"""FastAPI app: Garmin credential form, refresh trigger, job polling, and
+the existing static docs/ dashboard — served unchanged.
 
-Every route requires a valid session except /login and /health (stated
-requirement). Nothing here ever echoes the Garmin password back, logs it,
-or exposes it via any response model — response models for credential
-endpoints simply have no password field, so it's structurally impossible
-to leak it that way, not just a matter of remembering to omit it.
+No app-level login — Tailscale's tailnet-only reachability is the access
+control (see webapp/auth.py's module docstring for the tradeoff this
+accepts). CSRF protection still applies to every state-changing POST.
+Nothing here ever echoes the Garmin password back, logs it, or exposes it
+via any response model — response models for credential endpoints simply
+have no password field, so it's structurally impossible to leak it that
+way, not just a matter of remembering to omit it.
 """
 
 from __future__ import annotations
@@ -15,9 +17,8 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from fastapi import Depends, FastAPI, Form, HTTPException, Request
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
 from . import auth, config, garmin_config, jobs, race_config
@@ -27,7 +28,6 @@ log = logging.getLogger("webapp")
 # debug=False is load-bearing, not a default to leave alone: FastAPI's
 # debug mode echoes request data and stack locals in its error pages.
 app = FastAPI(debug=False, title="runanalyze")
-templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 
 
 # ------------------------------------------------------------ static guard
@@ -59,67 +59,53 @@ def _reject_forbidden_suffix(rel_path: str) -> None:
         raise HTTPException(status_code=404)
 
 
-# ------------------------------------------------------------ auth routes
+# ------------------------------------------------------------ health + csrf plumbing
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
 
-@app.get("/login", response_class=HTMLResponse)
-def login_form(request: Request):
-    return templates.TemplateResponse(request, "login.html", {"error": None})
-
-
-@app.post("/login")
-def login_submit(request: Request, password: str = Form(...)):
-    auth.check_rate_limit(request)
-    ok = auth.verify_dashboard_password(password)
-    auth.record_login_result(request, ok)
-    if not ok:
-        return templates.TemplateResponse(
-            request, "login.html", {"error": "Incorrect password."}, status_code=401)
-    cookie_value, _csrf = auth.create_session_cookie()
-    response = RedirectResponse(url="/", status_code=303)
-    response.set_cookie(
-        auth.SESSION_COOKIE, cookie_value, max_age=config.SESSION_MAX_AGE_S,
-        secure=config.COOKIE_SECURE, httponly=True, samesite="strict",
-    )
-    return response
-
-
-@app.post("/logout")
-def logout():
-    response = RedirectResponse(url="/login", status_code=303)
-    response.delete_cookie(auth.SESSION_COOKIE)
-    return response
-
-
-def require_authenticated_post(request: Request, session: dict = Depends(auth.require_session)) -> dict:
-    auth.require_csrf(request, session)
-    return session
+def require_csrf_post(request: Request, payload: dict = Depends(auth.ensure_csrf)) -> dict:
+    # No `response: Response` param needed here — auth.ensure_csrf's own
+    # declaration is what makes FastAPI merge its cookie into the final
+    # response for these plain-dict-returning routes.
+    auth.require_csrf(request, payload)
+    return payload
 
 
 # ------------------------------------------------------------ dashboard (existing, unchanged)
+#
+# These three routes return FileResponse directly, so they use
+# apply_csrf_cookie() on that actual object rather than the ensure_csrf
+# dependency — see auth.py's docstrings for why the dependency form can't
+# work here (verified empirically: FastAPI drops dependency-set cookies
+# when the endpoint returns its own Response object).
 
 @app.get("/", response_class=HTMLResponse)
-def dashboard(session: dict = Depends(auth.require_session)):
-    return FileResponse(_safe_file(config.DOCS_DIR, "index.html"))
+def dashboard(request: Request):
+    resp = FileResponse(_safe_file(config.DOCS_DIR, "index.html"))
+    auth.apply_csrf_cookie(request, resp)
+    return resp
 
 
 @app.get("/assets/{rel_path:path}")
-def assets(rel_path: str, session: dict = Depends(auth.require_session)):
+def assets(rel_path: str, request: Request):
     _reject_forbidden_suffix(rel_path)
-    return FileResponse(_safe_file(config.DOCS_DIR / "assets", rel_path))
+    resp = FileResponse(_safe_file(config.DOCS_DIR / "assets", rel_path))
+    auth.apply_csrf_cookie(request, resp)
+    return resp
 
 
 @app.get("/data/{rel_path:path}")
-def data(rel_path: str, session: dict = Depends(auth.require_session)):
+def data(rel_path: str, request: Request):
     _reject_forbidden_suffix(rel_path)
     path = _safe_file(config.DOCS_DATA_DIR, rel_path)
     # Same reasoning as netlify.toml's headers for /data/*: never let a
     # cache serve stale JSON after a refresh.
-    return FileResponse(path, headers={"Cache-Control": "no-store"})
+    resp = FileResponse(path, headers={"Cache-Control": "no-store"})
+    auth.apply_csrf_cookie(request, resp)
+    return resp
 
 
 # ------------------------------------------------------------ garmin credentials
@@ -135,7 +121,7 @@ class OkOut(BaseModel):
 
 
 @app.post("/api/garmin/credentials", response_model=OkOut)
-def set_garmin_credentials(body: CredentialsIn, session: dict = Depends(require_authenticated_post)):
+def set_garmin_credentials(body: CredentialsIn, payload: dict = Depends(require_csrf_post)):
     try:
         garmin_config.write_credentials(body.username, body.password)
     except garmin_config.GarminConfigError:
@@ -156,7 +142,7 @@ class GarminStatusOut(BaseModel):
 
 
 @app.get("/api/garmin/status", response_model=GarminStatusOut)
-def garmin_status(session: dict = Depends(auth.require_session)):
+def garmin_status(payload: dict = Depends(auth.ensure_csrf)):
     st = garmin_config.status()
     last_ok = config.LAST_AUTH_OK_PATH.read_text().strip() if config.LAST_AUTH_OK_PATH.exists() else None
     last_fail = config.LAST_AUTH_FAIL_PATH.read_text().strip() if config.LAST_AUTH_FAIL_PATH.exists() else None
@@ -181,7 +167,7 @@ class RefreshIn(BaseModel):
 
 
 @app.post("/api/refresh")
-async def trigger_refresh(body: RefreshIn, session: dict = Depends(require_authenticated_post)):
+async def trigger_refresh(body: RefreshIn, payload: dict = Depends(require_csrf_post)):
     flags = []
     if body.no_llm:
         flags.append("--no-llm")
@@ -205,12 +191,12 @@ class RestDaysIn(BaseModel):
 
 
 @app.get("/api/race-config", response_model=RaceConfigOut)
-def get_race_config(session: dict = Depends(auth.require_session)):
+def get_race_config(payload: dict = Depends(auth.ensure_csrf)):
     return RaceConfigOut(rest_days=race_config.read_rest_days())
 
 
 @app.post("/api/race-config/rest-days", response_model=RaceConfigOut)
-def set_rest_days(body: RestDaysIn, session: dict = Depends(require_authenticated_post)):
+def set_rest_days(body: RestDaysIn, payload: dict = Depends(require_csrf_post)):
     try:
         race_config.write_rest_days(body.days)
     except race_config.RaceConfigError as e:
@@ -220,7 +206,7 @@ def set_rest_days(body: RestDaysIn, session: dict = Depends(require_authenticate
 
 
 @app.get("/api/jobs/{job_id}")
-def job_status(job_id: str, session: dict = Depends(auth.require_session)):
+def job_status(job_id: str, payload: dict = Depends(auth.ensure_csrf)):
     jobs.reap_stale_external_jobs()
     job = jobs.get_job(job_id)
     if job is None:
@@ -229,8 +215,8 @@ def job_status(job_id: str, session: dict = Depends(auth.require_session)):
 
 
 @app.get("/api/csrf-token")
-def csrf_token(session: dict = Depends(auth.require_session)):
-    return {"csrf_token": session.get("csrf", "")}
+def csrf_token(payload: dict = Depends(auth.ensure_csrf)):
+    return {"csrf_token": payload.get("csrf", "")}
 
 
 # ------------------------------------------------------------ generic error handling

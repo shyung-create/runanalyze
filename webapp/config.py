@@ -41,21 +41,15 @@ def _env(name: str, default: str = "") -> str:
     return os.environ.get(name, default).strip()
 
 
-DASHBOARD_USER = _env("DASHBOARD_USER", "admin")
-DASHBOARD_PASSWORD_HASH = _env("DASHBOARD_PASSWORD_HASH")
+# No app-level login — Tailscale's tailnet-only reachability is the access
+# control (see webapp/auth.py's module docstring). This key now signs only
+# the CSRF cookie, not a login session.
 SESSION_SECRET_KEY = _env("SESSION_SECRET_KEY")
 
 # Cookies are Secure by default (required — this app only ever runs behind
 # Tailscale's HTTPS via `tailscale serve`). Only relax for local dev over
 # plain http, and only via an explicit opt-out, never a default.
 COOKIE_SECURE = _env("WEBAPP_COOKIE_INSECURE", "").lower() not in ("1", "true", "yes")
-
-SESSION_MAX_AGE_S = 12 * 3600  # 12h — re-login once a day is fine for a single-user tool
-
-# Login lockout
-LOGIN_MAX_ATTEMPTS = 5
-LOGIN_WINDOW_S = 5 * 60
-LOGIN_LOCKOUT_S = 15 * 60
 
 TELEGRAM_BOT_TOKEN = _env("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = _env("TELEGRAM_CHAT_ID")

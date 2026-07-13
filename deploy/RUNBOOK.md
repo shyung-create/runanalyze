@@ -14,30 +14,30 @@ sudo REPO_URL=https://github.com/<owner>/runanalyze.git \
 Idempotent — re-run any time (e.g. after `tailscale up`, to pick up the
 `tailscale serve` step it skips on the first pass if Tailscale wasn't
 authenticated yet). Installs and enables the systemd units but does **not**
-start them — that's step 4 below, after secrets exist.
+start them — that's step 5 below, after secrets exist.
 
 ## Place secrets by hand
 
 1. `cp deploy/runanalyze.env.example /home/runanalyze/runanalyze/.env && chmod 600 /home/runanalyze/runanalyze/.env`
 2. Fill in `DEEPSEEK_*`, `TELEGRAM_*`.
-3. Generate and fill `DASHBOARD_PASSWORD_HASH`:
-   ```bash
-   sudo -u runanalyze /home/runanalyze/runanalyze/.venv/bin/python \
-     /home/runanalyze/runanalyze/webapp/scripts/hash_password.py
-   ```
-4. Generate and fill `SESSION_SECRET_KEY`:
+3. Generate and fill `SESSION_SECRET_KEY`:
    ```bash
    python3 -c "import secrets; print(secrets.token_hex(32))"
    ```
-5. `sudo tailscale up` if not already authenticated, then re-run `bootstrap.sh`.
-6. Start the web app: `sudo systemctl start runanalyze-web.service`.
+4. `sudo tailscale up` if not already authenticated, then re-run `bootstrap.sh`.
+5. Start the web app: `sudo systemctl start runanalyze-web.service`.
+
+No dashboard login to set up — Tailscale's tailnet-only reachability is
+the access control (deliberate tradeoff, see `webapp/auth.py`'s module
+docstring). Anything reachable at the tailnet URL below is usable
+immediately, no credentials beyond Tailscale itself.
 
 ## First Garmin auth
 
 Two equivalent paths — pick one:
 
 **A. Through the UI** (recommended — this is what the credential form exists for):
-1. Open `https://<instance>.<tailnet>.ts.net/` from a tailnet device, log in with the dashboard password.
+1. Open `https://<instance>.<tailnet>.ts.net/` from a tailnet device.
 2. Admin tab → Garmin connection panel → enter your Garmin Connect email + password → Save.
 3. SSH in and run the sync once interactively, so any first-time MFA challenge (see CLAUDE.md's decision: MFA disabled on this account — if that ever changes, this manual step becomes necessary every time the cached session dies, not just once) has somewhere to go:
    ```bash
