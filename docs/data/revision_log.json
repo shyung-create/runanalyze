@@ -53,5 +53,10 @@
     "date": "2026-07-13T08:10:47",
     "source": "deepseek",
     "note": "Plan updated on 2026-07-13: Athlete exceeded planned distances recently and ran easy runs faster than prescribed (5:57 vs 6:09), indicating good fitness but risk of pre-race fatigue. Increased Sunday long run to 14 km to maintain endurance while keeping taper volume. Emphasized strict easy pace on remaining easy runs to ensure recovery."
+  },
+  {
+    "date": "2026-07-13T08:19:43",
+    "source": "error",
+    "note": "2026-07-13: DeepSeek revision failed validation \u2014 keeping the existing plan unchanged. Metrics were refreshed."
   }
 ]
