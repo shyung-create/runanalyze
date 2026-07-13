@@ -21,8 +21,8 @@ from common import log, parse_date, parse_duration_s, KM_PER_MILE
 ACTIVITY_FIELDS = {
     "activity_id": ["activity_id"],
     # Deliberately no "name" field: Garmin/GarminDB auto-generates activity
-    # names from location (e.g. "Burlingame Running"), which leaked the
-    # city the athlete trains in into published, publicly-committed JSON.
+    # names from location (e.g. "<City> Running"), which leaked the city
+    # the athlete trains in into published, publicly-committed JSON.
     # Nothing downstream (metrics.py, the dashboard JS) uses it — confirmed
     # by grep before removing it, not assumed.
     "sport": ["sport"],
