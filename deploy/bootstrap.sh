@@ -87,6 +87,21 @@ else
   fi
 fi
 
+# git_publish() in pipeline/refresh.py runs `git commit` after every
+# refresh — without a configured identity, that fails with exit 128
+# ("Author identity unknown"), which surfaces to the athlete as a failed
+# job in the dashboard with no obvious cause (found live: the underlying
+# refresh had already succeeded — data was regenerated — only the commit
+# step failed). Generic bot identity, not the operator's own name/email:
+# this becomes the visible commit author in a public repo's history.
+if sudo -u "$SERVICE_USER" git config --global user.email &>/dev/null; then
+  log "git author identity already configured for ${SERVICE_USER}."
+else
+  log "Setting git author identity for ${SERVICE_USER} (runanalyze-bot)..."
+  sudo -u "$SERVICE_USER" git config --global user.name "runanalyze-bot"
+  sudo -u "$SERVICE_USER" git config --global user.email "runanalyze-bot@users.noreply.github.com"
+fi
+
 # ---------------------------------------------------------------- 4. Python venv
 if [ -x "${APP_DIR}/.venv/bin/python" ]; then
   log "venv already exists — reinstalling requirements to pick up any changes."

@@ -82,6 +82,17 @@ Both go through the same single-flight lock (`<APP_DIR>/var/refresh.lock`) as
 the web-triggered path — starting this while a web-triggered refresh is
 running is a harmless no-op (`refresh.py` logs "already running" and exits 0).
 
+`bootstrap.sh` sets a git author identity (`runanalyze-bot`) for the
+service user on first setup — required because `git_publish()` runs `git
+commit` after every refresh. If you're on an older checkout from before
+that step existed, a refresh will regenerate `docs/data/*.json` correctly
+but then fail at the commit with "Author identity unknown" (exit 128).
+Fix once:
+```bash
+sudo -u runanalyze git config --global user.name "runanalyze-bot"
+sudo -u runanalyze git config --global user.email "runanalyze-bot@users.noreply.github.com"
+```
+
 ## Logs
 
 ```bash
