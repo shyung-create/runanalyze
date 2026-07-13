@@ -28,9 +28,18 @@ ProtectSystem=strict
 # Anything else under /home (including other accounts' homes, or stray
 # files in this account's own home outside these paths) stays invisible.
 ProtectHome=tmpfs
-BindPaths=/home/runanalyze/runanalyze /home/runanalyze/.GarminDb
-# Deliberately NOT granted: /home/runanalyze/HealthData. The web app has
-# no route that reads raw health data — least privilege, not an oversight.
+BindPaths=/home/runanalyze/runanalyze /home/runanalyze/.GarminDb /home/runanalyze/HealthData
+# HealthData IS needed here, despite no HTTP route ever reading it
+# directly (that guarantee is unchanged — see webapp/main.py's
+# _safe_file/_reject_forbidden_suffix). /api/refresh spawns
+# pipeline/refresh.py as a child process (webapp/jobs.py), which inherits
+# this unit's mount namespace and runs the exact same code as the
+# scheduled timer job — garmin_extract.extract_runs() reads GarminDB's
+# SQLite files from HealthData/DBs, and a fresh sync writes them there.
+# Found live: a "reanalyze only" (--no-sync) refresh triggered from the
+# dashboard failed with FileNotFoundError on garmin_activities.db because
+# this bind was missing — the child process literally couldn't see the
+# directory under ProtectHome=tmpfs's empty overlay.
 # Same finding as runanalyze.service: default process umask leaves new
 # files/dirs group/world-readable (this unit writes GarminConnectConfig.json
 # via webapp/garmin_config.py's atomic write, which already chmods 0600
