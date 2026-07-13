@@ -44,7 +44,6 @@ def _summary(a: dict) -> dict:
     dur = a.get("moving_time_s") or a.get("elapsed_time_s")
     return {
         "date": a.get("date"),
-        "name": a.get("name"),
         "distance": round(float(a["distance"]), 2) if a.get("distance") else None,
         "duration_s": int(dur) if dur else None,
         "avg_pace_s": int(a["avg_pace_s"]) if a.get("avg_pace_s") else None,
