@@ -18,8 +18,12 @@ PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=tmpfs
 # Adds HealthData on top of the web unit's set — garmindb_cli.py writes
-# its SQLite databases there.
-BindPaths=/home/runanalyze/runanalyze /home/runanalyze/.GarminDb /home/runanalyze/HealthData
+# its SQLite databases there. .ssh holds the deploy key + known_hosts that
+# git_publish()'s `git push` needs (SSH remote, not HTTPS) — found live via
+# the same "Host key verification failed" failure mode as the web unit;
+# this unit was never actually exercised end-to-end before that fix, so
+# it would have failed identically on its first scheduled run tonight.
+BindPaths=/home/runanalyze/runanalyze /home/runanalyze/.GarminDb /home/runanalyze/HealthData /home/runanalyze/.ssh
 # Found live: garmindb_cli.py (and the DB library underneath it) create
 # files/dirs using whatever the process umask allows -- they have no idea
 # about this project's 0600/0700 model. Default umask left the token

@@ -28,7 +28,7 @@ ProtectSystem=strict
 # Anything else under /home (including other accounts' homes, or stray
 # files in this account's own home outside these paths) stays invisible.
 ProtectHome=tmpfs
-BindPaths=/home/runanalyze/runanalyze /home/runanalyze/.GarminDb /home/runanalyze/HealthData
+BindPaths=/home/runanalyze/runanalyze /home/runanalyze/.GarminDb /home/runanalyze/HealthData /home/runanalyze/.ssh
 # HealthData IS needed here, despite no HTTP route ever reading it
 # directly (that guarantee is unchanged — see webapp/main.py's
 # _safe_file/_reject_forbidden_suffix). /api/refresh spawns
@@ -40,6 +40,14 @@ BindPaths=/home/runanalyze/runanalyze /home/runanalyze/.GarminDb /home/runanalyz
 # dashboard failed with FileNotFoundError on garmin_activities.db because
 # this bind was missing — the child process literally couldn't see the
 # directory under ProtectHome=tmpfs's empty overlay.
+# .ssh is needed for the same reason, one layer further in: git_publish()'s
+# `git push` over the SSH deploy key remote needs both the private key and
+# known_hosts, which live directly under ~/.ssh — found live, "Host key
+# verification failed" (known_hosts invisible) after already fixing the
+# repo-local git identity and switching the remote off HTTPS. Same blind
+# spot as ~/.gitconfig: anything living directly under the home root,
+# rather than one of the subdirectories already listed here, is invisible
+# under ProtectHome=tmpfs until explicitly bound.
 # Same finding as runanalyze.service: default process umask leaves new
 # files/dirs group/world-readable (this unit writes GarminConnectConfig.json
 # via webapp/garmin_config.py's atomic write, which already chmods 0600
