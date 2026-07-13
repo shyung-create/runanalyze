@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-13T08:10:47",
+  "generated_at": "2026-07-13T12:33:48",
   "source": "llm-revised",
   "race": {
     "name": "SF Marathon",
@@ -116,7 +116,7 @@
       "distance": null,
       "pace_s": null,
       "pace": "",
-      "description": "Rest (blocked date)",
+      "description": "Rest",
       "phase": "plan",
       "status": "planned",
       "revised": true
