@@ -65,3 +65,11 @@ def test_csrf_required_on_post():
     client.cookies.set(auth.SESSION_COOKIE, cookie_value)
     resp = client.post("/api/refresh", json={})
     assert resp.status_code == 403
+
+
+def test_csrf_required_on_rest_days_post():
+    cookie_value, _csrf = auth.create_session_cookie()
+    client = TestClient(app)
+    client.cookies.set(auth.SESSION_COOKIE, cookie_value)
+    resp = client.post("/api/race-config/rest-days", json={"days": ["monday"]})
+    assert resp.status_code == 403

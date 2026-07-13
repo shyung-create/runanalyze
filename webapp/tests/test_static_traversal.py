@@ -41,7 +41,7 @@ def test_forbidden_suffix_blocked_even_inside_docs(authed_client, tmp_path, monk
 
 def test_unauthenticated_requests_are_rejected():
     client = TestClient(app)
-    for path in ("/", "/assets/css/style.css", "/data/meta.json"):
+    for path in ("/", "/assets/css/style.css", "/data/meta.json", "/api/race-config"):
         resp = client.get(path, follow_redirects=False)
         assert resp.status_code == 401
 

@@ -78,6 +78,44 @@
     });
   }
 
+  // ------------------------------------------------------------ rest days
+  const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+  const DAY_LABEL = { monday: "Mon", tuesday: "Tue", wednesday: "Wed", thursday: "Thu",
+    friday: "Fri", saturday: "Sat", sunday: "Sun" };
+
+  async function loadRestDays() {
+    const resp = await api("/api/race-config");
+    const data = await resp.json();
+    const current = new Set(data.rest_days || []);
+    $("#rest-days-checks").innerHTML = DAYS.map((d) =>
+      `<label><input type="checkbox" data-day="${d}" ${current.has(d) ? "checked" : ""}> ${DAY_LABEL[d]}</label>`
+    ).join("");
+  }
+
+  function initRestDaysForm() {
+    $("#rest-days-save-btn").addEventListener("click", async () => {
+      const days = Array.from(document.querySelectorAll("#rest-days-checks input:checked"))
+        .map((el) => el.dataset.day);
+      const msg = $("#rest-days-msg");
+      msg.textContent = "Saving...";
+      try {
+        const resp = await api("/api/race-config/rest-days", {
+          method: "POST", body: JSON.stringify({ days }),
+        });
+        if (!resp.ok) {
+          msg.textContent = "Could not save — check the server log.";
+          msg.className = "admin-msg bad";
+          return;
+        }
+        msg.textContent = "Saved. Trigger a refresh to apply it to the plan.";
+        msg.className = "admin-msg good";
+      } catch {
+        msg.textContent = "Request failed.";
+        msg.className = "admin-msg bad";
+      }
+    });
+  }
+
   // ------------------------------------------------------------ refresh trigger + polling
   function setRefreshUI(running) {
     $("#refresh-btn").disabled = running;
@@ -88,6 +126,7 @@
     const body = {
       no_llm: $("#opt-no-llm").checked,
       replan: $("#opt-replan").checked,
+      no_sync: $("#opt-no-sync").checked,
       note: $("#opt-note").value || null,
     };
     setRefreshUI(true);
@@ -137,6 +176,8 @@
     await loadCsrf();
     await refreshGarminStatus();
     initGarminForm();
+    await loadRestDays();
+    initRestDaysForm();
     $("#refresh-btn").addEventListener("click", startRefresh);
   }
 

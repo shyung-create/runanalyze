@@ -139,11 +139,24 @@ async def start_refresh(flags: list[str], note: Optional[str]) -> dict:
     # credential — the Garmin username/password are never CLI arguments
     # anywhere in this codebase (GarminDB itself always reads them from
     # ~/.GarminDb/GarminConnectConfig.json, never argv).
-    with open(log_path, "wb") as log_file:
-        process = await asyncio.create_subprocess_exec(
-            *cmd, stdout=log_file, stderr=asyncio.subprocess.STDOUT,
-            cwd=str(config.REPO_ROOT),
-        )
+    try:
+        with open(log_path, "wb") as log_file:
+            process = await asyncio.create_subprocess_exec(
+                *cmd, stdout=log_file, stderr=asyncio.subprocess.STDOUT,
+                cwd=str(config.REPO_ROOT),
+            )
+    except OSError as e:
+        # Found live: if spawn itself fails (missing venv, disk full,
+        # permissions), the job record above was already saved as
+        # "running" — without this, it would stay stuck "running" forever,
+        # permanently blocking every future refresh via the single-flight
+        # check even though nothing is actually running.
+        jobs = _load_jobs()
+        jobs[job_id]["status"] = "failed"
+        jobs[job_id]["finished_at"] = time.time()
+        jobs[job_id]["exit_code"] = None
+        _save_jobs(jobs)
+        raise RuntimeError(f"could not start refresh subprocess: {e}") from e
 
     asyncio.create_task(_await_completion(job_id, process))
     return {"started": True, "job_id": job_id, "reason": None}

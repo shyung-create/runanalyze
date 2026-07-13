@@ -20,7 +20,7 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Redirect
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
-from . import auth, config, garmin_config, jobs
+from . import auth, config, garmin_config, jobs, race_config
 
 log = logging.getLogger("webapp")
 
@@ -176,6 +176,7 @@ def garmin_status(session: dict = Depends(auth.require_session)):
 class RefreshIn(BaseModel):
     no_llm: bool = False
     replan: bool = False
+    no_sync: bool = False
     note: Optional[str] = None
 
 
@@ -186,9 +187,36 @@ async def trigger_refresh(body: RefreshIn, session: dict = Depends(require_authe
         flags.append("--no-llm")
     if body.replan:
         flags.append("--replan")
+    if body.no_sync:
+        flags.append("--no-sync")
     result = await jobs.start_refresh(flags, body.note)
     status_code = 200 if result["started"] else 409
     return JSONResponse(result, status_code=status_code)
+
+
+# ------------------------------------------------------------ rest days
+
+class RaceConfigOut(BaseModel):
+    rest_days: list[str]
+
+
+class RestDaysIn(BaseModel):
+    days: list[str]
+
+
+@app.get("/api/race-config", response_model=RaceConfigOut)
+def get_race_config(session: dict = Depends(auth.require_session)):
+    return RaceConfigOut(rest_days=race_config.read_rest_days())
+
+
+@app.post("/api/race-config/rest-days", response_model=RaceConfigOut)
+def set_rest_days(body: RestDaysIn, session: dict = Depends(require_authenticated_post)):
+    try:
+        race_config.write_rest_days(body.days)
+    except race_config.RaceConfigError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    log.info("rest_days updated: %s", body.days)
+    return RaceConfigOut(rest_days=race_config.read_rest_days())
 
 
 @app.get("/api/jobs/{job_id}")

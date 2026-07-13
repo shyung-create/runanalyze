@@ -26,7 +26,12 @@ LAST_AUTH_FAIL_PATH = VAR_DIR / "last_auth_fail"
 # garmin_connect_config_manager.py's `homedir + '.GarminDb'`.
 GARMIN_CONFIG_DIR = Path.home() / ".GarminDb"
 GARMIN_CONFIG_FILE = GARMIN_CONFIG_DIR / "GarminConnectConfig.json"
-GARMIN_SESSION_FILE = GARMIN_CONFIG_DIR / "garth_session"
+# garmindb >=3.8.0 caches DI OAuth2 tokens here (garminconnect-based adapter).
+# Was `garth_session` under the older, now-deprecated garth-based auth —
+# confirmed live on the actual instance during rollout, fixed here too.
+GARMIN_SESSION_FILE = GARMIN_CONFIG_DIR / "garmin_tokens.json"
+
+RACE_CONFIG_FILE = REPO_ROOT / "config" / "race_config.yaml"
 
 VENV_PYTHON = REPO_ROOT / ".venv" / "bin" / "python"
 REFRESH_SCRIPT = REPO_ROOT / "pipeline" / "refresh.py"
@@ -55,7 +60,7 @@ LOGIN_LOCKOUT_S = 15 * 60
 TELEGRAM_BOT_TOKEN = _env("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = _env("TELEGRAM_CHAT_ID")
 
-ALLOWED_REFRESH_FLAGS = {"--no-llm", "--replan"}  # --note is handled separately (free text)
+ALLOWED_REFRESH_FLAGS = {"--no-llm", "--replan", "--no-sync"}  # --note is handled separately (free text)
 
 
 def ensure_var_dirs() -> None:

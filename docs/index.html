@@ -165,10 +165,24 @@
       </form>
     </div>
 
+    <div class="card" id="rest-days-panel">
+      <h2>Rest days</h2>
+      <div class="admin-row" id="rest-days-checks"></div>
+      <button id="rest-days-save-btn" type="button">Save rest days</button>
+      <div id="rest-days-msg" class="admin-msg"></div>
+      <div class="admin-note">
+        Days marked here are always rest — the plan swaps any workout that would land
+        on one to a rest day elsewhere in the same week. Saving doesn't retroactively
+        change an already-generated plan; trigger a refresh afterward (Replan from
+        scratch recommended) to apply it.
+      </div>
+    </div>
+
     <div class="card" id="refresh-panel">
       <h2>Refresh</h2>
       <div class="admin-row">
-        <label><input type="checkbox" id="opt-no-llm"> Skip DeepSeek (deterministic only)</label>
+        <label><input type="checkbox" id="opt-no-sync"> Skip Garmin sync (use existing data — "reanalyze only")</label>
+        <label><input type="checkbox" id="opt-no-llm"> Skip DeepSeek (deterministic only — "fresh pull only" if paired with the sync)</label>
         <label><input type="checkbox" id="opt-replan"> Replan from scratch</label>
       </div>
       <input type="text" id="opt-note" placeholder="Optional note for the plan revision (e.g. move long run to Saturday)">
