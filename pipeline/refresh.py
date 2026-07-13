@@ -80,12 +80,20 @@ def resolve_garmindb_cli() -> list[str]:
     very process is running under. Checking next to sys.executable first —
     whichever venv actually launched this interpreter — is more robust than
     depending on PATH or assuming a fixed REPO_ROOT/.venv layout.
+
+    Deliberately NOT Path(sys.executable).resolve() — a venv's bin/python
+    is typically a symlink to the base system interpreter (e.g. /usr/bin/
+    python3.12), so resolving it lands in the *system* bin/ directory, not
+    the venv's — found live, that silently broke this exact fix on its
+    first deploy (still fell through to the bare filename). sys.executable
+    itself is already an absolute path when launched via a full path (as
+    jobs.py does), so no resolution is needed or wanted here.
     """
     cli = os.environ.get("GARMINDB_CLI", "garmindb_cli.py").strip()
     if os.path.isabs(cli) or os.sep in cli:
         resolved = cli  # explicit path given — respect it as-is
     else:
-        venv_candidate = Path(sys.executable).resolve().parent / cli
+        venv_candidate = Path(sys.executable).parent / cli
         resolved = str(venv_candidate) if venv_candidate.is_file() else (shutil.which(cli) or cli)
     if resolved.lower().endswith(".py"):
         return [sys.executable, resolved]
