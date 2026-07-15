@@ -312,6 +312,17 @@ def validate_segments(segments, race_distance: float) -> list[dict] | None:
     return out
 
 
+# A single day's distance must fit within this bound, or validation rejects
+# the whole response — generous enough to cover a full marathon (42.2 km /
+# 26.2 mi) as a legitimate race-day (or long-run) distance in either unit
+# system, while still catching genuinely bad LLM output (typos, wrong units).
+_MAX_DAILY_DISTANCE = {"km": 50.0, "miles": 31.0}
+
+
+def _max_daily_distance(units: str | None) -> float:
+    return _MAX_DAILY_DISTANCE.get((units or "miles").lower(), 31.0)
+
+
 def validate_revision(data, plan: dict, today_iso: str) -> dict | None:
     """Validate LLM plan-revision JSON against the plan schema. Returns
     {'days', 'revision_note'} with the full merged day list, or None."""
@@ -324,6 +335,7 @@ def validate_revision(data, plan: dict, today_iso: str) -> dict | None:
 
     by_date = {d["date"]: dict(d) for d in plan["days"]}
     race_date = plan["race"]["race_date"]
+    max_dist = _max_daily_distance(plan.get("units"))
     from common import parse_duration_s
     for c in changed:
         if not isinstance(c, dict):
@@ -347,7 +359,7 @@ def validate_revision(data, plan: dict, today_iso: str) -> dict | None:
                 dist = round(float(dist), 1)
             except (TypeError, ValueError):
                 return None
-            if not 0 <= dist <= 30:
+            if not 0 <= dist <= max_dist:
                 return None
         pace = c.get("pace")
         pace_s = parse_duration_s(pace) if pace else None
@@ -384,6 +396,7 @@ def validate_full_plan(data, race_cfg: dict, today_iso: str) -> dict | None:
         return None
 
     race_date = str(race_cfg.get("race", {}).get("race_date") or "")
+    max_dist = _max_daily_distance(race_cfg.get("preferences", {}).get("units"))
     from common import parse_duration_s
 
     days = []
@@ -417,9 +430,9 @@ def validate_full_plan(data, race_cfg: dict, today_iso: str) -> dict | None:
                 log.warning("LLM plan day[%d] (%s) has a non-numeric distance %r",
                            i, date_s, d.get("distance"))
                 return None
-            if not 0 <= dist <= 30:
-                log.warning("LLM plan day[%d] (%s) distance %.1f is out of the 0-30 range",
-                           i, date_s, dist)
+            if not 0 <= dist <= max_dist:
+                log.warning("LLM plan day[%d] (%s) distance %.1f is out of the 0-%.0f range",
+                           i, date_s, dist, max_dist)
                 return None
         pace = d.get("pace")
         pace_s = parse_duration_s(pace) if pace else None
