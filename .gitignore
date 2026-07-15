@@ -22,6 +22,12 @@ HealthData/
 # Never publishable, never secrets, just noise.
 /var/
 
+# Generated dashboard data — refresh.py writes it, the live web app reads it
+# straight off disk (no git-publish step anymore, see CLAUDE.md). Tracking
+# it meant every refresh either needed a commit or left the working tree
+# permanently dirty; same reasoning as race_config.yaml above.
+/docs/data/*.json
+
 # pytest
 .pytest_cache/
 

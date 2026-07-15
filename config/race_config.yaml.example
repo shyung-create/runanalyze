@@ -19,6 +19,16 @@ preferences:
   max_run_days_per_week: 5
   activities_since: "2024-06-01"  # ignore any activity before this date
   #                     # (YYYY-MM-DD). Leave "" to use full history.
+  activities_weeks_back: 0  # if > 0, overrides activities_since: only use
+  #                     # activities from the trailing N weeks, recomputed
+  #                     # relative to today on every refresh (a rolling
+  #                     # window, not a fixed date). 0 disables this and
+  #                     # falls back to activities_since above. Either way
+  #                     # this only filters what refresh.py reads out of
+  #                     # GarminDB's local database — it never changes what
+  #                     # GarminDB itself downloads/stores.
+  llm_provider: "deepseek"  # "deepseek" or "claude" — which LLM revises the
+  #                     # plan on refresh and powers the AI Plan tab.
   # plan_id: ""         # optional — force a specific program instead of
   #                     # auto-selection. Valid ids (see pipeline/plans_catalog.json):
   #                     # full: marathon_higdon_novice_1, marathon_higdon_novice_2,

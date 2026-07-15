@@ -1,10 +1,7 @@
-.PHONY: refresh refresh-push sample serve
+.PHONY: refresh sample serve
 
 refresh:
 	python pipeline/refresh.py
-
-refresh-push:
-	python pipeline/refresh.py --push
 
 # Regenerate demo data (no GarminDB or API key needed)
 sample:

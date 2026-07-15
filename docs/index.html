@@ -23,6 +23,7 @@
     <button data-page="strategy">Race Strategy</button>
     <button data-page="raceinfo">Race Info</button>
     <button data-page="log">Revision Log</button>
+    <button data-page="aiplan">AI Plan</button>
     <button data-page="admin">Admin</button>
   </nav>
 </header>
@@ -145,24 +146,77 @@
     </div>
   </section>
 
+  <!-- ================= AI PLAN ================= -->
+  <section class="page" id="page-aiplan">
+    <div class="card">
+      <h2>AI-generated plan</h2>
+      <div class="admin-note">
+        An alternative plan for comparison only — generating one here never changes
+        the main plan shown in Overview/Calendar. <strong>De novo</strong>: the LLM
+        authors the whole plan from scratch. <strong>Blended</strong>: the LLM
+        adapts the auto-selected published program more freely than the regular
+        DeepSeek/Claude revision does. Uses whichever provider is set in the Admin
+        tab's Race details panel, and the metrics from your last refresh — run a
+        refresh first if that data is stale.
+      </div>
+      <div class="admin-row">
+        <button id="aiplan-denovo-btn" type="button">Generate de novo</button>
+        <button id="aiplan-blended-btn" type="button">Generate blended</button>
+      </div>
+      <div id="aiplan-status" class="admin-status"></div>
+      <pre id="aiplan-log" class="admin-log" style="display:none"></pre>
+    </div>
+
+    <div class="card" id="aiplan-result-card" style="display:none">
+      <h2>Latest AI plan</h2>
+      <div class="admin-note" id="aiplan-meta"></div>
+      <p class="seg-note" id="aiplan-note"></p>
+      <div class="scroll-x"><table class="data" id="table-aiplan"></table></div>
+    </div>
+  </section>
+
   <!-- ================= ADMIN ================= -->
   <section class="page" id="page-admin">
-    <div class="card" id="garmin-panel">
-      <h2>Garmin connection</h2>
-      <div id="garmin-status" class="admin-status"></div>
-      <form id="garmin-form" class="admin-form">
-        <label for="garmin-username">Garmin Connect email</label>
-        <input type="email" id="garmin-username" name="username" autocomplete="off" required>
-        <label for="garmin-password">Garmin Connect password</label>
-        <input type="password" id="garmin-password" name="password" autocomplete="off" required>
-        <button type="submit">Save credentials</button>
-        <div class="admin-note">
-          Stored only in <code>~/.GarminDb/GarminConnectConfig.json</code>, mode <code>0600</code>,
-          readable only by the service account that runs the sync — never shown here again, never
-          logged. Used so scheduled syncs can re-authenticate themselves if the cached session expires.
-        </div>
-        <div id="garmin-form-msg" class="admin-msg"></div>
-      </form>
+    <div class="card" id="refresh-panel">
+      <h2>Refresh</h2>
+      <div class="admin-row">
+        <label><input type="checkbox" id="opt-no-sync"> Skip Garmin sync (use existing data — "reanalyze only")</label>
+        <label><input type="checkbox" id="opt-no-llm"> Skip LLM (deterministic only — "fresh pull only" if paired with the sync)</label>
+        <label><input type="checkbox" id="opt-replan"> Replan from scratch</label>
+      </div>
+      <input type="text" id="opt-note" placeholder="Optional note for the plan revision (e.g. move long run to Saturday)">
+      <button id="refresh-btn" type="button">Refresh now</button>
+      <div id="refresh-status" class="admin-status"></div>
+      <pre id="refresh-log" class="admin-log" style="display:none"></pre>
+      <div class="admin-note">
+        Last refresh: <span id="last-refresh-at">—</span><br>
+        Last error: <span id="last-refresh-error">none</span>
+      </div>
+    </div>
+
+    <div class="card" id="rest-days-panel">
+      <h2>Rest days</h2>
+      <div class="admin-row" id="rest-days-checks"></div>
+      <button id="rest-days-save-btn" type="button">Save rest days</button>
+      <div id="rest-days-msg" class="admin-msg"></div>
+      <div class="admin-note">
+        Days marked here are always rest — the plan swaps any workout that would land
+        on one to a rest day elsewhere in the same week. Saving doesn't retroactively
+        change an already-generated plan; trigger a refresh afterward (Replan from
+        scratch recommended) to apply it.
+      </div>
+
+      <h3>Specific rest dates</h3>
+      <div id="blocked-dates-list" class="admin-row"></div>
+      <div class="admin-row">
+        <input type="date" id="blocked-date-input">
+        <button id="blocked-date-add-btn" type="button">Add rest date</button>
+      </div>
+      <div id="blocked-dates-msg" class="admin-msg"></div>
+      <div class="admin-note">
+        One-off dates that are always rest, regardless of weekday — e.g. a specific
+        travel day. Existing dates are listed above; click × to remove one.
+      </div>
     </div>
 
     <div class="card" id="race-details-panel">
@@ -191,9 +245,22 @@
           <option value="">Auto-select</option>
         </select>
 
+        <label for="race-activities-weeks-back">Activities lookback (weeks)</label>
+        <input type="number" id="race-activities-weeks-back" name="activities_weeks_back" min="0" step="1" value="0">
+
+        <label for="race-llm-provider">LLM provider</label>
+        <select id="race-llm-provider" name="llm_provider">
+          <option value="deepseek">DeepSeek</option>
+          <option value="claude">Claude</option>
+        </select>
+
         <button type="submit">Save race details</button>
         <div class="admin-note">
           Changing the distance narrows the plan-override list to matching programs.
+          Activities lookback limits how much Garmin history feeds metrics/planning —
+          0 means full history; it's recomputed relative to today on every refresh, and
+          never changes what's actually synced from Garmin. LLM provider controls which
+          model revises the plan on refresh and generates the AI Plan tab's plans.
           Saving doesn't retroactively change an already-generated plan; trigger a
           refresh afterward (Replan from scratch recommended) to apply it.
         </div>
@@ -201,46 +268,22 @@
       </form>
     </div>
 
-    <div class="card" id="rest-days-panel">
-      <h2>Rest days</h2>
-      <div class="admin-row" id="rest-days-checks"></div>
-      <button id="rest-days-save-btn" type="button">Save rest days</button>
-      <div id="rest-days-msg" class="admin-msg"></div>
-      <div class="admin-note">
-        Days marked here are always rest — the plan swaps any workout that would land
-        on one to a rest day elsewhere in the same week. Saving doesn't retroactively
-        change an already-generated plan; trigger a refresh afterward (Replan from
-        scratch recommended) to apply it.
-      </div>
-
-      <h3>Specific rest dates</h3>
-      <div id="blocked-dates-list" class="admin-row"></div>
-      <div class="admin-row">
-        <input type="date" id="blocked-date-input">
-        <button id="blocked-date-add-btn" type="button">Add rest date</button>
-      </div>
-      <div id="blocked-dates-msg" class="admin-msg"></div>
-      <div class="admin-note">
-        One-off dates that are always rest, regardless of weekday — e.g. a specific
-        travel day. Existing dates are listed above; click × to remove one.
-      </div>
-    </div>
-
-    <div class="card" id="refresh-panel">
-      <h2>Refresh</h2>
-      <div class="admin-row">
-        <label><input type="checkbox" id="opt-no-sync"> Skip Garmin sync (use existing data — "reanalyze only")</label>
-        <label><input type="checkbox" id="opt-no-llm"> Skip DeepSeek (deterministic only — "fresh pull only" if paired with the sync)</label>
-        <label><input type="checkbox" id="opt-replan"> Replan from scratch</label>
-      </div>
-      <input type="text" id="opt-note" placeholder="Optional note for the plan revision (e.g. move long run to Saturday)">
-      <button id="refresh-btn" type="button">Refresh now</button>
-      <div id="refresh-status" class="admin-status"></div>
-      <pre id="refresh-log" class="admin-log" style="display:none"></pre>
-      <div class="admin-note">
-        Last refresh: <span id="last-refresh-at">—</span><br>
-        Last error: <span id="last-refresh-error">none</span>
-      </div>
+    <div class="card" id="garmin-panel">
+      <h2>Garmin connection</h2>
+      <div id="garmin-status" class="admin-status"></div>
+      <form id="garmin-form" class="admin-form">
+        <label for="garmin-username">Garmin Connect email</label>
+        <input type="email" id="garmin-username" name="username" autocomplete="off" required>
+        <label for="garmin-password">Garmin Connect password</label>
+        <input type="password" id="garmin-password" name="password" autocomplete="off" required>
+        <button type="submit">Save credentials</button>
+        <div class="admin-note">
+          Stored only in <code>~/.GarminDb/GarminConnectConfig.json</code>, mode <code>0600</code>,
+          readable only by the service account that runs the sync — never shown here again, never
+          logged. Used so scheduled syncs can re-authenticate themselves if the cached session expires.
+        </div>
+        <div id="garmin-form-msg" class="admin-msg"></div>
+      </form>
     </div>
   </section>
 </main>
@@ -251,6 +294,7 @@
 
 <script src="assets/js/vendor/chart.umd.min.js"></script>
 <script src="assets/js/app.js"></script>
+<script src="assets/js/aiplan.js"></script>
 <script src="assets/js/admin.js"></script>
 </body>
 </html>

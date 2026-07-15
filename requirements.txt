@@ -1,6 +1,9 @@
 python-dotenv>=1.0
 PyYAML>=6.0
 requests>=2.31
+anthropic>=0.40   # Claude LLM provider (pipeline/claude_client.py) — the
+# pipeline still runs fine against DeepSeek alone if ANTHROPIC_API_KEY is
+# unset; claude_client.py also tolerates this package being absent.
 # GarminDB is used via its CLI (garmindb_cli.py). Install it separately:
 #   pip install garmindb
 # It is intentionally not pinned here so the pipeline can run against an

@@ -22,6 +22,7 @@ from . import config
 
 VALID_DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 VALID_DISTANCE_TYPES = ["half", "full"]
+VALID_LLM_PROVIDERS = ["deepseek", "claude"]
 
 
 def _plan_catalog() -> list[dict]:
@@ -73,6 +74,18 @@ _DISTANCE_TYPE_RE = _quoted_scalar_re("distance_type")
 _RACE_DATE_RE = _quoted_scalar_re("race_date")
 _TARGET_TIME_RE = _quoted_scalar_re("target_time")
 _LONG_RUN_DAY_RE = _quoted_scalar_re("long_run_day")
+_LLM_PROVIDER_RE = _quoted_scalar_re("llm_provider")
+
+
+def _int_scalar_re(key: str) -> re.Pattern:
+    """Matches an unquoted integer scalar, e.g. '  activities_weeks_back: 0  # ...'.
+    Same group shape as _quoted_scalar_re (indent+key, value, trailing comment)
+    but without quotes — no existing preference used a bare numeric scalar
+    before this one (max_run_days_per_week has no reader/writer here today)."""
+    return re.compile(rf"^(\s*{re.escape(key)}:\s*)(-?\d+)(.*)$", re.MULTILINE)
+
+
+_ACTIVITIES_WEEKS_BACK_RE = _int_scalar_re("activities_weeks_back")
 
 # plan_id is commented out by default ("# plan_id: ...") since an unset value
 # means "auto-select" — unlike every other field here, writing it has to be
@@ -128,6 +141,15 @@ def _write_quoted_scalar(pattern: re.Pattern, field_name: str, value: str) -> No
     path = config.RACE_CONFIG_FILE
     text = path.read_text(encoding="utf-8")
     new_text, count = pattern.subn(lambda m: m.group(1) + f'"{value}"' + m.group(3), text, count=1)
+    if count != 1:
+        raise _not_found_error(field_name)
+    _atomic_write_text(path, new_text)
+
+
+def _write_int_scalar(pattern: re.Pattern, field_name: str, value: int) -> None:
+    path = config.RACE_CONFIG_FILE
+    text = path.read_text(encoding="utf-8")
+    new_text, count = pattern.subn(lambda m: m.group(1) + str(value) + m.group(3), text, count=1)
     if count != 1:
         raise _not_found_error(field_name)
     _atomic_write_text(path, new_text)
@@ -193,17 +215,21 @@ def read_race_details() -> dict:
         "long_run_day": str(prefs.get("long_run_day") or ""),
         # "" means unset — plan_generator.py auto-selects a program.
         "plan_id": str(prefs.get("plan_id") or ""),
+        "activities_weeks_back": int(prefs.get("activities_weeks_back") or 0),
+        "llm_provider": str(prefs.get("llm_provider") or "deepseek"),
     }
 
 
 def write_race_details(*, name: str, distance_type: str, race_date: str,
-                        target_time: str, long_run_day: str, plan_id: str) -> None:
+                        target_time: str, long_run_day: str, plan_id: str,
+                        activities_weeks_back: int, llm_provider: str) -> None:
     name = name.strip()
     distance_type = distance_type.strip().lower()
     race_date = race_date.strip()
     target_time = target_time.strip()
     long_run_day = long_run_day.strip().lower()
     plan_id = plan_id.strip()
+    llm_provider = llm_provider.strip().lower()
 
     # Validate everything before writing anything, so a bad field never
     # leaves the file half-updated.
@@ -226,6 +252,10 @@ def write_race_details(*, name: str, distance_type: str, race_date: str,
             f"plan_id {plan_id!r} is not a valid plan for distance_type {distance_type!r} — "
             f"valid ids: {sorted(_plan_ids_for(distance_type))}"
         )
+    if activities_weeks_back < 0:
+        raise RaceConfigError("activities_weeks_back must be >= 0")
+    if llm_provider not in VALID_LLM_PROVIDERS:
+        raise RaceConfigError(f"llm_provider must be one of {VALID_LLM_PROVIDERS}")
 
     _write_quoted_scalar(_NAME_RE, "name", name)
     _write_quoted_scalar(_DISTANCE_TYPE_RE, "distance_type", distance_type)
@@ -233,3 +263,5 @@ def write_race_details(*, name: str, distance_type: str, race_date: str,
     _write_quoted_scalar(_TARGET_TIME_RE, "target_time", target_time)
     _write_quoted_scalar(_LONG_RUN_DAY_RE, "long_run_day", long_run_day)
     _write_plan_id(plan_id)
+    _write_int_scalar(_ACTIVITIES_WEEKS_BACK_RE, "activities_weeks_back", activities_weeks_back)
+    _write_quoted_scalar(_LLM_PROVIDER_RE, "llm_provider", llm_provider)

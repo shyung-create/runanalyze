@@ -36,6 +36,7 @@ PLANS_CATALOG_FILE = REPO_ROOT / "pipeline" / "plans_catalog.json"
 
 VENV_PYTHON = REPO_ROOT / ".venv" / "bin" / "python"
 REFRESH_SCRIPT = REPO_ROOT / "pipeline" / "refresh.py"
+GENERATE_AI_PLAN_SCRIPT = REPO_ROOT / "pipeline" / "generate_ai_plan.py"
 
 
 def _env(name: str, default: str = "") -> str:

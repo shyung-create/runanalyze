@@ -119,7 +119,7 @@ async def start_refresh(flags: list[str], note: Optional[str]) -> dict:
         return {"started": False, "job_id": synthetic_id, "reason": "already_running"}
 
     job_id = uuid.uuid4().hex[:12]
-    cmd = [str(config.VENV_PYTHON), str(config.REFRESH_SCRIPT), "--push"]
+    cmd = [str(config.VENV_PYTHON), str(config.REFRESH_SCRIPT)]
     for flag in flags:
         if flag not in config.ALLOWED_REFRESH_FLAGS:
             raise ValueError(f"flag not allowed: {flag}")
@@ -157,6 +157,58 @@ async def start_refresh(flags: list[str], note: Optional[str]) -> dict:
         jobs[job_id]["exit_code"] = None
         _save_jobs(jobs)
         raise RuntimeError(f"could not start refresh subprocess: {e}") from e
+
+    asyncio.create_task(_await_completion(job_id, process))
+    return {"started": True, "job_id": job_id, "reason": None}
+
+
+async def start_ai_plan_job(mode: str) -> dict:
+    """Try to start an AI-plan generation job (de novo or blended) — the
+    "AI Plan" tab's own trigger, distinct from start_refresh() but sharing
+    the same single-flight lock (both touch Garmin-derived metrics) and job
+    bookkeeping. Returns {"started": bool, "job_id": str}."""
+    if mode not in ("denovo", "blended"):
+        raise ValueError(f"invalid mode: {mode}")
+    config.ensure_var_dirs()
+
+    existing = current_job_id()
+    if existing is not None:
+        return {"started": False, "job_id": existing, "reason": "already_running"}
+
+    if _probe_lock_held():
+        synthetic_id = f"external-{int(time.time())}"
+        jobs = _load_jobs()
+        jobs[synthetic_id] = {
+            "status": "running", "started_at": time.time(), "finished_at": None,
+            "exit_code": None, "trigger": "external", "flags": [],
+        }
+        _save_jobs(jobs)
+        return {"started": False, "job_id": synthetic_id, "reason": "already_running"}
+
+    job_id = uuid.uuid4().hex[:12]
+    cmd = [str(config.VENV_PYTHON), str(config.GENERATE_AI_PLAN_SCRIPT), "--mode", mode]
+
+    log_path = config.LOG_DIR / f"{job_id}.log"
+    jobs = _load_jobs()
+    jobs[job_id] = {
+        "status": "running", "started_at": time.time(), "finished_at": None,
+        "exit_code": None, "trigger": "ai-plan", "flags": [mode],
+    }
+    _save_jobs(jobs)
+
+    try:
+        with open(log_path, "wb") as log_file:
+            process = await asyncio.create_subprocess_exec(
+                *cmd, stdout=log_file, stderr=asyncio.subprocess.STDOUT,
+                cwd=str(config.REPO_ROOT),
+            )
+    except OSError as e:
+        jobs = _load_jobs()
+        jobs[job_id]["status"] = "failed"
+        jobs[job_id]["finished_at"] = time.time()
+        jobs[job_id]["exit_code"] = None
+        _save_jobs(jobs)
+        raise RuntimeError(f"could not start AI-plan subprocess: {e}") from e
 
     asyncio.create_task(_await_completion(job_id, process))
     return {"started": True, "job_id": job_id, "reason": None}

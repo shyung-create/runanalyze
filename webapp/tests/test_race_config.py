@@ -16,6 +16,8 @@ preferences:
   #                     # the displaced workout swaps to a rest day in the same week
   blocked_dates: []     # one-off no-run dates, e.g. [2026-07-22]
   max_run_days_per_week: 5
+  activities_weeks_back: 0  # if > 0, overrides activities_since with a rolling window
+  llm_provider: "deepseek"  # "deepseek" or "claude"
   # plan_id: ""         # optional -- force a specific program instead of
   #                     # auto-selection.
 """
@@ -142,6 +144,7 @@ def test_write_blocked_dates_no_stray_temp_files(isolated_race_config):
 VALID_DETAILS = dict(
     name="Chicago Marathon", distance_type="full", race_date="2026-10-11",
     target_time="03:45:00", long_run_day="saturday", plan_id="",
+    activities_weeks_back=0, llm_provider="deepseek",
 )
 
 
@@ -150,6 +153,7 @@ def test_read_race_details_matches_sample(isolated_race_config):
     assert details == {
         "name": "SF Marathon", "distance_type": "full", "race_date": "2026-07-26",
         "target_time": "04:00:00", "long_run_day": "sunday", "plan_id": "",
+        "activities_weeks_back": 0, "llm_provider": "deepseek",
     }
 
 
@@ -164,7 +168,8 @@ def test_write_race_details_preserves_comments_and_other_fields(isolated_race_co
     new = isolated_race_config.read_text()
     for line in original.splitlines():
         if "#" in line and not any(k in line for k in
-                                    ("name:", "distance_type:", "race_date:", "target_time:", "long_run_day:")):
+                                    ("name:", "distance_type:", "race_date:", "target_time:",
+                                     "long_run_day:", "activities_weeks_back:", "llm_provider:")):
             assert line in new, f"comment line lost: {line!r}"
     assert "rest_days: []" in new
     assert "max_run_days_per_week: 5" in new
@@ -253,3 +258,36 @@ def test_plan_catalog_by_distance_type_grouped_and_sorted():
     assert catalog["half"] == sorted(catalog["half"])
     assert "marathon_higdon_novice_1" in catalog["full"]
     assert "half_hansons_beginner" in catalog["half"]
+
+
+# ------------------------------------------------ activities_weeks_back / llm_provider
+
+def test_write_race_details_updates_activities_weeks_back(isolated_race_config):
+    race_config.write_race_details(**dict(VALID_DETAILS, activities_weeks_back=8))
+    assert race_config.read_race_details()["activities_weeks_back"] == 8
+
+
+def test_write_race_details_rejects_negative_weeks_back(isolated_race_config):
+    bad = dict(VALID_DETAILS, activities_weeks_back=-1)
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_race_details(**bad)
+    assert race_config.read_race_details()["activities_weeks_back"] == 0
+
+
+def test_write_race_details_updates_llm_provider(isolated_race_config):
+    race_config.write_race_details(**dict(VALID_DETAILS, llm_provider="claude"))
+    assert race_config.read_race_details()["llm_provider"] == "claude"
+
+
+def test_write_race_details_rejects_invalid_llm_provider(isolated_race_config):
+    bad = dict(VALID_DETAILS, llm_provider="chatgpt")
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_race_details(**bad)
+    assert race_config.read_race_details()["llm_provider"] == "deepseek"
+
+
+def test_write_race_details_rejects_invalid_weeks_back_without_touching_file(isolated_race_config):
+    original = isolated_race_config.read_text()
+    with pytest.raises(race_config.RaceConfigError):
+        race_config.write_race_details(**dict(VALID_DETAILS, activities_weeks_back=-5))
+    assert isolated_race_config.read_text() == original

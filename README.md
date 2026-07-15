@@ -3,20 +3,26 @@
 A personalized running dashboard that analyzes your Garmin activity data
 (synced locally via [GarminDB](https://github.com/tcgoetz/GarminDB)) and
 generates an adaptive, [Hal Higdon](https://www.halhigdon.com/)-principled
-training plan for an upcoming race. The dashboard is a static site on
-**GitHub Pages**; a local Python pipeline refreshes the data and revises the
-plan (via the DeepSeek API) whenever you run it.
+training plan for an upcoming race. It runs as a small always-on web app
+(`webapp/`, FastAPI) on a server you control — reachable only over your own
+[Tailscale](https://tailscale.com/) network, no public inbound ports — with
+an Admin tab for entering Garmin credentials, editing race details, and
+triggering a refresh from the browser. A background pipeline
+(`pipeline/refresh.py`) does the actual sync/analysis/plan-revision work,
+either on a nightly systemd timer or on demand from the Admin tab.
 
 ```
-Garmin watch ──▶ GarminDB (local SQLite) ──▶ pipeline/refresh.py ──▶ docs/data/*.json ──▶ GitHub Pages
+Garmin watch ──▶ GarminDB (local SQLite) ──▶ pipeline/refresh.py ──▶ docs/data/*.json ──▶ webapp/ (FastAPI, served over Tailscale)
                                                     │
                                              DeepSeek V4 API
                                         (plan revision, elevation vision)
 ```
 
-Everything sensitive stays on your machine: the published site is pure
-HTML/CSS/JS reading static JSON — **no API keys, no raw health data, no GPS
-coordinates** ever leave your computer.
+Everything sensitive stays on the box: the Garmin password lives only in
+one 0600 file the web app can write but never read back, `docs/data/*.json`
+is derived/aggregated only (no GPS), and nothing is reachable outside your
+tailnet. See `deploy/RUNBOOK.md` for the operational deep-dive and
+`CLAUDE.md` for the constraints this design won't compromise on.
 
 ## Setup
 
@@ -82,30 +88,29 @@ weather, hydration points, course notes) and drop a screenshot of the course
 elevation map at `config/course_elevation.png` — the dashboard shows
 "Not yet configured" until then.
 
-### 4. Publish the dashboard
+### 4. Run the dashboard
 
-The dashboard is a pure static site (`docs/`) — any static host works.
-Pick one:
+For real deployment (a server you control, reachable over Tailscale), see
+`deploy/RUNBOOK.md` — it walks through `deploy/bootstrap.sh`, placing
+secrets, first Garmin auth, and starting the systemd units.
 
-**GitHub Pages** (simplest if your repo is public — private repos need a
-paid GitHub plan): Repo → Settings → Pages → Source: **Deploy from a
-branch**, branch `main` (or your default), folder **`/docs`**. Site
-appears at `https://<user>.github.io/<repo>/`.
+For local development, run the FastAPI app directly:
 
-**Netlify** (works with private repos on the free tier): the repo
-includes `netlify.toml` (publish dir `docs`, no build step needed). At
-netlify.com → **Add new site → Import an existing project** → pick this
-repo and branch → deploy. It auto-redeploys on every push, so
-`refresh.py --push` updates the live site automatically. Vercel and
-Cloudflare Pages work the same way if you'd rather use one of those.
+```bash
+uvicorn webapp.main:app --reload
+```
 
-The repo ships with **sample data** in `docs/data/` so the site renders
-before your first real refresh (the header shows "sample data").
-Regenerate it anytime with `make sample`.
+`docs/data/*.json` is generated, not committed — a fresh clone has none of
+it, so the dashboard has nothing to show until you run `make sample` (demo
+data, no GarminDB or API key needed) or a real refresh. A plain
+`make serve` (static `http.server`) still works for previewing the
+read-only tabs, but the Admin tab needs the real backend (`uvicorn`) to do
+anything.
 
 ### 5. Refresh workflow
 
-After a run (or whenever you want the plan revised):
+After a run (or whenever you want the plan revised), either use the Admin
+tab's "Refresh now" button, or run it directly:
 
 ```bash
 make refresh          # or: python pipeline/refresh.py
@@ -119,13 +124,11 @@ This:
 4. Asks DeepSeek to revise the **remaining** plan days (past days never change),
    validates the JSON response, and falls back to the existing plan if invalid
 5. Writes a human-readable revision note to `docs/data/revision_log.json`
-6. Commits the new JSON and asks before pushing (use `make refresh-push` or
-   `--push` to skip the prompt)
+6. Writes `docs/data/*.json`, which the running web app picks up immediately
+   (no commit/push step — see `CLAUDE.md`'s Ground Truth)
 
 Useful flags: `--no-sync` (skip Garmin download), `--no-llm` (deterministic
-only), `--no-git` (don't commit), `-v` (debug logging).
-
-Preview locally with `make serve` → http://localhost:8000.
+only), `-v` (debug logging).
 
 ## How the plan works
 
@@ -158,15 +161,19 @@ Preview locally with `make serve` → http://localhost:8000.
 
 ```
 config/           race + race-info + course-segment configuration
-pipeline/         local Python pipeline (never runs in CI or on Pages)
-docs/             GitHub Pages root — static dashboard
-  data/           generated JSON (plan, metrics, activities, strategy, log)
+pipeline/         sync/analysis/plan pipeline (pipeline/refresh.py is the entrypoint)
+webapp/           FastAPI app — serves docs/, the Admin tab's API, credential handling
+deploy/           systemd units, bootstrap.sh, update.sh, RUNBOOK.md
+docs/             dashboard front end
+  data/           generated JSON (plan, metrics, activities, strategy, log) — gitignored
   assets/         css/js (Chart.js vendored — no CDN, works offline)
 ```
 
 ## Privacy
 
-- `.env`, `*.db`, and raw health-data files are gitignored.
-- The pipeline never reads GPS columns; published JSON contains only derived,
-  aggregated summaries (dates, distances, paces, HR averages, lap splits).
-- Review `docs/data/*.json` before making the repo public if you're unsure.
+- `.env`, `*.db`, raw health-data files, and `docs/data/*.json` are gitignored.
+- The pipeline never reads GPS columns; the JSON the dashboard reads contains only
+  derived, aggregated summaries (dates, distances, paces, HR averages, lap splits).
+- The Garmin password lives only in `~/.GarminDb/GarminConnectConfig.json` (0600),
+  written by the Admin tab's form but never read back by it — see `CLAUDE.md`.
+- No public inbound exposure — the web app is reachable only over Tailscale.

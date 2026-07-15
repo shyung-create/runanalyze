@@ -72,45 +72,11 @@ if [ -d "${APP_DIR}/.git" ]; then
   log "Repo already cloned at ${APP_DIR}."
 else
   log "Cloning ${REPO_URL} to ${APP_DIR}..."
-  # OPTIONAL, only if you kept the git-publish path (see README's
-  # publishing note — the default recommendation was to drop it, since
-  # Tailscale + this web app already serves the live dashboard). If kept,
-  # generate a write-capable deploy key instead of HTTPS:
-  #   sudo -u runanalyze ssh-keygen -t ed25519 -N "" -f ${SERVICE_HOME}/.ssh/id_ed25519
-  #   sudo -u runanalyze ssh-keyscan github.com >> ${SERVICE_HOME}/.ssh/known_hosts
-  #   # then add the printed public key at GitHub -> Settings -> Deploy keys,
-  #   # "Allow write access" checked, and clone via git@github.com:... instead.
   if [ -n "$BRANCH" ]; then
     sudo -u "$SERVICE_USER" git clone -b "$BRANCH" "$REPO_URL" "$APP_DIR"
   else
     sudo -u "$SERVICE_USER" git clone "$REPO_URL" "$APP_DIR"
   fi
-fi
-
-# git_publish() in pipeline/refresh.py runs `git commit` after every
-# refresh — without a configured identity, that fails with exit 128
-# ("Author identity unknown"), which surfaces to the athlete as a failed
-# job in the dashboard with no obvious cause (found live: the underlying
-# refresh had already succeeded — data was regenerated — only the commit
-# step failed). Generic bot identity, not the operator's own name/email:
-# this becomes the visible commit author in a public repo's history.
-#
-# Repo-local config (`-C APP_DIR`, no --global), not ~/.gitconfig:
-# runanalyze-web.service's ProtectHome=tmpfs + BindPaths only bind-mounts
-# APP_DIR/.GarminDb/HealthData, not the home directory root — a global
-# ~/.gitconfig set from an interactive shell is invisible to the refresh
-# subprocess the web app spawns (found live: `--global` set successfully
-# over SSH, refresh still failed with the exact same "Author identity
-# unknown" error, because that subprocess's sandboxed mount namespace
-# never bind-mounted the home root where ~/.gitconfig lives). APP_DIR
-# itself is already bound for both units, so repo-local config works
-# for both the web-triggered and scheduled-timer paths.
-if sudo -u "$SERVICE_USER" git -C "$APP_DIR" config user.email &>/dev/null; then
-  log "git author identity already configured for ${SERVICE_USER}."
-else
-  log "Setting git author identity for ${SERVICE_USER} (runanalyze-bot)..."
-  sudo -u "$SERVICE_USER" git -C "$APP_DIR" config user.name "runanalyze-bot"
-  sudo -u "$SERVICE_USER" git -C "$APP_DIR" config user.email "runanalyze-bot@users.noreply.github.com"
 fi
 
 # ---------------------------------------------------------------- 4. Python venv
@@ -144,6 +110,18 @@ if [ -f "${APP_DIR}/config/race_config.yaml" ]; then
 else
   log "Seeding config/race_config.yaml from the example template..."
   sudo -u "$SERVICE_USER" cp "${APP_DIR}/config/race_config.yaml.example" "${APP_DIR}/config/race_config.yaml"
+fi
+
+# ---------------------------------------------------------------- 4c. docs/data/*.json (gitignored, seeded once)
+# docs/data/*.json is gitignored now (refresh.py no longer commits it — see
+# CLAUDE.md), so a fresh clone has none of it. Without this, runanalyze-web's
+# /data/*.json routes 404 until the first real refresh completes. Same
+# "only if missing" idempotence as the race_config.yaml seed above.
+if [ -f "${APP_DIR}/docs/data/meta.json" ]; then
+  log "docs/data/*.json already present — leaving it untouched."
+else
+  log "Seeding docs/data/*.json with sample data (replaced by the first real refresh)..."
+  sudo -u "$SERVICE_USER" "${APP_DIR}/.venv/bin/python" "${APP_DIR}/pipeline/sample_data.py"
 fi
 
 # ---------------------------------------------------------------- 5. var/ dir (job state, lock, logs)

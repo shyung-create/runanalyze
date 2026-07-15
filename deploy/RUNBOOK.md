@@ -82,22 +82,12 @@ Both go through the same single-flight lock (`<APP_DIR>/var/refresh.lock`) as
 the web-triggered path — starting this while a web-triggered refresh is
 running is a harmless no-op (`refresh.py` logs "already running" and exits 0).
 
-`bootstrap.sh` sets a **repo-local** git author identity (`runanalyze-bot`)
-for the service user on first setup — required because `git_publish()`
-runs `git commit` after every refresh. If you're on an older checkout from
-before that step existed, a refresh will regenerate `docs/data/*.json`
-correctly but then fail at the commit with "Author identity unknown"
-(exit 128). Fix once:
-```bash
-sudo -u runanalyze git -C /home/runanalyze/runanalyze config user.name "runanalyze-bot"
-sudo -u runanalyze git -C /home/runanalyze/runanalyze config user.email "runanalyze-bot@users.noreply.github.com"
-```
-Must be repo-local (`-C <path>`, no `--global`) — `runanalyze-web.service`'s
-`ProtectHome=tmpfs` only bind-mounts the app dir, `.GarminDb`, and
-`HealthData`, not the home directory root, so a global `~/.gitconfig` is
-invisible to the refresh subprocess the web app spawns even though it's
-visible in an interactive SSH shell (confirmed live: `--global` appeared
-to succeed, the next refresh failed with the identical error).
+`refresh.py` only ever writes `docs/data/*.json` to disk — it doesn't commit
+or push anything (see CLAUDE.md for why the git-publish step was dropped:
+the web app serves that JSON straight off disk, so there was nothing left
+for a git push to actually publish). Rolling back the app's *code*, as
+opposed to a bad refresh's data, is a separate concern — see "Rollback"
+below.
 
 ## Logs
 
@@ -205,7 +195,8 @@ it with whatever placeholder was committed at that revision — happened
 once in practice, wiping a live athlete's real race details and blocked
 dates. It's untracked now specifically so this can't recur; if you're
 running an older checkout where the file is still tracked, back it up
-before any `reset --hard`.) If you kept the git-publish path and the bad
-commit already got pushed live, the rollback here only affects the
-*instance's* code — you'd separately want to revert the published commit
-if `docs/data/*.json` itself was corrupted by the bad run.
+before any `reset --hard`.) This only rolls back the *instance's* code —
+`docs/data/*.json` isn't versioned in git at all anymore (`refresh.py`
+doesn't commit it), so if a bad run corrupted the dashboard's data, the
+fix is just to run another refresh with the rolled-back code, not to
+revert any commit.

@@ -3,12 +3,19 @@
 ## What this project is
 A personalized running dashboard. `pipeline/refresh.py` syncs Garmin activity data
 (via GarminDB, local SQLite), recomputes metrics, revises a Hal Higdon–principled
-training plan via the DeepSeek API, writes `docs/data/*.json`, and git-commits +
-pushes. `docs/` is a pure static site (vendored Chart.js, no CDN) that reads that JSON.
+training plan via the DeepSeek API, and writes `docs/data/*.json`. `docs/` is the
+dashboard front end (vendored Chart.js, no CDN); `webapp/` is a FastAPI app that serves
+it, exposes an Admin tab (Garmin credential form, race/rest-day editing, refresh
+trigger + live job status), and reads `docs/data/*.json` straight off disk — there is
+no git-publish step, see Ground Truth below.
 
-## Current work: migrating to Oracle Cloud as a live web dashboard
-Target: Oracle Always Free (Ampere A1, aarch64, ~2 OCPU / 12 GB, Ubuntu), serving a
-web UI where I enter Garmin credentials, trigger a live pull, and watch the plan update.
+## Current state: live on Oracle Cloud
+Runs on Oracle Always Free (Ampere A1, aarch64, ~2 OCPU / 12 GB, Ubuntu), reachable
+only over Tailscale (`tailscale serve`, no public inbound ports). `deploy/` has the
+systemd units, `bootstrap.sh`, `update.sh`, and `RUNBOOK.md` for operating it. The
+credential entry, live-refresh trigger, and deployment layer described below are
+built and running, not aspirational — treat changes here as edits to a live system,
+not greenfield design.
 
 ## Credential model (deliberate — do not "improve" this without asking)
 The real Garmin Connect username and password live in
@@ -41,23 +48,38 @@ Because the password is at rest, these controls are non-negotiable:
   Garmin sync.
 
 ## Ground truth (verified — confirm, don't rediscover)
-- Entrypoint is `pipeline/refresh.py`. Flags: `--push`, `--no-sync`, `--no-llm`,
-  `--no-git`, `--replan`, `--note`, `-v`. `make refresh` wraps it.
-- **Publishing is a git push, not an rsync.** `git_publish()` runs `git commit` then
-  `git push -u origin <branch>` from REPO_ROOT — the published dashboard *is* this repo.
-  So the instance needs a git clone with a **write-capable deploy key**; "deploy" is
-  `git pull`. This inverts the deploy model used in my other Oracle projects.
-- **Unattended runs must pass `--push`.** Without a tty, `git_publish` hits an `input()`
-  prompt and silently does not push.
-- GarminDB is a separate install (`pip install garmindb`), shelled out to as
-  `garmindb_cli.py --activities --download --import --analyze --latest`. It reads
+- Entrypoint is `pipeline/refresh.py`. Flags: `--no-sync`, `--no-llm`, `--replan`,
+  `--note`, `-v`. `make refresh` wraps it.
+- **There is no git-publish step.** `refresh.py` only writes `docs/data/*.json` to
+  disk; it never commits or pushes. `webapp/main.py` serves that JSON straight off
+  the instance's filesystem, so a git push would publish nothing a live refresh
+  doesn't already. `docs/data/*.json` is gitignored (generated, not versioned) —
+  don't reintroduce committing it without a reason. "Deploy" is `deploy/update.sh`
+  (`git fetch` + rebase of the app's own *code*, unrelated to dashboard data).
+- GarminDB is a separate install (`pip install "garmindb>=3.8.0"`, pinned in
+  `bootstrap.sh` — earlier versions use the deprecated `garth` auth library with a
+  different session-file location), shelled out to as `garmindb_cli.py --activities
+  --download --import --analyze --latest`. It reads
   `~/.GarminDb/GarminConnectConfig.json` and writes SQLite DBs to `~/HealthData/DBs/`.
-- `docs/` has **no backend and no interactivity today** — every dynamic feature is net-new.
-  Extend the existing dashboard; do not rewrite it.
-- Deps are light: python-dotenv, PyYAML, requests (+ garmindb). DeepSeek over plain
-  `requests` against an OpenAI-compatible endpoint.
+- `webapp/` is the backend: FastAPI + uvicorn, CSRF-protected (no app-level login —
+  Tailscale reachability is the access control, see `webapp/auth.py`), single-flight
+  refresh jobs guarded by the same `flock` the systemd timer uses
+  (`pipeline/refresh.py`'s `LOCK_PATH`, probed but not owned by `webapp/jobs.py`).
+- Deps: `python-dotenv`, `PyYAML`, `requests`, `anthropic` (+ `garmindb`) for the
+  pipeline; `fastapi`, `uvicorn`, `itsdangerous`, `httpx`, `pytest` for `webapp/`.
+- **Two LLM providers, chosen per-athlete, not per-deployment**: DeepSeek (plain
+  `requests` against an OpenAI-compatible endpoint) or Claude (`anthropic` SDK,
+  `pipeline/claude_client.py`), selected via `preferences.llm_provider` in
+  `race_config.yaml` — an Admin-tab field, not an env var — through
+  `pipeline/llm_client.get_llm_client()`. Both clients share the same prompts/
+  validators (defined in `deepseek_client.py`, imported by `claude_client.py`).
+- The "AI Plan" tab is a separate comparison view (`docs/data/llm_plan.json`,
+  written by `pipeline/generate_ai_plan.py`) — de novo (LLM authors a full plan
+  from scratch) or blended (sweeping revision of the auto-selected catalog
+  program). Never touches `plan.json`; not part of the nightly timer, triggered
+  on demand only, and reuses the last refresh's `metrics.json` rather than
+  re-syncing Garmin.
 - Cost per refresh is ~1 LLM call; `--no-llm` still yields a full deterministic plan.
-  The hard problems are **auth, exposure, and job orchestration** — not API spend.
 
 ## Conventions carried over from my other Oracle deployments
 - systemd unit + timer, EnvironmentFile (0600), journald for logs, venv on the host.

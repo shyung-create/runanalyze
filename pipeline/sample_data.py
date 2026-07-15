@@ -2,8 +2,8 @@
 """Generate realistic sample dashboard data without GarminDB or an API key.
 
 Exercises the real metrics / plan / strategy code paths against synthetic
-activities, so the static dashboard can be developed and the GitHub Pages
-site renders before the first real refresh. Run: python pipeline/sample_data.py
+activities, so the dashboard can be developed and rendered (docs/data/*.json
+is gitignored) before the first real refresh. Run: python pipeline/sample_data.py
 """
 
 from __future__ import annotations
