@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-14T22:34:54",
+  "generated_at": "2026-07-15T08:05:31",
   "source": "llm-revised",
   "race": {
     "name": "SF Marathon",
@@ -133,8 +133,10 @@
       "pace": "",
       "description": "Rest (blocked date)",
       "phase": "plan",
-      "status": "planned",
-      "revised": true
+      "status": "past",
+      "revised": true,
+      "actual": null,
+      "completion": "done"
     },
     {
       "date": "2026-07-15",
@@ -146,18 +148,25 @@
       "pace": "6:09",
       "description": "Easy run 6 km \u2013 strictly at easy pace 6:09/km",
       "phase": "plan",
-      "status": "planned",
-      "revised": true
+      "status": "past",
+      "revised": true,
+      "actual": {
+        "distance": 12.1,
+        "avg_hr": 153,
+        "avg_pace_s": 337,
+        "avg_pace": "5:38"
+      },
+      "completion": "done"
     },
     {
       "date": "2026-07-16",
       "week": 11,
       "dow": "thursday",
       "type": "easy",
-      "distance": 8.0,
+      "distance": 5.0,
       "pace_s": 369,
       "pace": "6:09",
-      "description": "Easy run 8 km with strides",
+      "description": "Easy recovery run 5 km at easy pace \u2013 strictly slow, no strides, to recover from yesterday's hard effort.",
       "phase": "plan",
       "status": "planned",
       "revised": true
@@ -167,10 +176,10 @@
       "week": 11,
       "dow": "friday",
       "type": "easy",
-      "distance": 6.0,
+      "distance": 4.0,
       "pace_s": 369,
       "pace": "6:09",
-      "description": "Easy run 6 km recovery \u2013 strictly at easy pace 6:09/km",
+      "description": "Short easy run 4 km recovery \u2013 keep it very easy.",
       "phase": "plan",
       "status": "planned",
       "revised": true
@@ -193,10 +202,10 @@
       "week": 11,
       "dow": "sunday",
       "type": "long",
-      "distance": 14.0,
+      "distance": 10.0,
       "pace_s": 378,
       "pace": "6:18",
-      "description": "Long run 14 km at easy long pace \u2013 keep relaxed",
+      "description": "Reduced long run 10 km at easy long pace \u2013 focus on time on feet, not distance, as part of taper.",
       "phase": "plan",
       "status": "planned",
       "revised": true
@@ -218,10 +227,10 @@
       "week": 12,
       "dow": "tuesday",
       "type": "easy",
-      "distance": 9.7,
+      "distance": 6.0,
       "pace_s": 369,
       "pace": "6:09",
-      "description": "Easy recovery 9.7 km",
+      "description": "Easy recovery 6 km \u2013 taper week, keep it light.",
       "phase": "plan",
       "status": "planned",
       "revised": true
@@ -255,10 +264,10 @@
       "week": 12,
       "dow": "friday",
       "type": "easy",
-      "distance": 8.0,
+      "distance": 5.0,
       "pace_s": 369,
       "pace": "6:09",
-      "description": "Easy 8 km with strides",
+      "description": "Easy 5 km with strides \u2013 taper, keep strides controlled.",
       "phase": "plan",
       "status": "planned",
       "revised": true
@@ -268,10 +277,10 @@
       "week": 12,
       "dow": "saturday",
       "type": "easy",
-      "distance": 6.4,
+      "distance": 4.0,
       "pace_s": 369,
       "pace": "6:09",
-      "description": "Easy 4 miles recovery",
+      "description": "Easy 4 km shake-out run before race.",
       "phase": "plan",
       "status": "planned",
       "revised": true
@@ -290,10 +299,10 @@
     }
   ],
   "comparison": {
-    "days_done": 4,
+    "days_done": 6,
     "days_missed": 0,
-    "planned_distance_14d": 26.0,
-    "actual_distance_14d": 28.6,
-    "adherence_pct": 110
+    "planned_distance_14d": 32.0,
+    "actual_distance_14d": 40.7,
+    "adherence_pct": 127
   }
 }
