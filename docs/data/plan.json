@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-13T22:59:09",
+  "generated_at": "2026-07-14T22:34:54",
   "source": "llm-revised",
   "race": {
     "name": "SF Marathon",
@@ -118,8 +118,10 @@
       "pace": "",
       "description": "Rest",
       "phase": "plan",
-      "status": "planned",
-      "revised": true
+      "status": "past",
+      "revised": true,
+      "actual": null,
+      "completion": "done"
     },
     {
       "date": "2026-07-14",
@@ -288,7 +290,7 @@
     }
   ],
   "comparison": {
-    "days_done": 3,
+    "days_done": 4,
     "days_missed": 0,
     "planned_distance_14d": 26.0,
     "actual_distance_14d": 28.6,

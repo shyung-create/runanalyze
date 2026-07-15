@@ -1,5 +1,5 @@
 {
-  "computed_at": "2026-07-13",
+  "computed_at": "2026-07-14",
   "units": "km",
   "total_runs_analyzed": 244,
   "weekly": [
@@ -78,28 +78,28 @@
   ],
   "rolling_weekly": [
     {
-      "window_start": "2026-06-15",
-      "window_end": "2026-06-21",
-      "distance": 81.8,
-      "runs": 5
+      "window_start": "2026-06-16",
+      "window_end": "2026-06-22",
+      "distance": 92.7,
+      "runs": 6
     },
     {
-      "window_start": "2026-06-22",
-      "window_end": "2026-06-28",
-      "distance": 37.1,
+      "window_start": "2026-06-23",
+      "window_end": "2026-06-29",
+      "distance": 26.1,
+      "runs": 2
+    },
+    {
+      "window_start": "2026-06-30",
+      "window_end": "2026-07-06",
+      "distance": 90.5,
+      "runs": 6
+    },
+    {
+      "window_start": "2026-07-07",
+      "window_end": "2026-07-13",
+      "distance": 39.6,
       "runs": 3
-    },
-    {
-      "window_start": "2026-06-29",
-      "window_end": "2026-07-05",
-      "distance": 75.6,
-      "runs": 5
-    },
-    {
-      "window_start": "2026-07-06",
-      "window_end": "2026-07-12",
-      "distance": 54.5,
-      "runs": 4
     }
   ],
   "long_runs": [
@@ -178,12 +178,6 @@
   ],
   "aerobic_efficiency": {
     "points": [
-      {
-        "date": "2026-04-20",
-        "avg_hr": 152,
-        "avg_pace_s": 374,
-        "efficiency": 1.75
-      },
       {
         "date": "2026-04-23",
         "avg_hr": 146,
@@ -449,15 +443,11 @@
         "efficiency": 1.86
       }
     ],
-    "trend": 3.1,
-    "note": "Aerobic efficiency improved 3.1% over the period"
+    "trend": 2.9,
+    "note": "Aerobic efficiency improved 2.9% over the period"
   },
   "load_ratio": {
     "series": [
-      {
-        "date": "2026-06-16",
-        "acwr": 1.18
-      },
       {
         "date": "2026-06-17",
         "acwr": 1.33
@@ -565,11 +555,15 @@
       {
         "date": "2026-07-13",
         "acwr": 0.67
+      },
+      {
+        "date": "2026-07-14",
+        "acwr": 0.7
       }
     ],
-    "current": 0.67,
+    "current": 0.7,
     "flag": "low",
-    "note": "ACWR 0.67 \u2014 load well below recent norm (taper or detraining)"
+    "note": "ACWR 0.7 \u2014 load well below recent norm (taper or detraining)"
   },
   "fitness": {
     "method": "riegel-best-effort",
