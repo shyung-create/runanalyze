@@ -166,9 +166,7 @@ class DeepSeekClient:
         return validate_full_plan(data, race_cfg, today.isoformat())
 
 
-# -------------------------------------- shared prompts / context builders
-# Provider-agnostic — reused as-is by pipeline/claude_client.py, which only
-# differs in how it builds/sends the actual request and parses the response.
+# -------------------------------------- prompts / context builders
 
 def _elevation_system_prompt(race_distance: float, units: str) -> str:
     return (
@@ -230,8 +228,7 @@ def _revise_context(plan: dict, metrics: dict, race_cfg: dict, comparison: dict,
     }
 
 
-# ------------------------------------------ shared plan-generation prompts
-# Provider-agnostic — reused as-is by pipeline/claude_client.py.
+# ------------------------------------------------ plan-generation prompts
 
 _DENOVO_SYSTEM_PROMPT = (
     "You are an expert running coach authoring a complete marathon/half-marathon "
@@ -374,10 +371,16 @@ def validate_full_plan(data, race_cfg: dict, today_iso: str) -> dict | None:
     is to degrade gracefully rather than block on a heuristic judgment call.
     Returns {'days', 'generation_note'}, or None on structural failure."""
     if not isinstance(data, dict):
+        log.warning("LLM plan response was not a JSON object (got %s)", type(data).__name__)
         return None
     note = data.get("generation_note")
     days_in = data.get("days")
-    if not isinstance(note, str) or not note.strip() or not isinstance(days_in, list) or not days_in:
+    if not isinstance(note, str) or not note.strip():
+        log.warning("LLM plan response missing/empty 'generation_note' (got %r)", note)
+        return None
+    if not isinstance(days_in, list) or not days_in:
+        log.warning("LLM plan response missing/empty 'days' list (got %s, len=%s)",
+                   type(days_in).__name__, len(days_in) if isinstance(days_in, list) else "n/a")
         return None
 
     race_date = str(race_cfg.get("race", {}).get("race_date") or "")
@@ -385,26 +388,38 @@ def validate_full_plan(data, race_cfg: dict, today_iso: str) -> dict | None:
 
     days = []
     seen_dates = set()
-    for d in days_in:
+    for i, d in enumerate(days_in):
         if not isinstance(d, dict):
+            log.warning("LLM plan day[%d] is not an object (got %s)", i, type(d).__name__)
             return None
         date_s = str(d.get("date", ""))
         try:
             datetime.strptime(date_s, "%Y-%m-%d")
         except ValueError:
+            log.warning("LLM plan day[%d] has an unparseable date %r", i, date_s)
             return None
-        if date_s < today_iso or date_s in seen_dates:
+        if date_s < today_iso:
+            log.warning("LLM plan day[%d] date %s is before today (%s)", i, date_s, today_iso)
+            return None
+        if date_s in seen_dates:
+            log.warning("LLM plan day[%d] duplicates date %s", i, date_s)
             return None
         wtype = str(d.get("type", "")).lower()
         if wtype not in ALLOWED_TYPES:
+            log.warning("LLM plan day[%d] (%s) has disallowed type %r — allowed: %s",
+                       i, date_s, d.get("type"), sorted(ALLOWED_TYPES))
             return None
         dist = d.get("distance")
         if dist is not None:
             try:
                 dist = round(float(dist), 1)
             except (TypeError, ValueError):
+                log.warning("LLM plan day[%d] (%s) has a non-numeric distance %r",
+                           i, date_s, d.get("distance"))
                 return None
             if not 0 <= dist <= 30:
+                log.warning("LLM plan day[%d] (%s) distance %.1f is out of the 0-30 range",
+                           i, date_s, dist)
                 return None
         pace = d.get("pace")
         pace_s = parse_duration_s(pace) if pace else None

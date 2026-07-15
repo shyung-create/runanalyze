@@ -113,7 +113,6 @@
     populatePlanIdOptions(data.distance_type, data.plan_id || "");
 
     $("#race-activities-weeks-back").value = data.activities_weeks_back || 0;
-    $("#race-llm-provider").value = data.llm_provider || "deepseek";
   }
 
   function initRaceDetailsForm() {
@@ -131,7 +130,6 @@
         long_run_day: $("#race-long-run-day").value,
         plan_id: $("#race-plan-id").value,
         activities_weeks_back: parseInt($("#race-activities-weeks-back").value, 10) || 0,
-        llm_provider: $("#race-llm-provider").value,
       };
       const msg = $("#race-details-msg");
       msg.textContent = "Saving...";

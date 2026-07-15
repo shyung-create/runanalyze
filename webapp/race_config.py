@@ -22,7 +22,6 @@ from . import config
 
 VALID_DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 VALID_DISTANCE_TYPES = ["half", "full"]
-VALID_LLM_PROVIDERS = ["deepseek", "claude"]
 
 
 def _plan_catalog() -> list[dict]:
@@ -74,7 +73,6 @@ _DISTANCE_TYPE_RE = _quoted_scalar_re("distance_type")
 _RACE_DATE_RE = _quoted_scalar_re("race_date")
 _TARGET_TIME_RE = _quoted_scalar_re("target_time")
 _LONG_RUN_DAY_RE = _quoted_scalar_re("long_run_day")
-_LLM_PROVIDER_RE = _quoted_scalar_re("llm_provider")
 
 
 def _int_scalar_re(key: str) -> re.Pattern:
@@ -216,20 +214,18 @@ def read_race_details() -> dict:
         # "" means unset — plan_generator.py auto-selects a program.
         "plan_id": str(prefs.get("plan_id") or ""),
         "activities_weeks_back": int(prefs.get("activities_weeks_back") or 0),
-        "llm_provider": str(prefs.get("llm_provider") or "deepseek"),
     }
 
 
 def write_race_details(*, name: str, distance_type: str, race_date: str,
                         target_time: str, long_run_day: str, plan_id: str,
-                        activities_weeks_back: int, llm_provider: str) -> None:
+                        activities_weeks_back: int) -> None:
     name = name.strip()
     distance_type = distance_type.strip().lower()
     race_date = race_date.strip()
     target_time = target_time.strip()
     long_run_day = long_run_day.strip().lower()
     plan_id = plan_id.strip()
-    llm_provider = llm_provider.strip().lower()
 
     # Validate everything before writing anything, so a bad field never
     # leaves the file half-updated.
@@ -254,8 +250,6 @@ def write_race_details(*, name: str, distance_type: str, race_date: str,
         )
     if activities_weeks_back < 0:
         raise RaceConfigError("activities_weeks_back must be >= 0")
-    if llm_provider not in VALID_LLM_PROVIDERS:
-        raise RaceConfigError(f"llm_provider must be one of {VALID_LLM_PROVIDERS}")
 
     _write_quoted_scalar(_NAME_RE, "name", name)
     _write_quoted_scalar(_DISTANCE_TYPE_RE, "distance_type", distance_type)
@@ -264,4 +258,3 @@ def write_race_details(*, name: str, distance_type: str, race_date: str,
     _write_quoted_scalar(_LONG_RUN_DAY_RE, "long_run_day", long_run_day)
     _write_plan_id(plan_id)
     _write_int_scalar(_ACTIVITIES_WEEKS_BACK_RE, "activities_weeks_back", activities_weeks_back)
-    _write_quoted_scalar(_LLM_PROVIDER_RE, "llm_provider", llm_provider)

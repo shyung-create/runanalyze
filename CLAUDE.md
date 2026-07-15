@@ -65,17 +65,13 @@ Because the password is at rest, these controls are non-negotiable:
   Tailscale reachability is the access control, see `webapp/auth.py`), single-flight
   refresh jobs guarded by the same `flock` the systemd timer uses
   (`pipeline/refresh.py`'s `LOCK_PATH`, probed but not owned by `webapp/jobs.py`).
-- Deps: `python-dotenv`, `PyYAML`, `requests`, `anthropic` (+ `garmindb`) for the
-  pipeline; `fastapi`, `uvicorn`, `itsdangerous`, `httpx`, `pytest` for `webapp/`.
-- **Two LLM providers, chosen per-athlete, not per-deployment**: DeepSeek (plain
-  `requests` against an OpenAI-compatible endpoint) or Claude (`anthropic` SDK,
-  `pipeline/claude_client.py`), selected via `preferences.llm_provider` in
-  `race_config.yaml` — an Admin-tab field, not an env var — through
-  `pipeline/llm_client.get_llm_client()`. Both clients share the same prompts/
-  validators (defined in `deepseek_client.py`, imported by `claude_client.py`).
+- Deps: `python-dotenv`, `PyYAML`, `requests` (+ `garmindb`) for the pipeline;
+  `fastapi`, `uvicorn`, `itsdangerous`, `httpx`, `pytest` for `webapp/`. DeepSeek over
+  plain `requests` against an OpenAI-compatible endpoint — the only LLM provider;
+  don't add another one without asking (tried once, deliberately reverted).
 - The "AI Plan" tab is a separate comparison view (`docs/data/llm_plan.json`,
-  written by `pipeline/generate_ai_plan.py`) — de novo (LLM authors a full plan
-  from scratch) or blended (sweeping revision of the auto-selected catalog
+  written by `pipeline/generate_ai_plan.py`) — de novo (DeepSeek authors a full
+  plan from scratch) or blended (sweeping revision of the auto-selected catalog
   program). Never touches `plan.json`; not part of the nightly timer, triggered
   on demand only, and reuses the last refresh's `metrics.json` rather than
   re-syncing Garmin.

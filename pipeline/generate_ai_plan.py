@@ -27,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from common import load_race_config, log, read_json, setup_logging, write_json
 import plan_generator
-from llm_client import get_llm_client
+from deepseek_client import DeepSeekClient
 from refresh import LOCK_PATH, VAR_DIR, load_dotenv
 
 
@@ -37,11 +37,10 @@ class AIPlanError(Exception):
 
 def _run(mode: str) -> None:
     race_cfg = load_race_config()
-    provider = race_cfg["preferences"].get("llm_provider") or "deepseek"
-    llm = get_llm_client(provider)
+    llm = DeepSeekClient()
     if not llm.available:
-        raise AIPlanError(f"{provider} is not configured (API key missing) — "
-                         "set it in .env, or switch llm_provider in the Admin tab")
+        raise AIPlanError("DeepSeek is not configured (DEEPSEEK_API_KEY missing) — "
+                         "set it in .env")
 
     mx = read_json("metrics.json")
     if not mx:
@@ -58,13 +57,13 @@ def _run(mode: str) -> None:
         result = llm.generate_plan_blended(race_cfg, mx, today, catalog_plan)
 
     if not result:
-        raise AIPlanError(f"{provider} returned an invalid/unusable {mode} plan — "
+        raise AIPlanError(f"DeepSeek returned an invalid/unusable {mode} plan — "
                          "see the log above for details. The previous AI plan (if "
                          "any) was left untouched.")
 
     write_json("llm_plan.json", {
         "mode": mode,
-        "provider": provider,
+        "provider": "deepseek",
         "source": f"llm-{mode}",
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "race": race_cfg.get("race"),

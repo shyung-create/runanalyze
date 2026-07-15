@@ -206,7 +206,6 @@ class RaceConfigOut(BaseModel):
     long_run_day: str
     plan_id: str
     activities_weeks_back: int
-    llm_provider: str
     plan_catalog: dict[str, list[str]]
 
 
@@ -226,7 +225,6 @@ class RaceDetailsIn(BaseModel):
     long_run_day: str
     plan_id: str = ""  # "" = auto-select, see race_config.read_race_details()
     activities_weeks_back: int = 0  # 0 = disabled, falls back to activities_since
-    llm_provider: str = "deepseek"  # "deepseek" or "claude"
 
 
 def _race_config_out() -> RaceConfigOut:
@@ -269,7 +267,7 @@ def set_race_details(body: RaceDetailsIn, payload: dict = Depends(require_csrf_p
         race_config.write_race_details(
             name=body.name, distance_type=body.distance_type, race_date=body.race_date,
             target_time=body.target_time, long_run_day=body.long_run_day, plan_id=body.plan_id,
-            activities_weeks_back=body.activities_weeks_back, llm_provider=body.llm_provider,
+            activities_weeks_back=body.activities_weeks_back,
         )
     except race_config.RaceConfigError as e:
         raise HTTPException(status_code=400, detail=str(e))

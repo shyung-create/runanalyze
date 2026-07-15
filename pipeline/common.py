@@ -45,7 +45,6 @@ def load_race_config() -> dict:
     cfg["preferences"].setdefault("max_run_days_per_week", 5)
     cfg["preferences"].setdefault("activities_since", "")
     cfg["preferences"].setdefault("activities_weeks_back", 0)
-    cfg["preferences"].setdefault("llm_provider", "deepseek")
     return cfg
 
 

@@ -27,8 +27,6 @@ preferences:
   #                     # this only filters what refresh.py reads out of
   #                     # GarminDB's local database — it never changes what
   #                     # GarminDB itself downloads/stores.
-  llm_provider: "deepseek"  # "deepseek" or "claude" — which LLM revises the
-  #                     # plan on refresh and powers the AI Plan tab.
   # plan_id: ""         # optional — force a specific program instead of
   #                     # auto-selection. Valid ids (see pipeline/plans_catalog.json):
   #                     # full: marathon_higdon_novice_1, marathon_higdon_novice_2,

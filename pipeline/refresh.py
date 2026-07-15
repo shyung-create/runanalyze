@@ -7,7 +7,7 @@ pushes anything — see CLAUDE.md for why the git-publish step was dropped.
 Usage:
     python pipeline/refresh.py            # full run
     python pipeline/refresh.py --no-sync  # skip the GarminDB download step
-    python pipeline/refresh.py --no-llm   # deterministic only, no LLM calls
+    python pipeline/refresh.py --no-llm   # deterministic only, no DeepSeek calls
     python pipeline/refresh.py --replan   # regenerate the plan from scratch
 """
 
@@ -31,8 +31,7 @@ import garmin_extract
 import metrics as metrics_mod
 import plan_generator
 import pace_strategy
-from deepseek_client import validate_segments
-from llm_client import get_llm_client
+from deepseek_client import DeepSeekClient, validate_segments
 from notify import notify_failure
 
 HALF_MI, FULL_MI = 13.109, 26.219
@@ -258,12 +257,12 @@ def build_race_json(race_cfg, race_info, plan, mx) -> dict:
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--no-sync", action="store_true", help="skip GarminDB download")
-    ap.add_argument("--no-llm", action="store_true", help="skip all LLM calls (DeepSeek/Claude)")
+    ap.add_argument("--no-llm", action="store_true", help="skip all DeepSeek calls")
     ap.add_argument("--replan", action="store_true",
                     help="discard the existing plan and regenerate from scratch "
                          "(current fitness, program selection, paces)")
     ap.add_argument("--note", metavar="TEXT",
-                    help="free-text instruction for the LLM plan revision, "
+                    help="free-text instruction for the DeepSeek plan revision, "
                          "e.g. \"move this week's long run to Saturday\"")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
@@ -340,8 +339,7 @@ def _run(args):
 
     # 3. Compare actuals against the existing plan (if any)
     old_plan = read_json("plan.json")
-    provider = race_cfg["preferences"].get("llm_provider") or "deepseek"
-    llm = get_llm_client(provider) if not args.no_llm else None
+    llm = DeepSeekClient() if not args.no_llm else None
 
     race = race_cfg.get("race", {})
     config_changed = bool(old_plan) and (
@@ -359,26 +357,26 @@ def _run(args):
         # 4. LLM revision of remaining days
         revised = None
         if llm and llm.available:
-            log.info("Asking %s to revise the remaining plan%s...", provider,
+            log.info("Asking DeepSeek to revise the remaining plan%s...",
                      " (with your note)" if args.note else "")
             revised = llm.revise_plan(plan, mx, race_cfg, comparison, today_iso,
                                       note=args.note)
         elif args.note:
-            log.warning("--note given but %s is unavailable (%s) — the note "
+            log.warning("--note given but DeepSeek is unavailable (%s) — the note "
                         "cannot be applied; fixed rest days/blocked dates from "
-                        "race_config.yaml are still enforced.", provider,
-                        "--no-llm" if args.no_llm else "API key not set")
+                        "race_config.yaml are still enforced.",
+                        "--no-llm" if args.no_llm else "DEEPSEEK_API_KEY not set")
         elif llm and not llm.available:
-            log.warning("%s API key not set — keeping deterministic plan", provider)
+            log.warning("DEEPSEEK_API_KEY not set — keeping deterministic plan")
         if revised:
             plan["days"] = revised["days"]
             plan["source"] = "llm-revised"
             plan["generated_at"] = datetime.now().isoformat(timespec="seconds")
             append_revision(f"Plan updated on {today_iso}: {revised['revision_note']}",
-                            provider)
+                            "deepseek")
         elif llm and llm.available:
             append_revision(
-                f"{today_iso}: {provider} revision failed validation — keeping the "
+                f"{today_iso}: DeepSeek revision failed validation — keeping the "
                 f"existing plan unchanged. Metrics were refreshed.", "error")
     else:
         reason = ("--replan requested" if args.replan and old_plan
@@ -404,17 +402,17 @@ def _run(args):
                     plan["days"] = revised["days"]
                     plan["source"] = "llm-revised"
                     append_revision(f"Plan updated on {today_iso}: "
-                                    f"{revised['revision_note']}", provider)
+                                    f"{revised['revision_note']}", "deepseek")
                 else:
                     append_revision(
                         f"{today_iso}: could not apply your note (revision failed "
                         f"validation) — the freshly generated plan was kept as-is.",
                         "error")
             else:
-                log.warning("--note given but %s is unavailable (%s) — the "
+                log.warning("--note given but DeepSeek is unavailable (%s) — the "
                             "note cannot be applied; fixed rest days/blocked dates "
-                            "from race_config.yaml are still enforced.", provider,
-                            "--no-llm" if args.no_llm else "API key not set")
+                            "from race_config.yaml are still enforced.",
+                            "--no-llm" if args.no_llm else "DEEPSEEK_API_KEY not set")
 
     # Hard backstop: fixed rest days / blocked dates hold no matter where the
     # plan came from (fresh generation, kept plan, or LLM revision).
