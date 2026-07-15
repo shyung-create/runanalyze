@@ -41,14 +41,14 @@ fi
 
 log "Updated ${before_rev:0:12} -> ${after_rev:0:12}."
 
-if ! git diff --quiet "$before_rev" "$after_rev" -- requirements.txt; then
+if ! sudo -u "$SERVICE_USER" git diff --quiet "$before_rev" "$after_rev" -- requirements.txt; then
   log "requirements.txt changed — reinstalling..."
   sudo -u "$SERVICE_USER" "${APP_DIR}/.venv/bin/pip" install -q -r requirements.txt
 else
   log "requirements.txt unchanged — skipping pip install."
 fi
 
-if ! git diff --quiet "$before_rev" "$after_rev" -- deploy/; then
+if ! sudo -u "$SERVICE_USER" git diff --quiet "$before_rev" "$after_rev" -- deploy/; then
   log "deploy/ changed — reinstalling systemd units..."
   cp "${APP_DIR}"/deploy/*.service "${APP_DIR}"/deploy/*.timer /etc/systemd/system/
   systemctl daemon-reload
